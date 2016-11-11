@@ -5,21 +5,21 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-    <strong>Quick tip:</strong> Questions should cover the main points from your resource you want the user to remember!
+    <strong>Quick tip:</strong> Questions should cover the main points from your resource that you want the user to remember!
     </div>
     <div v-for="question in questions">
       <div class="input-group">
-        <input type="text" class="form-control"placeholder="Enter a question">
+        <input type="text" class="form-control" v-model="question.text" placeholder="Enter a question">
         <span class="input-group-btn">
           <button class="btn btn-secondary" type="button" @click="addOption(question)">Add an option</button>
         </span>
       </div>
       </br>
-      <div class="input-group" style="margin-bottom: 20px">
+      <div class="input-group" v-for="option in question.options" style="margin-bottom: 20px">
         <span class="input-group-addon">
-          <input type="checkbox">
+          <input type="checkbox" v-model="option.isAnswer">
         </span>
-        <input type="text" class="form-control"placeholder="Enter an option">
+        <input type="text" class="form-control" v-model="option.text" placeholder="Enter an option">
         <span class="input-group-btn">
           <button class="btn btn-danger" type="button">X</button>
         </span>
@@ -28,7 +28,7 @@
     <button class="btn btn-default" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
       Add another question
     </button>
-    <button class="btn btn-primary" style="background-color: #ffcc00; border: #ffcc00">
+    <button class="btn btn-primary" @click="saveToFirebase" style="background-color: #ffcc00; border: #ffcc00">
       Create quiz
     </button>
  	</div>
@@ -36,6 +36,10 @@
 
 
 <script>
+
+// TODO: Add functionality to alert
+
+import store from '../store'
 
 const createNewOption = () => { 
 	return {
@@ -66,7 +70,6 @@ export default {
     addOption (question) {
     	question.options.push(createNewOption())
     },
-    /*
     saveToFirebase (e) {
     	e.preventDefault();
       var updates = {};
@@ -74,10 +77,11 @@ export default {
       updates['/users/' + store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/'] = this.questions;
 
       return firebase.database().ref().update(updates);
+
+      store.state.postyKey = ''
       
       console.log('Saving quiz data...')	
     }
-    */
 	}
 }
 </script>

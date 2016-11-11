@@ -3,43 +3,47 @@
     <nav class="navbar navbar-light bg-faded">
       <ul class="nav navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="#"><h4>Digestible <span class="sr-only">(current)</span></h4></a>
+          <a class="nav-link" href="#"><h4><router-link to="/" style="color: #ffcc00">Digestible</router-link><span class="sr-only">(current)</span></h4></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" style="color: #ffcc00">Create a quiz</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Study</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Maxwell Gover
-          </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div class="right">
+          <li class="nav-item">
+            <a class="nav-link" href="#"><router-link to="/info" style="color: #ffcc00">Create a quiz</router-link></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Study</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="" @click.prevent="toggleSignIn">
+            Sign In / Sign Up
+            </a>
+          </li>
         </div>
-        </li>
       </ul>
     </nav>
-    <quiz-builder></quiz-builder>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Home from './components/Home'
-import ResourceInfo from './components/ResourceInfo'
-import Profile from './components/Profile'
-import QuizBuilder from './components/QuizBuilder'
 
 export default {
   name: 'app',
-  components: {
-    Home,
-    ResourceInfo,
-    Profile,
-    QuizBuilder
+  computed: {
+    state () {
+      return this.$store.state 
+    }
+  },
+  created () {
+    this.$store.dispatch('watchResources');
+    this.$store.dispatch('watchUsers');
+    this.$store.dispatch('watchUserInfo');
+  
+    console.log(this.$store.state);
+  },
+  methods: {
+    toggleSignIn () {
+      this.$store.dispatch('watchSignIn');
+    }
   }
 }
 </script>
@@ -54,5 +58,8 @@ export default {
 }
 .navbar {
   background-color: white;
+}
+.right {
+  float: right;
 }
 </style>

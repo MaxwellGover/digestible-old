@@ -2,7 +2,7 @@
   <div class="home container">
     <div class="row">
       <div class="col-md-8">
-        <resource-card></resource-card>
+        <resource-card v-for="resource in resources" :resource="resource"></resource-card>
       </div>
       <div class="categories col-md-4">
         <h5>Categories</h5>
@@ -16,14 +16,26 @@
 <script>
 import ResourceCard from './ResourceCard'
 import Categories from './Categories'
-import ResourceInfo from './ResourceInfo'
+import Vue from 'vue'
+import VueFire from 'vuefire'
+
+var db = firebase.database();
+
+Vue.use(VueFire)
 
 export default {
   name: 'home',
   components: { 
     ResourceCard, 
-    Categories, 
-    ResourceInfo
+    Categories
+  },
+  vuex: {
+    getters: {
+      resources: state => state.resources
+    }
+  },
+  firebase: {
+    resources: db.ref().child('resources')
   } 
 }
 </script>

@@ -5,14 +5,34 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+    <!-- Firebase App (required) -->
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+	<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-auth.js"></script>
+	<!-- Firebase Database -->
+	<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-database.js"></script>
     <! -- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <script src="https://use.fontawesome.com/41b02f9715.js"></script>
     <title>Digestible</title>
   </head>
   <body style="background-color: #f9f9f9">
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+    var config = {
+	    apiKey: "AIzaSyAdSLXcIrAp_xXr6T9APC1MVU9pAQ8VsHA",
+	    authDomain: "digestible-159a3.firebaseapp.com",
+	    databaseURL: "https://digestible-159a3.firebaseio.com",
+	    storageBucket: "digestible-159a3.appspot.com",
+	    messagingSenderId: "1003151956886"
+	};
+        
+	firebase.initializeApp(config);
+  	</script>
   </body>
 </html>
