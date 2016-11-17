@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import ResourceCard from './ResourceCard'
-import Categories from './Categories'
+import ResourceCard from '../components/ResourceCard'
+import Categories from '../components/Categories'
 import Vue from 'vue'
 import VueFire from 'vuefire'
 

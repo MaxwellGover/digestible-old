@@ -1,5 +1,7 @@
 <template>
 	<div class="card card-block">
+    <img src="userInfo.photoURL">
+    <p>{{userInfo.displayName}}</p>
     <h4 class="card-title">{{resource.title}}</h4>
     <p class="card-text">{{resource.description}}</p>
     <a href="#" class="card-link">Learn</a>
@@ -13,7 +15,7 @@ export default {
   name: 'resource-card',
   props: ['resource'],
   computed: mapState({
-    userInfo: state => state.userInfo
+    userInfo: state => state.userInfo // Why do I need this??
   })
 }
 </script>

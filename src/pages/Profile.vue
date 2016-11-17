@@ -4,26 +4,33 @@
       <div class="container">
         <div class="row">
           <div class="col-md-2">
-            <img class="profile-pic" src="../assets/profile.png" alt="User image">
+            <img class="profile-pic" src="userInfo.profileURL" alt="User image">
           </div>
           <div class="col-md-10">
-            <h1 class="display-5">Eric Clemmons</h1>
-            <p class="lead">Creator of React Resolver, Genesis/Evolution for WordPress. Purveyor of a better Developer Experience.</p>
+            <h1 class="display-5">{{userInfo.displayName}}</h1>
+            <p class="lead"></p>
           </div>
         </div>
       </div>
     </div>
     <profile-nav></profile-nav>
-    <created-resources></created-resources>
+    <created-resources :userInfo="this.userInfo"></created-resources>
   </div>
 </template>
 
 <script>
-import ProfileNav from './ProfileNav'
-import CreatedResources from './CreatedResources'
+import ProfileNav from '../components/ProfileNav'
+import CreatedResources from '../components/CreatedResources'
+import { mapState } from 'vuex'
 
 export default {
   name: 'profile',
+  computed: mapState({
+      userInfo: state => state.userInfo
+  }),
+  created () {
+    console.log(this.userInfo.uid)
+  },
   components: { 
     ProfileNav,
     CreatedResources

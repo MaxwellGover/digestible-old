@@ -11,6 +11,7 @@
 
 export default {
   name: 'profile-nav',
+  props: ['userInfo']
 }
 </script>
 

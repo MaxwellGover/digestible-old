@@ -1,3 +1,11 @@
+<!-- 
+
+TODO: 
+
+1. Add ability to add categories
+
+-->
+
 <template>
   <div class="resource-info container">
     <form id="resource-info" v-on:submit.prevent="saveToFB">
@@ -65,7 +73,7 @@ export default {
 
       return db.ref().update(updates);
 
-      // Clear inputs  
+      // Clear inputs before return statement without losing them?  
 
       this.resource.title = '',
       this.resource.type = '',

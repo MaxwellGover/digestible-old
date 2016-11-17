@@ -15,7 +15,8 @@ const store = new Vuex.Store({
   },
   getters: {
     resources: state => state.resources,
-    users: state => state.users
+    users: state => state.users,
+    userInfo: state => state.userInfo
   },
   actions: {
     watchResources (context) {

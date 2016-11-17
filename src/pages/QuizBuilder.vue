@@ -78,7 +78,7 @@ export default {
 
       return firebase.database().ref().update(updates);
 
-      store.state.postyKey = ''
+      // store.state.postyKey = '' // How do I put his before the return statement without it erasing key?
       
       console.log('Saving quiz data...')	
     }
