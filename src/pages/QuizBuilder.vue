@@ -7,21 +7,24 @@
       </button>
     <strong>Quick tip:</strong> Questions should cover the main points from your resource that you want the user to remember!
     </div>
-    <div v-for="question in questions">
+    <div v-for="(question, index) in questions">
       <div class="input-group">
         <input type="text" class="form-control" v-model="question.text" placeholder="Enter a question">
         <span class="input-group-btn">
           <button class="btn btn-secondary" type="button" @click="addOption(question)">Add an option</button>
         </span>
+         <span class="input-group-btn">
+          <button class="btn btn-danger" type="button" @click="removeQuestion(index)">X</button>
+        </span>
       </div>
       </br>
-      <div class="input-group" v-for="option in question.options" style="margin-bottom: 20px">
+      <div class="input-group" v-for="(option, index) in question.options" style="margin-bottom: 20px">
         <span class="input-group-addon">
           <input type="checkbox" v-model="option.isAnswer">
         </span>
         <input type="text" class="form-control" v-model="option.text" placeholder="Enter an option">
         <span class="input-group-btn">
-          <button class="btn btn-danger" type="button">X</button>
+          <button class="btn btn-danger" type="button" @click="removeOption(question, option)">X</button>
         </span>
       </div></br>
     </div>
@@ -67,8 +70,17 @@ export default {
     addQuestion () {
     	this.questions.push(createNewQuestion())
     },
+    removeQuestion (index) {
+      this.questions.splice(index, 1)
+    },
     addOption (question) {
     	question.options.push(createNewOption())
+    },
+    removeOption (question, option) {
+      var index = question.options.indexOf(option);
+        if (index > -1) {
+          question.options.splice(index, 1);
+        }
     },
     saveToFirebase (e) {
     	e.preventDefault();

@@ -1,10 +1,18 @@
 <template>
 	<div class="card card-block">
-    <img src="userInfo.photoURL">
-    <p>{{userInfo.displayName}}</p>
+    <div class="row">
+      <div class="col-md-1">
+        <img src="userInfo.photoURL">
+      </div>
+      <div class="col-md-11">
+        <p>{{userInfo.displayName}}</p>
+      </div>
+    </div>
     <h4 class="card-title">{{resource.title}}</h4>
     <p class="card-text">{{resource.description}}</p>
-    <a href="#" class="card-link">Learn</a>
+    <h6><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h6>
+    <a href="#" class="card-link" style="margin-top: 10px">Learn</a>
+    <h5 style="margin-top: 10px">{{resource.timesPassed}}</h5>
   </div>
 </template>
 
@@ -15,7 +23,7 @@ export default {
   name: 'resource-card',
   props: ['resource'],
   computed: mapState({
-    userInfo: state => state.userInfo // Why do I need this??
+    userInfo: state => state.userInfo
   })
 }
 </script>

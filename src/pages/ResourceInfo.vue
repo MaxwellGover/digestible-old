@@ -1,14 +1,6 @@
-<!-- 
-
-TODO: 
-
-1. Add ability to add categories
-
--->
-
 <template>
   <div class="resource-info container">
-    <form id="resource-info" v-on:submit.prevent="saveToFB">
+    <form id="resource-info">
       <div class="form-group">
         <label for="type">This quiz is for (required)</label>
         <select id="type" class="form-control" v-model="resource.type">
@@ -33,16 +25,25 @@ TODO:
         <textarea class="form-control" id="desc" v-model="resource.description"></textarea>
         <small id="desc-help" class="form-text text-muted">Enter a short description of your resource.</small>
       </div>
-      <button type="submit" class="btn btn-primary" id="next-button" style="float: right; background-color: #ffcc00; border: none">Next</button>
+      <div class="form-group">
+        <label for="categories">Categories (required)</label>
+        <input type="text" class="form-control" id="categories" @keyup.enter="addTag" v-model="resource.text">
+        <h5><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; margin-top: 5px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h5>
+        <small id="category-help" class="form-text text-muted">Add some categories.</small>
+      </div>
+      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB" style="float: right; background-color: #ffcc00; border: none">Next</button>
     </form>
   </div>
 </template>
 
 <script>
 var db = firebase.database();
-var resourcesRef = db.ref().child('resources');
 import store from '../store'
 import { mapState } from 'vuex'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+Vue.use(VueRouter)
 
 export default {
   name: 'resource-info',
@@ -57,6 +58,8 @@ export default {
         url: '',
         description: '',
         timesPassed: 0,
+        tags: [],
+        text: '',
         authorName: this.$store.state.userInfo.displayName,
         authorImage: this.$store.state.userInfo.photoURL,
         authorId: this.$store.state.userInfo.uid
@@ -64,6 +67,15 @@ export default {
     }
   },
   methods: {
+    addTag: function () {
+      let tags = this.resource.tags;
+      console.log(tags);
+      tags.push({
+        id: this.resource.tags.length + 1,
+        text: this.resource.text
+      })
+      this.resource.text = ''
+    },
     saveToFB () {
       var newPostKey = db.ref('resources').push().key;
       store.state.postKey = newPostKey;
@@ -78,7 +90,8 @@ export default {
       this.resource.title = '',
       this.resource.type = '',
       this.resource.desc = '',
-      this.resource.url = ''
+      this.resource.url = '',
+      this.resource.tags = []
 
       console.log("Saving resource data...")
     }

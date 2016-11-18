@@ -1,4 +1,4 @@
-<template>
+<template v-if="this.userInfo">
   <div>
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
@@ -13,13 +13,13 @@
         </div>
       </div>
     </div>
-    <profile-nav></profile-nav>
-    <created-resources :userInfo="this.userInfo"></created-resources>
+    <created-resources :userInfo="userInfo"></created-resources>
   </div>
 </template>
 
 <script>
-import ProfileNav from '../components/ProfileNav'
+var db = firebase.database();
+import store from '../store'
 import CreatedResources from '../components/CreatedResources'
 import { mapState } from 'vuex'
 
@@ -28,11 +28,7 @@ export default {
   computed: mapState({
       userInfo: state => state.userInfo
   }),
-  created () {
-    console.log(this.userInfo.uid)
-  },
   components: { 
-    ProfileNav,
     CreatedResources
   }
 }

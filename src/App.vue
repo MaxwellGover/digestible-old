@@ -13,8 +13,8 @@
             <a class="nav-link" href="#">Study</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="" @click.prevent="toggleSignIn">
-            Sign In / Sign Up
+            <a class="nav-link" href="" @click.prevent="toggleSignIn()">
+            {{userInfo.uid ? userInfo.displayName : 'Sign In / Sign Up'}}
             </a>
           </li>
         </div>
@@ -25,14 +25,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
   name: 'app',
-  computed: {
-    state () {
-      return this.$store.state 
-    }
-  },
+  computed: mapState({
+    state: state => state,
+    userInfo: state => state.userInfo
+  }),
   created () {
     this.$store.dispatch('watchResources');
     this.$store.dispatch('watchUsers');

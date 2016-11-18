@@ -7,7 +7,6 @@
       <div class="categories col-md-4">
         <h5>Categories</h5>
         <p style="color: #a3a3a3">View all</p>
-        <categories></categories>
       </div>
     </div>
   </div>
