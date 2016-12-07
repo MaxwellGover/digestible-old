@@ -9,6 +9,8 @@
         <p style="color: #a3a3a3">View all</p>
       </div>
     </div>
+    <h1>Debugging info</h1>
+    <pre>{{userInfo}}</pre>
   </div>
 </template>
 
@@ -17,6 +19,7 @@ import ResourceCard from '../components/ResourceCard'
 import Categories from '../components/Categories'
 import Vue from 'vue'
 import VueFire from 'vuefire'
+import { mapState } from 'vuex'
 
 var db = firebase.database();
 
@@ -28,6 +31,9 @@ export default {
     ResourceCard, 
     Categories
   },
+  computed: mapState({
+    userInfo: state => state.userInfo
+  }),
   vuex: {
     getters: {
       resources: state => state.resources

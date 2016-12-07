@@ -33,6 +33,8 @@
       </div>
       <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB" style="float: right; background-color: #ffcc00; border: none">Next</button>
     </form>
+
+    <!--{{resource}}-->
   </div>
 </template>
 
@@ -51,6 +53,8 @@ export default {
       userInfo: state => state.userInfo
   }),
   data () {
+    // console.log('resource to display', this.$route.params.key, this.$firebaseRefs);
+
     return {
       resource: {
         type: '',

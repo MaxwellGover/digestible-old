@@ -12,7 +12,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/info', component: ResourceInfo },
+  { path: '/info', name: 'info', component: ResourceInfo },
   { path: '/create', component: QuizBuilder },
   { path: '/profile/:uid', component: Profile },
   { path: '/quiz/:id', component: Quiz }
