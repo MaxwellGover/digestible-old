@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createLogger from 'vuex/dist/logger'
 import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -40,6 +41,7 @@ const store = new Vuex.Store({
       }) 
     },
     watchSignIn (context) {
+      console.log('watch sign in', auth.signOut);
       if (!auth.currentUser) {
           console.log("Signing in...");
           var provider = new firebase.auth.GoogleAuthProvider();
@@ -70,7 +72,11 @@ const store = new Vuex.Store({
           });
       } else {
           console.log('Signing out...');
-          auth.signOut();      
+          
+          auth.signOut().then(() => {
+            console.log('logged out');
+            context.commit('mutateSignIn', {}); // clear user
+          });     
       }
     }
   },
@@ -88,7 +94,7 @@ const store = new Vuex.Store({
       state.userInfo = user
     }
   },
-  plugins: [createPersistedState()]
+  plugins: [createPersistedState(), createLogger()]
 })
 
 export default store
