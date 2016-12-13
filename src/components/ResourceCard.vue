@@ -2,17 +2,19 @@
 	<div class="card card-block">
     <div class="row">
       <div class="col-md-1">
-        <img src="userInfo.photoURL">
+        <img :src="resource.authorImage" style="width: 50px; height: 50px;">
       </div>
       <div class="col-md-11">
-        <p>{{userInfo.displayName}}</p>
+        <p>{{resource.authorName}}</p>
       </div>
     </div>
     <h4 class="card-title">{{resource.title}}</h4>
     <p class="card-text">{{resource.description}}</p>
     <h6><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h6>
     <a href="#" class="card-link" style="margin-top: 10px">Learn</a>
+    <!--<router-link :to="{name: 'info', params: {key: resource['.key']}}" class="card-link" style="margin-top: 10px">Learn</router-link>-->
     <h5 style="margin-top: 10px">{{resource.timesPassed}}</h5>
+    <!--{{resource['.key']}}-->
   </div>
 </template>
 
