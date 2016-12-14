@@ -1,6 +1,6 @@
 <template>
 	<div class="quiz container">
-		<question></question>
+	
 	</div>
 </template>
 
@@ -8,7 +8,6 @@
 
 var db = firebase.database();
 import store from '../store'
-import Question from '../components/Question'
 import VueFire from 'vuefire'
 import Vue from 'vue'
 
@@ -16,15 +15,9 @@ Vue.use(VueFire)
 
 export default {
 	name: 'quiz',
-	components: {Question},
 	firebase: {
 		resources: db.ref('/users/' + store.state.userInfo.uid + '/createdResources/')
-	},
-	created () {
-		var resource = this.resources.map((resource, index) => resource)
-		console.log(resource);
-		return resource;
-	},
+	}
 }
 </script>
 

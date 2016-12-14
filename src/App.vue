@@ -13,10 +13,18 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Study</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="" @click.prevent="toggleSignIn()">
-              {{userInfo.uid ? userInfo.displayName : 'Sign In / Sign Up'}}
+            <li v-if="userInfo.uid" class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{userInfo.displayName}}
               </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#" @click.prevent="toggleSignIn()">Sign Out</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+            <li class="nav-item" v-else>
+              <a class="nav-link" href="#">Sign In/Sign Up</a>
             </li>
           </div>
         </ul>
