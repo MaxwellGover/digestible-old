@@ -21,8 +21,8 @@ Vue.use(VueFire)
 export default {
   name: 'created-resources',
   props: ['userInfo'],
-  created: function () {
-    console.log(store.state.userInfo.uid)
+  firebase: {
+    createdResources: db.ref('/users/' + store.state.userInfo.uid + '/createdResources/') 
   },
   components: { ResourceCard }
 }

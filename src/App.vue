@@ -1,24 +1,26 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-light bg-faded">
-      <ul class="nav navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="#"><h4><router-link to="/" style="color: #ffcc00">Digestible</router-link><span class="sr-only">(current)</span></h4></a>
-        </li>
-        <div class="right">
-          <li class="nav-item">
-            <a class="nav-link" href="#"><router-link to="/info" style="color: #ffcc00">Create a quiz</router-link></a>
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#"><h4><router-link to="/" class="link">Digestible</router-link><span class="sr-only">(current)</span></h4></a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Study</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="" @click.prevent="toggleSignIn()">
-            {{userInfo.uid ? userInfo.displayName : 'Sign In / Sign Up'}}
-            </a>
-          </li>
-        </div>
-      </ul>
+          <div class="links">
+            <li class="nav-item">
+              <router-link to="/info" class="create-quiz-link">Create a quiz</router-link>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Study</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="" @click.prevent="toggleSignIn()">
+              {{userInfo.uid ? userInfo.displayName : 'Sign In / Sign Up'}}
+              </a>
+            </li>
+          </div>
+        </ul>
+      </div>
     </nav>
     <router-view></router-view>
   </div>
@@ -50,16 +52,30 @@ export default {
 
 <style>
 #app {
-  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
+  font-family: 'Khula', sans-serif;
   color: #2c3e50;
 }
 .navbar {
   background-color: white;
+  padding: 15px;
 }
-.right {
+.links {
+  display: flex;
+  align-items: center;
   float: right;
+}
+.link {
+  color: #4e30f9;
+}
+.link:visited, .link:hover, .link:active {
+  color: #4e30f9;
+  text-decoration: none;
+}
+.create-quiz-link {
+  color: #4e30f9;;
+}
+.create-quiz-link:visited, .create-quiz-link:hover, .create-quiz-link:active {
+  color: #4e30f9;
+  text-decoration: none;
 }
 </style>

@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     userInfo: {},
     users: {},
     resources: [],
+    answeredQuestions: [],
     postKey: ''
   },
   getters: {

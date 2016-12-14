@@ -15,7 +15,7 @@ const routes = [
   { path: '/info', name: 'info', component: ResourceInfo },
   { path: '/create', component: QuizBuilder },
   { path: '/profile/:uid', component: Profile },
-  { path: '/quiz/:id', component: Quiz }
+  { path: '/quiz/:resourceId', component: Quiz }
 ];
 
 export const router = new VueRouter({

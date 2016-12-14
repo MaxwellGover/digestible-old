@@ -1,20 +1,20 @@
 <template>
-	<div class="card card-block">
-    <div class="row">
-      <div class="col-md-1">
-        <img :src="resource.authorImage" style="width: 50px; height: 50px;">
-      </div>
-      <div class="col-md-11">
-        <p>{{resource.authorName}}</p>
-      </div>
+  <div class="card">
+    <h6 class="card-header">
+      <img class="user-image" :src="resource.authorImage" alt=""/>
+      <a href="#" class="user-name">{{resource.authorName}}</a>
+    </h6>
+    <div class="card-block">
+      <h3 class="card-title">{{resource.title}}</h3>
+      <p class="card-text">{{resource.description}}</p>
+      <a href="#" class="card-btn btn btn-primary">Learn</a>
+      <!--<router-link :to="{name: 'info', params: {key: resource['.key']}}" class="card-link" style="margin-top: 10px">Learn</router-link>-->
+      <!--{{resource['.key']}}-->
     </div>
-    <h4 class="card-title">{{resource.title}}</h4>
-    <p class="card-text">{{resource.description}}</p>
-    <h6><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h6>
-    <a href="#" class="card-link" style="margin-top: 10px">Learn</a>
-    <!--<router-link :to="{name: 'info', params: {key: resource['.key']}}" class="card-link" style="margin-top: 10px">Learn</router-link>-->
-    <h5 style="margin-top: 10px">{{resource.timesPassed}}</h5>
-    <!--{{resource['.key']}}-->
+    <div class="footer card-block">
+      <img class="icon" src="../assets/validate.png" alt=""/>
+      {{resource.timesPassed}}
+    </div>
   </div>
 </template>
 
@@ -33,19 +33,41 @@ export default {
 <style scoped>
 .card {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  /* text-align: left; */
-  margin-top: 60px;
-}
-.author-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
   margin-right: 20px;
+  margin-top: 40px;
 }
-.fa {
-  color: #42f477
+
+.card-header {
+  display: flex;
+  padding: 15px;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: none;
+}
+
+.user-image {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 20px
+}
+.card-btn {
+  border-radius: 2px;
+  background-color: #4e30f9;
+}
+.footer {
+  display: flex;
+  align-items: center;
+}
+.icon {
+  height: 70px;
+  width: 70px;
+  margin-left: -20px;
+}
+.user-name {
+  color: #4e30f9;
+}
+.user-name:hover {
+  text-decoration: none;
 }
 </style>

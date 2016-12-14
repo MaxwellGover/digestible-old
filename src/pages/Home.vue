@@ -1,17 +1,20 @@
 <template>
-  <div class="home container">
-    <div class="row">
-      <div class="col-md-8">
-        <resource-card v-for="resource in resources" :resource="resource"></resource-card>
-      </div>
-      <div class="categories col-md-4">
-        <h5>Categories</h5>
-        <p style="color: #a3a3a3">View all</p>
-      </div>
+<div>
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h2 class="display-3">Retain the Web</h2>
+      <p class="lead">Make sure you are retaining the most important information <br> from online articles, videos, and podcasts with Digestible.</p>
     </div>
-    <h1>Debugging info</h1>
-    <pre>{{userInfo}}</pre>
   </div>
+  <div class="home container">
+    <div class="feed">
+      <resource-card v-for="resource in resources" :resource="resource"></resource-card>
+    </div>
+    <div class="side card card-block">
+      I am a side bar
+    </div>
+  </div>
+</div>
 </template>
 
 <script>
@@ -46,13 +49,21 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  background-color: #f9f9f9
-  /* margin-top: 60px; */
+.home {
+  display: flex;
+  justify-content: space-between;
+}
+.feed {
+  display: flex;
+  flex-direction: column;
+}
+.side {
+  width: 400px;
+  margin-top: 40px;
+}
+.jumbotron {
+  margin-bottom: 60px;
+  background-color: blue;
 }
 .categories {
   margin-top: 60px

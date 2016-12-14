@@ -31,7 +31,7 @@
         <h5><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; margin-top: 5px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h5>
         <small id="category-help" class="form-text text-muted">Add some categories.</small>
       </div>
-      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB" style="float: right; background-color: #ffcc00; border: none">Next</button>
+      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
     </form>
 
     <!--{{resource}}-->
@@ -103,9 +103,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .resource-info {
   margin-top: 40px;
   width: 700px
+}
+.btn {
+  float: right; 
+  background-color: #4e30f9; 
+  border: none;
+  border-radius: 2px;
 }
 </style>

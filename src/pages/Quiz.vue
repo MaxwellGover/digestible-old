@@ -1,25 +1,14 @@
 <template>
 	<div class="quiz container">
-		<div class="question">
-			<h5 class="question">This is a question</h5>
-			<input type="checkbox" aria-label="Checkbox for following text input" style="margin-right: 10px"> For each option render one of these
-			</br>
-			<input type="checkbox" aria-label="Checkbox for following text input" style="margin-right: 10px"> For each option render one of these
-			</br>
-			<input type="checkbox" aria-label="Checkbox for following text input" style="margin-right: 10px"> For each option render one of these
-			</br>
-			<input type="checkbox" aria-label="Checkbox for following text input" style="margin-right: 10px"> For each option render one of these
-		</div>
+		<question></question>
 	</div>
 </template>
 
 <script>
 
-// TODO: WHY IS userInfo.uid UNDEFINED!!!!?????
-
 var db = firebase.database();
 import store from '../store'
-import { mapState } from 'vuex'
+import Question from '../components/Question'
 import VueFire from 'vuefire'
 import Vue from 'vue'
 
@@ -27,16 +16,15 @@ Vue.use(VueFire)
 
 export default {
 	name: 'quiz',
-	computed: mapState({
-    	userInfo: state => state.userInfo
-  	}),
-	created () {
-		console.log(store.state.userInfo.uid)
-	},
-	components: {},
+	components: {Question},
 	firebase: {
-		quiz: db.ref('/users/' + store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/')
-	}
+		resources: db.ref('/users/' + store.state.userInfo.uid + '/createdResources/')
+	},
+	created () {
+		var resource = this.resources.map((resource, index) => resource)
+		console.log(resource);
+		return resource;
+	},
 }
 </script>
 

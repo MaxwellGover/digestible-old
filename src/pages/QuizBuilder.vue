@@ -10,9 +10,6 @@
     <div v-for="(question, index) in questions">
       <div class="input-group">
         <input type="text" class="form-control" v-model="question.text" placeholder="Enter a question">
-        <span class="input-group-btn">
-          <button class="btn btn-secondary" type="button" @click="addOption(question)">Add an option</button>
-        </span>
          <span class="input-group-btn">
           <button class="btn btn-danger" type="button" @click="removeQuestion(index)">X</button>
         </span>
@@ -26,14 +23,17 @@
         <span class="input-group-btn">
           <button class="btn btn-danger" type="button" @click="removeOption(question, option)">X</button>
         </span>
-      </div></br>
+      </div>
+      <p class="add-option" @click="addOption(question)">Add an option</p>
+    </div></br>
+    <div>
+      <button class="add-question-btn btn btn-default" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
+        Add another question
+      </button>
+      <button class="create-quiz-btn btn btn-primary" @click="saveToFirebase">
+        Create quiz
+      </button>
     </div>
-    <button class="btn btn-default" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
-      Add another question
-    </button>
-    <button class="btn btn-primary" @click="saveToFirebase" style="background-color: #ffcc00; border: #ffcc00">
-      Create quiz
-    </button>
  	</div>
 </template>
 
@@ -91,8 +91,8 @@ export default {
       return firebase.database().ref().update(updates);
 
       // store.state.postyKey = '' // How do I put his before the return statement without it erasing key?
-      
-      console.log('Saving quiz data...')	
+
+      // Push to route {{ $route.params.resourceId }}
     }
 	}
 }
@@ -101,12 +101,27 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .quiz-builder {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin-top: 60px;
   width: 800px;
 }
 .quiz-header {
   margin-bottom: 20px;
   text-align: center
+}
+.add-option {
+  color: #4e30f9;
+  text-decoration: none;
+  cursor:pointer;
+}
+.add-question-btn {
+  border-radius: 2px;
+}
+.create-quiz-btn {
+  border-radius: 2px;
+  background-color: #4e30f9;
 }
 .alert {
   margin-bottom: 40px
