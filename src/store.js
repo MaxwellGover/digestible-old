@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexFire from 'vuexfire'
 import createLogger from 'vuex/dist/logger'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -7,6 +8,7 @@ Vue.use(Vuex)
 
 var db = firebase.database();
 var auth = firebase.auth();
+var VuexFireMutations = VuexFire.mutations;
 
 const store = new Vuex.Store({
   state: {
@@ -16,6 +18,9 @@ const store = new Vuex.Store({
     answeredQuestions: [],
     postKey: ''
   },
+  // firebase: {
+  //   resources: db.ref().child('resources')
+  // },
   getters: {
     resources: state => state.resources,
     users: state => state.users,
@@ -82,8 +87,11 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    VuexFireMutations,
     mutateResources (state, resources) {
-      state.resources.push(resources);
+      // state.resources.push(resources);
+      // console.log('mutate resources', resources);
+      state.resources = resources;
     },
     mutateUsers (state, users) {
       state.users = users;

@@ -8,6 +8,7 @@
       <h3 class="card-title">{{resource.title}}</h3>
       <p class="card-text">{{resource.description}}</p>
       <a href="#" class="card-btn btn btn-primary">Learn</a>
+      <router-link class="card-btn btn btn-primary" :to="{name: 'quiz', params: { resourceId: resource['.key'] }}">quiz</router-link>
       <!--<router-link :to="{name: 'info', params: {key: resource['.key']}}" class="card-link" style="margin-top: 10px">Learn</router-link>-->
       <!--{{resource['.key']}}-->
     </div>

@@ -13,6 +13,7 @@
     <div class="side card card-block">
       I am a side bar
     </div>
+    {{resources}}
   </div>
 </div>
 </template>
