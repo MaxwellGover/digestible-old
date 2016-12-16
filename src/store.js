@@ -101,7 +101,11 @@ const store = new Vuex.Store({
     },
     mutateSignIn (state, user) {
       state.userInfo = user
-    }
+    },
+    // mutateAnswers(state, answers) {
+    //   console.log('answer mutate', state, answers);
+    //   state.answeredQuestions = answers;
+    // }
   },
   plugins: [createPersistedState(), createLogger()]
 })
