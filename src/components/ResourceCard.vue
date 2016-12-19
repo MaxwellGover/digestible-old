@@ -7,11 +7,13 @@
     <div class="card-block">
       <h3 class="card-title">{{resource.title}}</h3>
       <p class="card-text">{{resource.description}}</p>
-      <a href="#" class="card-btn btn btn-primary">Go To Resource</a>
       <div v-if="!options.lightResource">
         <!-- only show in list of resources -->
+        <router-link class="card-btn btn btn-primary" :to="{name: 'info', params: { resourceId: resource['.key'] }}">Go To Resource</router-link>
         <router-link class="card-btn btn btn-primary" :to="{name: 'quiz', params: { resourceId: resource['.key'] }}">quiz</router-link>
       </div>
+      <!--<div v-else>
+      </div>-->
       <!--<router-link :to="{name: 'info', params: {key: resource['.key']}}" class="card-link" style="margin-top: 10px">Learn</router-link>-->
       <!--{{resource['.key']}}-->
     </div>

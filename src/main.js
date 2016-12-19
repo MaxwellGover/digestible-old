@@ -1,32 +1,28 @@
 import Vue from 'vue'
-import App from './App'
+import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Home from './pages/Home'
-import ResourceInfo from './pages/ResourceInfo'
-import QuizBuilder from './pages/QuizBuilder'
-import Profile from './pages/Profile'
-import Quiz from './pages/Quiz'
-import store from './store'
 
+import App from './App'
+
+import vuexStore from './store'
+
+import routes from './routes';
+
+Vue.use(Vuex);
 Vue.use(VueRouter);
 
-const routes = [
-  { path: '/', component: Home },
-  { path: '/info', name: 'info', component: ResourceInfo },
-  { path: '/create', component: QuizBuilder },
-  { path: '/profile/:uid', component: Profile },
-  { path: '/quiz/:resourceId', name: 'quiz', component: Quiz }
-];
+const store = new Vuex.Store(vuexStore);
 
-export const router = new VueRouter({
-  routes // short for routes: routes
+const router = new VueRouter({
+  routes, // short for routes: routes
+  mode: 'history'
 });
 
 new Vue({
-  router,
   el: '#app',
   // provide the store using the "store" option.
   // this will inject the store instance to all child components.
   store,
+  router,
   render: h => h(App)
 })

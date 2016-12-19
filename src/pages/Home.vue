@@ -13,7 +13,7 @@
     <div class="side card card-block">
       I am a side bar
     </div>
-    {{resources}}
+    <!--{{resources}}-->
   </div>
 </div>
 </template>
@@ -38,11 +38,11 @@ export default {
   computed: mapState({
     userInfo: state => state.userInfo
   }),
-  vuex: {
-    getters: {
-      resources: state => state.resources
-    }
-  },
+  // vuex: {
+  //   getters: {
+  //     resources: state => state.resources
+  //   }
+  // },
   firebase: {
     resources: db.ref().child('resources')
   } 

@@ -1,37 +1,25 @@
 <template>
 	<div class="quiz container">
 		<!--{{$route.params.resourceId}}-->
-
 		<!--<div>-->
 		<resource-card :resource="resource" :options="options" style="margin-right: 0"></resource-card>
-		<!--</div>-->
 		
+		<div v-if="submitted">
+			<!--Form submitted.-->
+			<flash-card :score="score"></flash-card>
+		</div>
 		<div class="card">
-			<form @submit.prevent="checkAnswer"> 
+			<form @submit.prevent="displayAnswers"> 
 				<!--v-model="selectedAnswer">-->
-				<div class="question" v-for="(quiz, quizIndex) in resource.quiz">
-					<h1>{{quiz.text}}</h1>
-					<div class="form-group" v-for="(option, index) in quiz.options">
-						<div class="checkbox">
-							<label>
-								<!--<input type="checkbox" name="question" v-model="answers[option.text.replace(/\s+/g, '')][index]"/>{{option.text}}-->
-								<input type="checkbox" name="question" v-model="answers[quizIndex].answers[index].selected"/>{{option.text}}
-								<!--<input type="checkbox" name="question"/>{{option.text}}-->
-								{{answers[quizIndex].answers[index].selected}}
-							</label>
-						</div>
-							<!--{{selected[index].selectedAnswer}}-->
-							<!--{{answers[quizIndex]}}-->
-
-					</div>
-				</div>
+				<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>
 				<button type="submit" class="btn btn-primary pull-right">submit</button>
 			</form>
 		</div>
-		<pre>selected answers {{answers}}
+		<!--<pre>selected answers 
+checked answers: {{selectedCount}}
+{{answers}}
 {{resource.quiz}}
-			<!--{{JSON.stringify(quiz, null, 3)}}-->
-		</pre>
+		</pre>-->
 	</div>
 </template>
 
@@ -40,10 +28,10 @@
 var db = firebase.database();
 // import store from '../store'
 import ResourceCard from '../components/ResourceCard'
-import VueFire from 'vuefire'
-import Vue from 'vue'
+import FlashCard from '../components/FlashCard' // display info after submitting the answers
+import Question from '../components/Question'
 
-Vue.use(VueFire)
+import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
 	name: 'quiz',
@@ -55,57 +43,99 @@ export default {
 	// },
 	components: { 
     	ResourceCard, 
+		FlashCard,
+		Question
+	},
+	firebase() {
+		return {
+			resource: {
+				source: db.ref('resources/' + this.$route.params.resourceId),
+				asObject: true
+			}
+		};
 	},
 	data() {
-		let key = this.$route.params.resourceId;
-		let resource = this.$store.state.resources[key];
-		let answers = resource.quiz.map((question, index) => {
-			console.log(question)
-			return {
-					// question
-					id: index,
-					answers: question.options.map((option, idx) => {
-							return {
-								id: idx, // create id based on index in array --> would be better if we would hava a uuid
-								selected: false
-							};
-					})
-			};
-		});
+		// let key = this.$route.params.resourceId;
+		// console.log('quiz', this.$store.state.resources[key], key)
+		// let resource = this.$store.state.resources[key];
 
+		// this.$store.commit('prepareAnswerList', resource);
+
+		this.$store.commit('resetForm');
 		// console.log(questionCount, index, quizList.quiz[index])
-		console.log(answers, resource.quiz);
+		// console.log(answers, resource.quiz);
 		// this.$store.dispatch('checkAnswers', answers);
 
+		// console.log('resource', resource);
 		return {
 			options: {
 				lightResource: true // hides quiz link
 			},
-			resource,
-			answers
-			// answeredQuestions: answers
+			// resource: {},
+			// submitted: false,
+			// answeredQuestions: []
+			result: {
+				correctIds: [], // store correctly selected answers
+				score: 0,
+				total: 0
+			}
 		};
 	},
 	computed: {
-		quizRandom() {
-			let key = this.$route.params.resourceId;
-			let quizList = this.$store.state.resources[key];
-			let questionCount = quizList.quiz.length,
-			index = parseInt(Math.random() * questionCount);
+		...mapState({
+			answers: state => state.quiz.answeredQuestions,
+			submitted: state => state.quiz.submittedStatus,
+			selectedCount: state => state.quiz.selectedCount,
+			// resource: state => state.resource
+			// correctAnswerCount: (state) => state.quiz.result.correctIds.length
+		}),
+		score() {
+			// console.info('score', this.$store.state); //.quiz.resource.quiz);
+			let isAnswer = (option) => option.isAnswer===true;
+			var sum = 0;
+			this.resource.quiz.forEach((question) => {
+				console.log('sum. total', question, sum);
+				sum += question.options.filter(isAnswer).length;
+			});
+			let totalCorrectAnswers = sum;
+			let selected = this.$store.state.quiz.selectedCount;
+			let incorrectCount = (selected > totalCorrectAnswers) ? selected - totalCorrectAnswers: 0; // do we need to calculate if not enough answers?
+			let correctCount = this.$store.state.quiz.result.correctIds.length;
 
-			return quizList.quiz[index];
-		}	
+			// console.log('totalCorrectAnswers', totalCorrectAnswers);
+			// console.info('correct answer, total correct', this.$store.state.quiz.result.correctIds, this.$store.state.quiz.result.correctIds.length, totalCorrectAnswers,  );
+			
+			// calculate amount = points for correct answers --> incorrect subtracted
+			let amount = correctCount - incorrectCount;
+			// console.log('correcct / incorrect', correctCount, incorrectCount);
+
+			if (amount < 0) { // limit to 0
+				amount = 0;
+			}
+
+			return {
+				amount,
+				total: totalCorrectAnswers // total correct answer count - used to calculated messages
+			};
+		}
+		// ...mapGetters(['submittedStatus']),
+		// quizRandom() {
+		// 	let key = this.$route.params.resourceId;
+		// 	let quizList = this.$store.state.resources[key];
+		// 	let questionCount = quizList.quiz.length,
+		// 	index = parseInt(Math.random() * questionCount);
+
+		// 	return quizList.quiz[index];
+		// }	
 	},
 	methods: {
-		checkAnswer() {
-			console.log('check answers', this.answers, this.$store);
-			// console.log('checking answers --> dispatch', this.answeredQuestions);
-			// this.$store.dispatch('checkAnswers', this.answeredQuestions);
-			// console.log('check answer now', this.$store, this.answers)
-			for(let answer of this.answers) {
-				console.log('answer', answer);
-			}
-		}
+		...mapMutations(['displayAnswers'])
+		// displayAnswers() {
+		// 	this.submitted = true;
+		// },
+		// resetForm() {
+		// 	this.submitted = false;
+		// }
 	}
 	// computed: {
 	// 	quiz() {

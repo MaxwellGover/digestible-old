@@ -52,11 +52,16 @@ export default {
   computed: mapState({
       userInfo: state => state.userInfo
   }),
+  firebase: {
+      resources: db.ref().child('resources')
+      // users: db.ref().child('users')
+  },
   data () {
     // console.log('resource to display', this.$route.params.key, this.$firebaseRefs);
+    let key = this.$route.params.resourceId;
+		let resource = this.$store.state.resources[key];
 
-    return {
-      resource: {
+    let emptyResource = {
         type: '',
         title: '',
         url: '',
@@ -67,8 +72,11 @@ export default {
         authorName: this.$store.state.userInfo.displayName,
         authorImage: this.$store.state.userInfo.photoURL,
         authorId: this.$store.state.userInfo.uid
-      }
-    }
+    };
+
+    return {
+      resource: resource || emptyResource
+    };
   },
   methods: {
     addTag: function () {

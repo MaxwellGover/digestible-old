@@ -8,7 +8,7 @@
           </li>
           <div class="links">
             <li class="nav-item">
-              <router-link to="/info" class="create-quiz-link">Create a quiz</router-link>
+              <router-link :to="{name: 'createInfo'}" class="create-quiz-link">Create a quiz</router-link>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Study</a>
@@ -38,16 +38,22 @@
 
 <script>
 import { mapState } from 'vuex'
+var db = firebase.database();
 
 export default {
   name: 'app',
-  computed: mapState({
-    state: state => state,
-    userInfo: state => state.userInfo
-  }),
+  firebase: {
+      resources: db.ref().child('resources'),
+      users: db.ref().child('users')
+  },
+  computed: mapState(['userInfo']),
+  // mapState({
+    // state: state => state,
+    // userInfo: state => state.userInfo
+  // }),
   created () {
-    this.$store.dispatch('watchResources');
-    this.$store.dispatch('watchUsers');
+    // this.$store.dispatch('watchResources');
+    // this.$store.dispatch('watchUsers');
     this.$store.dispatch('watchUserInfo');
   
     console.log(this.$store.state);
