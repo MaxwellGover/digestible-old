@@ -8,7 +8,8 @@
 
 // TODO: WHY IS userInfo.uid UNDEFINED!!!!????
 
-var db = firebase.database();
+// var db = firebase.database();
+import db from '../db'
 import store from '../store'
 import ResourceCard from './ResourceCard'
 import Profile from '../pages/Profile'

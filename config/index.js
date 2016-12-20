@@ -28,5 +28,12 @@ module.exports = {
     // In our experience, they generally work as expected,
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
+  },
+  firebaseConfig: {
+    apiKey: "AIzaSyAdSLXcIrAp_xXr6T9APC1MVU9pAQ8VsHA",
+    authDomain: "digestible-159a3.firebaseapp.com",
+    databaseURL: "https://digestible-159a3.firebaseio.com",
+    storageBucket: "digestible-159a3.appspot.com",
+    messagingSenderId: "1003151956886"
   }
 }

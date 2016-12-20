@@ -25,7 +25,8 @@ import Vue from 'vue'
 import VueFire from 'vuefire'
 import { mapState } from 'vuex'
 
-var db = firebase.database();
+// var db = firebase.database();
+import db from '../db'
 
 Vue.use(VueFire)
 

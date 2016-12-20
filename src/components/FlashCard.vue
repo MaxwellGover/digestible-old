@@ -1,25 +1,27 @@
 <template>
-    <div class="card alert alert-info">
-        <h2>Your results</h2>
+    <div class="card alert alert-info" v-if="visible" transition="expand">
+        <h2>{{message}}</h2>
         <p>{{scoreText}} - <strong>score {{score.amount / score.total * 100}}%</strong></p>
-        <!--{{score}}-->
     </div>
 </template>
 
 <script>
     const scoreMessages = {
-        0: 'Poor result. Please try again and check the resources for help',
+        0: 'Poor result. Please try again and check the resources for help.',
         50: 'Not bad. But you can do better. Try again.',
         80: 'Very good result.',
         90: 'Perfect result'
     };
 
     export default {
-        props: ['message', 'score'],
-
+        props: {
+            score: { type: Object }, 
+            visible: { type: Boolean, default: true },
+            message: { type: String, default: 'Your results' }
+        },
         computed: {
             scoreText: (state) => {
-                console.log('flash', state);
+                // console.log('flash', state);
                 let score = state.score;
                 let rel = score.amount / score.total * 100;
                 let text = '';

@@ -39,7 +39,8 @@
 </template>
 
 <script>
-var db = firebase.database();
+// var db = firebase.database();
+import db from '../db'
 import store from '../store'
 import { mapState } from 'vuex'
 import Vue from 'vue'
@@ -52,14 +53,22 @@ export default {
   computed: mapState({
       userInfo: state => state.userInfo
   }),
-  firebase: {
-      resources: db.ref().child('resources')
-      // users: db.ref().child('users')
-  },
+  firebase() {
+		return {
+			resource: {
+				source: db.ref('resources/' + this.$route.params.resourceId),
+				asObject: true
+			}
+		};
+	},
+  // firebase: {
+  //     resources: db.ref().child('resources')
+  //     // users: db.ref().child('users')
+  // },
   data () {
     // console.log('resource to display', this.$route.params.key, this.$firebaseRefs);
-    let key = this.$route.params.resourceId;
-		let resource = this.$store.state.resources[key];
+    // let key = this.$route.params.resourceId;
+		// let resource = this.$store.state.resources[key];
 
     let emptyResource = {
         type: '',
@@ -75,7 +84,7 @@ export default {
     };
 
     return {
-      resource: resource || emptyResource
+      resource: this.resource || emptyResource
     };
   },
   methods: {

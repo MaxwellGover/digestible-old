@@ -18,7 +18,8 @@
 </template>
 
 <script>
-var db = firebase.database();
+// var db = firebase.database();
+import db from '../db'
 import store from '../store'
 import CreatedResources from '../components/CreatedResources'
 import { mapState } from 'vuex'

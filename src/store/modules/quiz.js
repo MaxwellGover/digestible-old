@@ -3,12 +3,14 @@ const state = {
     submittedStatus: null,
     selectedCount: 0, // number of selected answers
     result: {
-        // correctCount: 0, // --> computed property of correctIds
+        // correctCount: 0, // --> computed property of correctIds.length
         correctIds: [], // storage for correct count
+        // example correctId elements:
         // [{
         //     quizIndex:0
         //     index: 0
         // }]
+        selectedCount: 0 // store alle selected checkboxes
     }
 }
 
@@ -26,7 +28,7 @@ const mutations = {
      * @input resource
      */
     prepareAnswerList(state, resource) {
-        console.log('prepareAnswerList', resource);
+        // console.log('prepareAnswerList', resource);
         let answers = resource.quiz.map((question, index) => {
 			console.log('question prepare', question);
 			return {
@@ -53,13 +55,14 @@ const mutations = {
     markAnswer(state, {questionIndex, index, value}) {
         // console.log('mark question', questionIndex, index, value);
         state.answeredQuestions[questionIndex].answers[index].selected = value;
+
         if (value) {
-            state.selectedCount++;
+            state.result.selectedCount++;
         } 
         else
         {
-            if ( state.selectedCount > 0 ) {
-                state.selectedCount--;
+            if ( state.result.selectedCount > 0 ) {
+                state.result.selectedCount--;
             }
         }
 

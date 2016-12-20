@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import 'animate.css'
+import '../node_modules/spinkit/css/spinkit.css'
 
 import App from './App'
 
 import vuexStore from './store'
-
 import routes from './routes';
+
+
 
 Vue.use(Vuex);
 Vue.use(VueRouter);

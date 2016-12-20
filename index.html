@@ -31,16 +31,11 @@
   <body style="background-color: #f9f9f9">
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <!--/*<script src="/db.js"></script>*/-->
     <script>
-    var config = {
-	    apiKey: "AIzaSyAdSLXcIrAp_xXr6T9APC1MVU9pAQ8VsHA",
-	    authDomain: "digestible-159a3.firebaseapp.com",
-	    databaseURL: "https://digestible-159a3.firebaseio.com",
-	    storageBucket: "digestible-159a3.appspot.com",
-	    messagingSenderId: "1003151956886"
-	};
-        
-	firebase.initializeApp(config);
+    // moved firebase init to db.js (better for importing db instance to components)
+    // var db = firebase.database(); // always creates a new db instance 
+    // check the Github comment from LinusBorg at this issue https://github.com/vuejs/vuefire/issues/21
   	</script>
   </body>
 </html>

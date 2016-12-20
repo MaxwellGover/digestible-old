@@ -4,7 +4,7 @@
       <div class="container">
         <ul class="nav navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="#"><h4><router-link to="/" class="link">Digestible</router-link><span class="sr-only">(current)</span></h4></a>
+            <h4><router-link to="/" class="link">Digestible</router-link><span class="sr-only">(current)</span></h4>
           </li>
           <div class="links">
             <li class="nav-item">
@@ -32,32 +32,39 @@
         </ul>
       </div>
     </nav>
-    <router-view></router-view>
+    <div v-if="loading" class="spinner-wrapper">
+      <!--loading...-->
+      <div class="spinner-container">
+        <!--<div class="sk-rotating-plane"></div>-->
+        <div class="sk-folding-cube">
+          <div class="sk-cube1 sk-cube"></div>
+          <div class="sk-cube2 sk-cube"></div>
+          <div class="sk-cube4 sk-cube"></div>
+          <div class="sk-cube3 sk-cube"></div>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-var db = firebase.database();
+import loadingMixin from './mixins/loading'
+
+// var db = firebase.database();
+import db from './db'
 
 export default {
   name: 'app',
+  mixins: [loadingMixin], // adds loading behaviour
   firebase: {
       resources: db.ref().child('resources'),
-      users: db.ref().child('users')
+      users: db.ref().child('users'),
   },
   computed: mapState(['userInfo']),
-  // mapState({
-    // state: state => state,
-    // userInfo: state => state.userInfo
-  // }),
-  created () {
-    // this.$store.dispatch('watchResources');
-    // this.$store.dispatch('watchUsers');
-    this.$store.dispatch('watchUserInfo');
-  
-    console.log(this.$store.state);
-  },
   methods: {
     toggleSignIn () {
       this.$store.dispatch('watchSignIn');
@@ -94,4 +101,35 @@ export default {
   color: #4e30f9;
   text-decoration: none;
 }
+
+
+/* centering classes for loading spinner */
+.spinner-wrapper {
+  height: 100%;
+}
+
+.spinner-container {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 60px;
+    right: 0;
+    margin: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/*.absolute-center {
+  width: 50%;
+  height: 50%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}*/
+
 </style>
