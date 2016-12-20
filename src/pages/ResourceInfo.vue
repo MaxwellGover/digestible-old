@@ -28,7 +28,10 @@
       <div class="form-group">
         <label for="categories">Categories (required)</label>
         <input type="text" class="form-control" id="categories" @keyup.enter="addTag" v-model="resource.text">
-        <h5><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; margin-top: 5px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h5>
+        <span class="tag is-info is-medium" v-for="(tag, index) in resource.tags" style="margin-top: 10px; margin-bottom: 10px; margin-right: 5px">
+        {{tag.text | capitalize}}
+        <button class="delete is-small" @click="handleDelete(index)"></button>
+        </span>
         <small id="category-help" class="form-text text-muted">Add some categories.</small>
       </div>
       <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
@@ -70,6 +73,13 @@ export default {
       }
     }
   },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return;
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  },
   methods: {
     addTag: function () {
       let tags = this.resource.tags;
@@ -79,6 +89,10 @@ export default {
         text: this.resource.text
       })
       this.resource.text = ''
+    },
+    handleDelete: function(i) {
+        let tags = this.resource.tags;
+        tags.splice(index, 1);
     },
     saveToFB () {
       var newPostKey = db.ref('resources').push().key;
@@ -110,7 +124,7 @@ export default {
 }
 .btn {
   float: right; 
-  background-color: #4e30f9; 
+  background-color: #f16233; 
   border: none;
   border-radius: 2px;
 }

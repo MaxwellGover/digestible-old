@@ -9,6 +9,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "bulma": "^0.2.3",
     "firebase": "^3.6.0",
     "vue": "^2.0.1",
     "vue-router": "^2.0.1",

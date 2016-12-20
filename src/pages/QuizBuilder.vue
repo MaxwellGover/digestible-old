@@ -1,38 +1,37 @@
 <template>
 	<div class="quiz-builder container">
-    <h4 class="quiz-header">Build your quiz!</h4>
-    <div class="alert alert-info alert-dismissible fade in" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    <strong>Quick tip:</strong> Questions should cover the main points from your resource that you want the user to remember!
+    <h1 class="quiz-header">Build your quiz!</h1>
+    <div class="notification is-info" v-if="show">
+      <button class="delete" v-on:click="removeNotification"></button>
+      <b>Quick tip: </b> Questions should cover the main points you want users to take away from your resource. 
     </div>
-    <div v-for="(question, index) in questions">
-      <div class="input-group">
-        <input type="text" class="form-control" v-model="question.text" placeholder="Enter a question">
-         <span class="input-group-btn">
-          <button class="btn btn-danger" type="button" @click="removeQuestion(index)">X</button>
-        </span>
-      </div>
+    <div class="box" v-for="(question, index) in questions">
+      <label class="label" style="margin-bottom: 10px">Question {{index++}}</label>
+      <p class="control is-grouped">
+        <input class="input is-medium is-expanded" type="text" placeholder="Enter a question"  v-model="question.text">
+        <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeQuestion(index)">
+          <span style="color: #ff3860">X</span>
+        </a>
+      </p>
       </br>
       <div class="input-group" v-for="(option, index) in question.options" style="margin-bottom: 20px">
-        <span class="input-group-addon">
-          <input type="checkbox" v-model="option.isAnswer">
-        </span>
-        <input type="text" class="form-control" v-model="option.text" placeholder="Enter an option">
-        <span class="input-group-btn">
-          <button class="btn btn-danger" type="button" @click="removeOption(question, option)">X</button>
-        </span>
+        <p class="control is-grouped">
+          <input class="checkbox" type="checkbox" v-model="option.isAnswer">
+          <input class="input is-medium is-expanded" type="text" placeholder="Enter an option" v-model="option.text">
+          <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeOption(question, option)">
+            <span class="remove" style="color: #ff3860">X</span>
+          </a>
+        </p>
       </div>
-      <p class="add-option" @click="addOption(question)">Add an option</p>
+      <a class="add-option button is-white" @click="addOption(question)"><span class="remove" style="color: #f16233">Add an option</span></a>
     </div></br>
     <div>
-      <button class="add-question-btn btn btn-default" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
-        Add another question
-      </button>
-      <button class="create-quiz-btn btn btn-primary" @click="saveToFirebase">
-        Create quiz
-      </button>
+      <a class="add-question-btn button" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
+        <span class="add-question-text">Add another question</span>
+      </a>
+      <a class="create-quiz-btn button" @click="saveToFirebase">
+        <span class="button-text">Create quiz</span>
+      </a>
     </div>
  	</div>
 </template>
@@ -64,6 +63,7 @@ export default {
     return {
       questions: [createNewQuestion()],
       showQuestions: false,
+      show: true
     }
   },
   methods: {
@@ -81,6 +81,9 @@ export default {
         if (index > -1) {
           question.options.splice(index, 1);
         }
+    },
+    removeNotification () {
+      this.show = false 
     },
     saveToFirebase (e) {
     	e.preventDefault();
@@ -109,21 +112,45 @@ export default {
 }
 .quiz-header {
   margin-bottom: 20px;
-  text-align: center
+  text-align: center;
+  font-size: 40px
 }
 .add-option {
   color: #4e30f9;
   text-decoration: none;
   cursor:pointer;
 }
-.add-question-btn {
-  border-radius: 2px;
-}
 .create-quiz-btn {
-  border-radius: 2px;
-  background-color: #4e30f9;
+  background-color: #f16233;
+  padding: 15px;
 }
 .alert {
   margin-bottom: 40px
+}
+.control {
+  display: flex;
+}
+.checkbox {
+  align-self: center;
+  height: 30px;
+  width: 30px;
+}
+.add-option {
+  margin-bottom: 30px;
+  color: #f16233;
+  border-color: #f16233;
+}
+.add-question-btn {
+  border-color: #f16233;
+  padding: 15px;
+}
+.add-question-text {
+  color: #f16233;
+}
+.button-text {
+  color: #fff
+}
+.remove:hover {
+  color: #fff;
 }
 </style>

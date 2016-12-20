@@ -1,9 +1,11 @@
 <template>
 <div>
-  <div class="jumbotron jumbotron-fluid">
-    <div class="container">
-      <h2 class="display-3">Retain the Web</h2>
-      <p class="lead">Make sure you are retaining the most important information <br> from online articles, videos, and podcasts with Digestible.</p>
+  <div v-if="!userInfo.uid">
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Retain the Web</h2>
+        <p class="lead">Make sure you are retaining the most important information <br> from online articles, videos, and podcasts with Digestible.</p>
+      </div>
     </div>
   </div>
   <div class="home container">
