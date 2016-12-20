@@ -5,25 +5,25 @@
       <div class="container">
         
         <div class="nav-left">
-          <a class="nav-item is-brand" href="#">
+          <a class="nav-item is-brand" href="#" style="text-decoration: none">
             <h1 class="nav-title">Digestible</h1>
           </a>
         </div>
         
         <div class="nav-right nav-menu">
           <span class="nav-item">
-            <a class="button is-outlined" >
-             <router-link to="/info">
+            <a class="button is-outlined">
+             <router-link to="/info" style="text-decoration: none">
                 <span class="button-text">
                   Create a quiz
                 </span>
               </router-link>
             </a>
           </span>
-          <a class="nav-item" href="#">
+          <a class="nav-item" href="#" style="text-decoration: none">
             Study
           </a>
-          <a class="nav-item" href="#" v-if="userInfo.uid" @click.prevent="toggleSignIn()">
+          <a class="nav-item" href="#" v-if="userInfo.uid" @click.prevent="toggleSignIn()" style="text-decoration: none">
            {{userInfo.displayName}}
           </a>
           <a v-else @click.prevent="toggleSignIn()">>Sign In / Sign Up</a>

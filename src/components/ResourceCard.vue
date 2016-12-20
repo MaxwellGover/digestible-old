@@ -3,9 +3,14 @@
   
     <header class="card-header">
       <img class="user-image" :src="resource.authorImage" alt=""/>
+      <div class="test">
       <p class="card-header-title">
         <a href="#" class="author-link">{{resource.authorName}}</a>
-        <small>11:09 PM - 1 Jan 2016</small>
+        <div class="tags" style="margin-left: 10px; margin-top: -10px">
+        <small v-for="tag in resource.tags" style="font-size: 12px"><span style="color: #f16233; font-size: 12px; margin-right: 2px">{{tag.text + ',' | capitalize}} </span></small>
+        </div>
+        <small style="font-size: 12px; margin-left: 10px">Resource type: <span style="color: #f16233; font-size: 12px">{{resource.type | capitalize}}</span></small>
+        </div>
       </p>
     </header>
     
@@ -14,7 +19,7 @@
         <h1>{{resource.title}}</h1>
         <p>{{resource.description}}</p>
         <a class="button is-outlined">
-          <span class="button-text" style="color: #f16233; color:hover: #f16233">
+          <span class="button-text" style="color: #f16233">
             Learn
           </span>
         </a>
@@ -55,7 +60,14 @@ export default {
   props: ['resource'],
   computed: mapState({
     userInfo: state => state.userInfo
-  })
+  }),
+  filters: {
+    capitalize: function (value) {
+      if (!value) return;
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  }
 }
 </script>
 
@@ -77,8 +89,8 @@ export default {
   border-bottom: none;
 }
 .user-image {
-  height: 40px;
-  width: 40px;
+  height: 60px;
+  width: 60px;
   border-radius: 50%;
   margin-right: 5px;
   align-self: center;
@@ -115,5 +127,14 @@ export default {
 }
 .user-name:hover {
   text-decoration: none;
+}
+.tags {
+  display: flex;
+}
+.test {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -5px
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div class="quiz-builder container">
-    <h1 class="quiz-header">Build your quiz!</h1>
+    <h1 class="quiz-header">Create your quiz!</h1>
     <div class="notification is-info" v-if="show">
       <button class="delete" v-on:click="removeNotification"></button>
       <b>Quick tip: </b> Questions should cover the main points you want users to take away from your resource. 
@@ -152,5 +152,8 @@ export default {
 }
 .remove:hover {
   color: #fff;
+}
+.input:focus {
+  border-color: #f16233;
 }
 </style>

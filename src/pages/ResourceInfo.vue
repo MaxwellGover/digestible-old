@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     addTag: function () {
-      let tags = this.resource.tags;
+      var tags = this.resource.tags;
       console.log(tags);
       tags.push({
         id: this.resource.tags.length + 1,
@@ -91,7 +91,7 @@ export default {
       this.resource.text = ''
     },
     handleDelete: function(i) {
-        let tags = this.resource.tags;
+        var tags = this.resource.tags;
         tags.splice(index, 1);
     },
     saveToFB () {
