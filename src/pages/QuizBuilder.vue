@@ -3,12 +3,12 @@
     <h1 class="quiz-header">Create your quiz!</h1>
     <div class="notification is-info" v-if="show">
       <button class="delete" v-on:click="removeNotification"></button>
-      <b>Quick tip: </b> Questions should cover the main points you want users to take away from your resource. 
+      <b>Quick tip: </b> Questions should cover the main points you want users to take away from your resource (5 question maximum).
     </div>
     <div class="box" v-for="(question, index) in questions">
       <label class="label" style="margin-bottom: 10px">Question {{index++}}</label>
       <p class="control is-grouped">
-        <input class="input is-medium is-expanded" type="text" placeholder="Enter a question"  v-model="question.text">
+        <textarea class="textarea" type="text" placeholder="Enter a question"  v-model="question.text"></textarea>
         <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeQuestion(index)">
           <span style="color: #ff3860">X</span>
         </a>
@@ -132,8 +132,9 @@ export default {
 }
 .checkbox {
   align-self: center;
-  height: 30px;
-  width: 30px;
+  height: 15px;
+  width: 15px;
+  margin-right: 10px;
 }
 .add-option {
   margin-bottom: 30px;

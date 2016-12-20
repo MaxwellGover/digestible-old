@@ -9,7 +9,7 @@
         <div class="tags" style="margin-left: 10px; margin-top: -10px">
         <small v-for="tag in resource.tags" style="font-size: 12px"><span style="color: #f16233; font-size: 12px; margin-right: 2px">{{tag.text + ',' | capitalize}} </span></small>
         </div>
-        <small style="font-size: 12px; margin-left: 10px">Resource type: <span style="color: #f16233; font-size: 12px">{{resource.type | capitalize}}</span></small>
+        <small style="font-size: 12px; margin-left: 10px">Resource type: <span style="color: #f16233">{{resource.type | capitalize}}</span></small>
         </div>
       </p>
     </header>
@@ -18,46 +18,40 @@
       <div class="content">
         <h1>{{resource.title}}</h1>
         <p>{{resource.description}}</p>
-        <a class="button is-outlined">
-          <span class="button-text" style="color: #f16233">
-            Learn
-          </span>
+        <a class="learn-button button is-inverted">
+          <span style="color: #fff">Learn</span>
         </a>
       </div>
     </div>
     
     <footer class="card-footer">
-       <img class="icon" src="../assets/passed-icon.png" title="Number of times this quiz has been passed" alt=""/>
+      <img class="icon" src="../assets/passed-icon.png" title="Number of times this quiz has been passed" alt=""/>
       {{resource.timesPassed}}
-  </footer>
+      <div class="bookmark">
+        <img v-if="!isBookmarked" class="bookmark-icon" src="../assets/book.png" title="Number of times this quiz has been passed" alt="" @click="bookmark"/>
+        <img v-else class="bookmark-icon animated tada" src="../assets/book-fill.png" title="Click to save this resource for later" alt="" @click="unBookmark"/>
+      </div>
+    </footer>
 
   </div>
-  <!--
-  <div class="card">
-    <h6 class="card-header">
-      <img class="user-image" :src="resource.authorImage" alt=""/>
-      <a href="#" class="user-name">{{resource.authorName}}</a>
-    </h6>
-    <div class="card-block">
-      <h3 class="card-title">{{resource.title}}</h3>
-      <p class="card-text">{{resource.description}}</p>
-      <a href="#" class="card-btn btn btn-primary">Learn</a>
-      <a class="button is-danger">Danger</a>
-    </div>
-    <div class="footer card-block">
-      <img class="icon" src="../assets/validate.png" alt=""/>
-      {{resource.timesPassed}}
-    </div>
-  </div>
-  -->
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import Vue from 'vue'
+var VueFire = require('vuefire')
+Vue.use(VueFire)
+
+var db = firebase.database();
 
 export default {
   name: 'resource-card',
   props: ['resource'],
+  data () {
+    return {
+    isBookmarked: false
+    }
+  },
   computed: mapState({
     userInfo: state => state.userInfo
   }),
@@ -67,8 +61,20 @@ export default {
       value = value.toString();
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
+  },
+  methods: {
+    bookmark () {
+      this.isBookmarked = true;
+      // db.ref('/users/').push(this.resource);
+      console.log(this.resource);
+      // Push to firebase array
+    },
+    unBookmark () {
+      this.isBookmarked = false;
+      // Remove from firebase array
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -88,24 +94,19 @@ export default {
   background-color: #fff;
   border-bottom: none;
 }
+.learn-button {
+  background-color: #f16233;
+  border-color: #f16233;
+}
+.learn-button:hover {
+  border-color: #f16233;
+}
 .user-image {
   height: 60px;
   width: 60px;
   border-radius: 50%;
   margin-right: 5px;
   align-self: center;
-}
-.button {
-  border-color: #f16233;
-  color: #f16233;
-}
-.button:hover {
-  background-color: #f16233;
-  border-color: #f16233;
-}
-.button-text:hover {
-  color: #fff;
-  text-decoration: none;
 }
 .card-footer {
   display: flex;
@@ -136,5 +137,13 @@ export default {
   flex-direction: column;
   justify-content: center;
   margin-top: -5px
+}
+.bookmark-icon {
+  height: 70px;
+  width: 70px;
+  cursor: pointer;
+}
+.bookmark {
+  float: right;
 }
 </style>

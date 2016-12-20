@@ -26,46 +26,32 @@
           <a class="nav-item" href="#" v-if="userInfo.uid" @click.prevent="toggleSignIn()" style="text-decoration: none">
            {{userInfo.displayName}}
           </a>
-          <a v-else @click.prevent="toggleSignIn()">>Sign In / Sign Up</a>
+          <a class="nav-item" v-else @click="openModal">Sign In / Sign Up</a>
         </div>
         
       </div>
     
     </nav>
-    <!-- 
-    <nav class="nav">
-      <div class="container">
-        <ul class="nav navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><h4><router-link to="/" class="link">Digestible</router-link><span class="sr-only">(current)</span></h4></a>
-          </li>
-          <div class="links">
-            <li class="nav-item">
-              <router-link to="/info" class="create-quiz-link">Create a quiz</router-link>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Study</a>
-            </li>
-            <li v-if="userInfo.uid" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{userInfo.displayName}}
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#" @click.prevent="toggleSignIn()">Sign Out</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li>
-            <li class="nav-item" v-else>
-              <a class="nav-link" href="#">Sign In/Sign Up</a>
-            </li>
-          </div>
-        </ul>
-      </div>
-    </nav>
-    -->
     <router-view></router-view>
-  </div>
+    <div v-if="showModal" class="modal is-active">
+      <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Digestible</p>
+          </header>
+          <section class="modal-card-body">
+            <!-- Content ... -->
+            <div class="google" @click.prevent="toggleSignIn()" >
+              <img class="google-logo" src="./assets/google-logo.png" alt="Sign In with Google" />
+              <p>Continue with Google</p>
+            </div>
+          </section>
+          <footer class="modal-card-foot">
+            <a class="button" @click="closeModal">Cancel</a>
+          </footer>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -77,6 +63,11 @@ export default {
     state: state => state,
     userInfo: state => state.userInfo
   }),
+  data () {
+    return {
+      showModal: false  
+    }
+  },
   created () {
     this.$store.dispatch('watchResources');
     this.$store.dispatch('watchUsers');
@@ -87,6 +78,12 @@ export default {
   methods: {
     toggleSignIn () {
       this.$store.dispatch('watchSignIn');
+    },
+    openModal () {
+      this.showModal = true;
+    },
+    closeModal () {
+      this.showModal = false;
     }
   }
 }
@@ -116,5 +113,32 @@ export default {
 }
 .button-text {
   color: #f16233;
+}
+.modal-card-head {
+  height: 100px;
+}
+.modal-card-body {
+  display: flex;
+  flex-direction: column;
+}
+.modal-card-title {
+  font-family: 'Chewy', cursive;
+  text-align: center;
+  font-size: 32px; 
+  color: #f16233;
+}
+.google {
+  display: flex;
+  padding: 20px;
+  width: 400px;
+  border: 1px solid #eceeef;
+  align-self: center;
+  align-items: center;
+  cursor: pointer;
+}
+.google-logo {
+  height: 25px;
+  width: 25px;
+  margin-right: 15px;
 }
 </style>
