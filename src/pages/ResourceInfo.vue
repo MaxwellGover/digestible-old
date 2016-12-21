@@ -44,9 +44,7 @@ import db from '../db'
 import store from '../store'
 import { mapState } from 'vuex'
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-
-Vue.use(VueRouter)
+import router from '../router'
 
 export default {
   name: 'resource-info',
@@ -54,7 +52,9 @@ export default {
       userInfo: state => state.userInfo
   }),
   firebase() {
-		return {
+    if ( !this.$route.params.resourceId ) return; // no route param
+		
+    return {
 			resource: {
 				source: db.ref('resources/' + this.$route.params.resourceId),
 				asObject: true
@@ -98,15 +98,16 @@ export default {
       this.resource.text = ''
     },
     saveToFB () {
+      // console.log('saving', newPostKey);
       var newPostKey = db.ref('resources').push().key;
-      store.state.postKey = newPostKey;
+      this.$store.state.postKey = newPostKey;
       var updates = {};
-      updates['/resources/' + newPostKey] = this.resource;
-      updates['/users/' + store.state.userInfo.uid + '/createdResources/' + newPostKey] = this.resource;
 
-      return db.ref().update(updates);
+      updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
+      updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; //this.resource;
 
-      // Clear inputs before return statement without losing them?  
+      // console.log('updating', updates);
+
 
       this.resource.title = '',
       this.resource.type = '',
@@ -115,6 +116,12 @@ export default {
       this.resource.tags = []
 
       console.log("Saving resource data...")
+      
+      // Clear inputs before return statement without losing them?  
+      db.ref().update(updates);
+
+      // navigate to create route by pushing to router
+      router.push('create');
     }
   }
 }

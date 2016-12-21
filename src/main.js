@@ -7,7 +7,7 @@ import '../node_modules/spinkit/css/spinkit.css'
 import App from './App'
 
 import vuexStore from './store'
-import routes from './routes';
+import router from './router';
 
 
 
@@ -15,11 +15,6 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 
 const store = new Vuex.Store(vuexStore);
-
-const router = new VueRouter({
-  routes, // short for routes: routes
-  mode: 'history'
-});
 
 new Vue({
   el: '#app',
