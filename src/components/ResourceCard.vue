@@ -28,12 +28,13 @@
       <img class="icon" src="../assets/passed-icon.png" title="Number of times this quiz has been passed" alt=""/>
       {{resource.timesPassed}}
       <div class="bookmark">
-        <img v-if="!isBookmarked" class="bookmark-icon" src="../assets/book.png" title="Number of times this quiz has been passed" alt="" @click="bookmark"/>
+        <img v-if="!isBookmarked" class="bookmark-icon" src="../assets/book.png" title="Number of times this quiz has been passed" alt="" @click="openModal"/>
         <img v-else class="bookmark-icon animated tada" src="../assets/book-fill.png" title="Click to save this resource for later" alt="" @click="unBookmark"/>
       </div>
     </footer>
 
   </div>
+
 </template>
 
 <script>
@@ -49,12 +50,16 @@ export default {
   props: ['resource'],
   data () {
     return {
-    isBookmarked: false
+    isBookmarked: false,
+    showModal: false
     }
   },
   computed: mapState({
     userInfo: state => state.userInfo
   }),
+  created () {
+    this.$store.dispatch('watchUserInfo');
+  },
   filters: {
     capitalize: function (value) {
       if (!value) return;
@@ -63,8 +68,21 @@ export default {
     }
   },
   methods: {
+    toggleSignIn () {
+      this.$store.dispatch('watchSignIn');
+    },
+    openModal () {
+      if (!this.userInfo) {
+        this.showModal = true;
+        console.log('No user signed in');
+      } else {
+        this.isBookmarked = true
+      }
+    },
+    closeModal () {
+      this.showModal = false;
+    },
     bookmark () {
-      this.isBookmarked = true;
       // db.ref('/users/').push(this.resource);
       console.log(this.resource);
       // Push to firebase array

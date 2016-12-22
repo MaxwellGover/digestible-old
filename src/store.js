@@ -59,6 +59,7 @@ const store = new Vuex.Store({
               name: user.displayName,
               email: user.email,
               profilePicture : user.photoURL,
+              isExpert: false
           })
           // ...
           }).catch( error => {

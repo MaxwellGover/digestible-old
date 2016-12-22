@@ -65,7 +65,7 @@ export default {
   }),
   data () {
     return {
-      showModal: false  
+      showModal: false,
     }
   },
   created () {
@@ -84,7 +84,7 @@ export default {
     },
     closeModal () {
       this.showModal = false;
-    }
+    },
   }
 }
 </script>
@@ -97,7 +97,7 @@ export default {
 .nav-title {
   font-family: 'Chewy', cursive;
   font-size: 32px; 
-  color: #f16233;
+  color: #324851;
 } 
 .button {
   border-color: #f16233;
@@ -140,5 +140,14 @@ export default {
   height: 25px;
   width: 25px;
   margin-right: 15px;
+}
+.notification {
+  padding: 40px;
+  margin-bottom: 0px;
+  background-color: #324851;
+}
+.notification-text {
+  font-size: 18px;
+  color: #75fab4;
 }
 </style>

@@ -1,3 +1,4 @@
+<!-- Add option for authors to write in a description of the answer --> 
 <template>
   <div class="resource-info container">
     <form id="resource-info">

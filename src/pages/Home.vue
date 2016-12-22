@@ -1,11 +1,17 @@
 <template>
 <div>
+  <div class="notification is-info" v-if="show">
+    <button class="delete" v-on:click="removeNotification"></button>
+    <div class="container">
+    <p class="notification-text">Hey there! Are you an absolute beginner to web design or development? Click <router-link to="/getting-started" style="color: #1da1f2"><em>here</em></router-link></p>
+    </div>
+  </div>
   <div v-if="!userInfo.uid">
     <div class="jumbotron">
       <div class="container">
         <h1 class="hero-header" v-html="jumbotronHeader">Retain the Web</h1>
-        <p style="font-size: 18px">Make sure you are retaining the important information <br> from online articles, videos, and podcasts with Digestible.</p>
-        <a class="button is-large" @click.prevent="toggleSignIn()"><span class="button-text">Sign Up</span></a>
+        <p style="font-size: 18px">Make sure you are retaining the important information <br> from technical online articles, videos, and podcasts with Digestible.</p>
+        <a class="button is-outlined" @click.prevent="toggleSignIn()"><span class="button-text" style="font-size: 16px; color: #fff">SIGN UP</span></a>
       </div>
     </div>
   </div>
@@ -13,8 +19,9 @@
     <div class="feed">
       <resource-card v-for="resource in resources" :resource="resource"></resource-card>
     </div>
-    <div class="side card card-block">
-      I am a side bar
+    <div class="side-bar">
+      <p class="side-bar-header"><b>Here are some users to check out</b></p>
+    <side-bar v-for="(user, index) in users" :user="user"></side-bar>
     </div>
   </div>
 </div>
@@ -23,6 +30,7 @@
 <script>
 import ResourceCard from '../components/ResourceCard'
 import Categories from '../components/Categories'
+import SideBar from '../components/SideBar'
 import Vue from 'vue'
 import VueFire from 'vuefire'
 import { mapState } from 'vuex'
@@ -35,7 +43,8 @@ export default {
   name: 'home',
   components: { 
     ResourceCard, 
-    Categories
+    Categories,
+    SideBar
   },
   computed: mapState({
     userInfo: state => state.userInfo
@@ -49,13 +58,17 @@ export default {
   },
   data () {
     return {
-      jumbotronHeader: "<strong>Retain the Web</strong>"  
+      jumbotronHeader: "<strong>Retain the Web</strong>",
+      show: true
     }
   },
   methods: {
     toggleSignIn () {
       this.$store.dispatch('watchSignIn');
-    }
+    },
+    removeNotification () {
+      this.show = false 
+    },
   },
   vuex: {
     getters: {
@@ -63,7 +76,8 @@ export default {
     }
   },
   firebase: {
-    resources: db.ref().child('resources')
+    resources: db.ref().child('resources'),
+    users: db.ref().child('users')
   } 
 };
 </script>
@@ -77,9 +91,12 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.side {
-  width: 400px;
+.side-bar {
   margin-top: 40px;
+}
+.side-bar-header {
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 .jumbotron {
   display: flex;
@@ -87,6 +104,7 @@ export default {
   justify-content: center;
   margin-bottom: 40px;
   height: 300px;
+  background-color: #75fab4;
 }
 .categories {
   margin-top: 60px
@@ -96,14 +114,24 @@ export default {
 }
 .button {
   margin-top: 20px;
-  background-color: #f16233;
-  padding: 15px;
+  padding: 20px;
+  border-radius: 50px;
+  border-color: #324851;
+  background-color: #324851;
 }
 .button:hover {
-  background-color: #f16233;
-  border-color: #f16233;
+  border-color: #75fab4;
 }
 .button-text {
   color: #fff;
+}
+.notification {
+  padding: 40px;
+  margin-bottom: 0px;
+  background-color: #324851;
+}
+.notification-text {
+  font-size: 18px;
+  color: #75fab4;
 }
 </style>
