@@ -8,6 +8,9 @@ export const mutations = {
       console.log('mutate resources', resources);
       state.resources = resources;
     },
+    mutatePassedResources(state, res) {
+      state.passedResources = res;
+    },
     mutateUsers (state, users) {
       state.users = users;
     },
@@ -16,5 +19,12 @@ export const mutations = {
     },
     mutateSignIn (state, user) {
       state.userInfo = user
+    },
+    modalChange (state, modal) {
+      state.modal = modal;
+    },
+    modalToggle (state, el) {
+      state.modal.el = el;
+      state.modal.show = !state.modal.show;
     }
 }

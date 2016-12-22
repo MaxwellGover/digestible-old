@@ -24,6 +24,9 @@ export const actions = {
     //         }
     //     }) 
     // },
+    addPassedResources({commit}, data) {
+        commit('mutatePassedResources', data);
+    },
     watchSignIn ({commit}) {
         console.log('watch sign in', auth.signOut);
         if (!auth.currentUser) {

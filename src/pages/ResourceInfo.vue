@@ -32,9 +32,13 @@
         <small id="category-help" class="form-text text-muted">Add some categories.</small>
       </div>
       <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
+      <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner">Delete resource</button>
     </form>
-
     <!--{{resource}}-->
+
+    <modal ref="confirmModal" title="Confirm delete" :ok="confirmedDelete" :cancel="cancel">
+      Are you sure to delete resource <strong>{{resource.title}}</strong>?
+    </modal>
   </div>
 </template>
 
@@ -45,12 +49,21 @@ import store from '../store'
 import { mapState } from 'vuex'
 import Vue from 'vue'
 import router from '../router'
+import modal from '../components/modal'
 
 export default {
   name: 'resource-info',
-  computed: mapState({
+  components: {
+    modal
+  },
+  computed: {
+    ...mapState({
       userInfo: state => state.userInfo
-  }),
+    }),
+    isOwner() {
+      return this.resource.authorId === this.$store.state.userInfo.uid;
+    }
+  },
   firebase() {
     if ( !this.$route.params.resourceId ) return; // no route param
 		
@@ -88,6 +101,17 @@ export default {
     };
   },
   methods: {
+    confirmedDelete() {
+      // console.log('ok');
+      db.ref('/users/' + this.$store.state.userInfo.uid + '/createdResources/' + this.resource['.key']).remove(); // remove from createdResources
+      this.$firebaseRefs.resource.remove();
+
+      // navigate to home
+      router.push('/');
+    },
+    cancel() {
+      console.log('cancel');
+    },
     addTag: function () {
       let tags = this.resource.tags;
       console.log(tags);
@@ -97,12 +121,20 @@ export default {
       })
       this.resource.text = ''
     },
+    deleteResource() {
+      console.log('delete', this.$refs, this.$refs.confirmModal.$el);
+
+      this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
+    },
     saveToFB () {
       // console.log('saving', newPostKey);
-      var newPostKey = db.ref('resources').push().key;
+      var newPostKey = this.resource['.key'] || db.ref('resources').push().key; // only create new key if undefined
       this.$store.state.postKey = newPostKey;
       var updates = {};
 
+      delete this.resource['.key']; // remove key before storing (if any) --> was a problem with updating existing resources
+
+      // console.log('resource', this.resource);
       updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
       updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; //this.resource;
 
@@ -115,13 +147,13 @@ export default {
       this.resource.url = '',
       this.resource.tags = []
 
-      console.log("Saving resource data...")
+      console.log("Saving resource data...", updates)
       
       // Clear inputs before return statement without losing them?  
       db.ref().update(updates);
 
       // navigate to create route by pushing to router
-      router.push('create');
+      router.push('/create');
     }
   }
 }

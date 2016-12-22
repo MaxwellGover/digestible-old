@@ -1,6 +1,12 @@
 <template v-if="this.userInfo">
   <div class="created-resources container">
-    <resource-card v-for="resource in createdResources" :resource="resource"></resource-card>
+    <div v-for="resource in data"> <!-- div just for debugging-->
+    <resource-card  :resource="resource" :passed="getPassedResource(resource)"></resource-card>
+    <!--created-resources passed: {{getPassedResource(resource)}}
+
+    <br/>
+    {{resource['.key']}}-->
+    </div>
   </div>
 </template>
 
@@ -21,11 +27,24 @@ Vue.use(VueFire)
 
 export default {
   name: 'created-resources',
-  props: ['userInfo'],
-  firebase: {
-    createdResources: db.ref('/users/' + store.state.userInfo.uid + '/createdResources/') 
-  },
-  components: { ResourceCard }
+  props: ['data', 'passed'],
+  components: { ResourceCard },
+  methods: {
+    getPassedResource(resource) { //<<<<<<<<<<<<< not working yet
+      console.log('getting passed', this.passed, resource['.key']);
+      let key =  resource['.key'];
+      // console.log(this.passed[key]);
+      this.passed.forEach((passedRes) => {
+        // console.log('each passed', passedRes['.key'], key)
+        if (passedRes['.key'] === key) {
+          console.log('found', passedRes, passedRes['.key'], key);
+          return passedRes;
+        }
+      })
+
+      return {};
+    }
+  }
 }
 </script>
 

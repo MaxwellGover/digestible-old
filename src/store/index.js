@@ -15,8 +15,13 @@ const state = {
     userInfo: {},
     users: {},
     resources: [],
+    passedResources: [],
     answeredQuestions: [],
-    postKey: ''
+    postKey: '',
+    modal: {
+        el: '',     // el = modal container
+        show: false // toggle visibility of modal attached to above el
+    }
 };
 
 const plugins = [

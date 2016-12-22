@@ -42,7 +42,9 @@
 
 // TODO: Add functionality to alert
 
-import store from '../store'
+// import store from '../store'
+import db from '../db'
+import router from '../router'
 
 const createNewOption = () => { 
 	return {
@@ -66,6 +68,19 @@ export default {
       showQuestions: false,
     }
   },
+  created() {
+    console.log('firebase', this.$store.state);
+    let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
+    this.$bindAsArray('questions', quizRef);
+
+    quizRef.once('value', (snapshot) => {
+      let questions = snapshot.val();
+      if (!questions) {
+        this.questions = [createNewQuestion()];
+      } // else firebase binding will load the questions correctly.
+    })
+
+  },
   methods: {
     addQuestion () {
     	this.questions.push(createNewQuestion())
@@ -84,15 +99,18 @@ export default {
     },
     saveToFirebase (e) {
     	e.preventDefault();
-      var updates = {};
-      updates['/resources/' + store.state.postKey + '/quiz/'] = this.questions;
-      updates['/users/' + store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/'] = this.questions;
+      let updates = {};
+      console.log('update quiz', this.$store.state.postKey);
+      updates['/resources/' + this.$store.state.postKey + '/quiz'] = this.questions;
+      // updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/'] = this.questions; // no need to add it to users
 
-      return firebase.database().ref().update(updates);
+      console.log('saving quiz...', updates);
+      db.ref().update(updates);
 
       // store.state.postyKey = '' // How do I put his before the return statement without it erasing key?
 
       // Push to route {{ $route.params.resourceId }}
+      router.push('/info/' + this.$store.state.postKey);
     }
 	}
 }

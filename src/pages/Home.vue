@@ -8,7 +8,7 @@
   </div>
   <div class="home container">
     <div class="feed">
-      <resource-card v-for="resource in resources" :resource="resource"></resource-card>
+      <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources[resource['.key']]"></resource-card>
     </div>
     <div class="side card card-block">
       I am a side bar
@@ -37,7 +37,8 @@ export default {
     Categories
   },
   computed: mapState({
-    userInfo: state => state.userInfo
+    userInfo: state => state.userInfo,
+    passedResources: state => state.passedResources
   }),
   // vuex: {
   //   getters: {

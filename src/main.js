@@ -24,3 +24,7 @@ new Vue({
   router,
   render: h => h(App)
 })
+
+Vue.filter('json', function(value, spaces) {
+  return JSON.stringify(value, null, spaces || 2);
+})

@@ -1,11 +1,11 @@
 <template>
 	<div class="quiz container">
-		<resource-card :resource="resource" :options="options" style="margin-right: 0"></resource-card>
+		<resource-card :resource="resource" :passed="passedResource" :options="options" style="margin-right: 0"></resource-card>
 		
 		<flash-card :score="score" :visible="submitted"></flash-card>
-		
+		{{passedResource}}
 		<div class="card">
-			<form @submit.prevent="displayAnswers"> 
+			<form @submit.prevent="submitQuiz"> 
 				<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>
 				<button type="submit" class="btn btn-primary pull-right">submit</button>
 			</form>
@@ -46,13 +46,19 @@ export default {
 			options: {
 				lightResource: true // hides quiz link
 			}
+			// passedResource: {}
 		};
+	},
+	created() {
+
+		this.$firebaseRefs['passedResource'] = db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.$route.params.resourceId);
 	},
 	computed: {
 		...mapState({
 			answers: state => state.quiz.answeredQuestions,
 			submitted: state => state.quiz.submittedStatus,
-			selectedCount: state => state.quiz.result.selectedCount
+			selectedCount: state => state.quiz.result.selectedCount,
+			result: state => state.quiz.result
 		}),
 		score() {
 			if ( this.resource.quiz === undefined ) return; // not sure if there is a better way of catching the reload issue at quiz route but this is working.
@@ -63,9 +69,10 @@ export default {
 			this.resource.quiz.forEach((question) => {
 				totalCorrectAnswers += question.options.filter(isAnswer).length;
 			});
-			let selected = this.$store.state.quiz.result.selectedCount;
+			// let selected = this.$store.state.quiz.result.selectedCount;
+			let selected = this.selectedCount;
 			let incorrectCount = (selected > totalCorrectAnswers) ? selected - totalCorrectAnswers: 0; // do we need to calculate if not enough answers?
-			let correctCount = this.$store.state.quiz.result.correctIds.length;
+			let correctCount = this.result.correctIds.length;
 
 			// calculate amount = points for correct answers --> incorrect subtracted
 			let amount = correctCount - incorrectCount;
@@ -80,8 +87,43 @@ export default {
 			};
 		}
 	},
+	watch: {
+		selectedCount: function(val) {
+			console.log('changed selection', val);
+			// this.$store.commit('resetForm');
+			// this.score = {
+			// };
+		}
+	},
 	methods: {
-		...mapMutations(['displayAnswers'])
+		// ...mapMutations(['displayAnswers'])
+		submitQuiz() {
+
+			this.$store.commit('displayAnswers');
+
+			this.$nextTick(function () {
+				// delay to next tick, so we have lates computed values
+				console.log(this.score);
+				if (this.score.amount == this.score.total) {
+					// 100% answer
+					// Push specific resource object to Firebase under `/users/ ` + userInfo.uid + ` /passedResources` node ONCE score reaches 100% on submit. 
+					// console.log('100% answer', this.$store.state.userInfo.uid)
+					// let passedKey = db.ref('resources').push().key;
+					let update = Object.assign({}, 
+					{
+						timesPassed: this.resource.timesPassed++,
+					});
+
+					delete update['.key'];
+
+					db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.resource['.key']).update(update);
+					// console.log(this.resource.timesPassed);
+					// update times passed if all questions answered or score = 100%
+					// --> all questions answered info not available yet.
+					// this.$firebaseRefs.resource.child('timesPassed').set(this.resource.timesPassed++); // ?! need to store it per user!!
+				}
+			});
+		}
 	}
 	// computed: {
 	// 	quiz() {

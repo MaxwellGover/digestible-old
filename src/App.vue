@@ -20,7 +20,7 @@
               <span v-else>Sign In/Sign Up</span>
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Action</a>
+                <router-link  class="dropdown-item" v-if="userInfo.uid" :to="'/profile/' + userInfo.uid">Profile</router-link>
                 <a class="dropdown-item" href="#" @click.prevent="toggleSignIn()">Sign <span>{{userInfo.uid? 'Out': 'In'}}</span></a>
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
@@ -60,9 +60,27 @@ import db from './db'
 export default {
   name: 'app',
   mixins: [loadingMixin], // adds loading behaviour
-  firebase: {
+  firebase: function() {
+    return {
       resources: db.ref().child('resources'),
-      users: db.ref().child('users'),
+      users: db.ref().child('users')
+    };
+  },
+  // data() {
+  //   return {
+  //     passedResources: {}
+  //   }
+  // },
+  created() {
+    console.log('app creat', this.$store.state.userInfo.uid)
+    // this.$firebaseRefs['passedResources'] = db.ref('/users/' + this.$store.state.userInfo.uid + '/passedResources');
+
+    // this.$firebaseRefs['passedResources']
+    db.ref('/users/' + this.$store.state.userInfo.uid + '/passedResources').on('value', (snap) => {
+      console.log('passed Res', snap.val());
+      // this.$store.state.passedResources = snap.val();
+      this.$store.dispatch('addPassedResources', snap.val());
+    });
   },
   computed: mapState(['userInfo']),
   methods: {

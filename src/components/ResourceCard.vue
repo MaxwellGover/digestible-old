@@ -19,7 +19,7 @@
     </div>
     <div class="footer card-block">
       <img class="icon" src="../assets/validate.png" alt=""/>
-      {{resource.timesPassed}}
+      {{passed.timesPassed || 0}}
     </div>
   </div>
 </template>
@@ -31,16 +31,25 @@ export default {
   name: 'resource-card',
   props: {
     resource: Object, 
+    passed: {
+      types: Object,
+      default: function() {
+        return {}
+      }
+    },
     options: {
       type: Object,
       default: function() {
-        return {};
+        return {
+        };
       }
     }
   },
-  computed: mapState({
-    userInfo: state => state.userInfo
-  })
+  computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    })
+  }
 }
 </script>
 
