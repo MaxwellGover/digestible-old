@@ -1,9 +1,9 @@
 <template>
 	<div class="quiz container">
-		<resource-card :resource="resource" :passed="passedResource" :options="options" style="margin-right: 0"></resource-card>
+		<resource-card :resource="resource" :passed="passedResources[resource['.key']]" :options="options" style="margin-right: 0"></resource-card>
 		
 		<flash-card :score="score" :visible="submitted"></flash-card>
-		{{passedResource}}
+		{{passedResources}}
 		<div class="card">
 			<form @submit.prevent="submitQuiz"> 
 				<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>
@@ -49,16 +49,17 @@ export default {
 			// passedResource: {}
 		};
 	},
-	created() {
+	// created() {
 
-		this.$firebaseRefs['passedResource'] = db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.$route.params.resourceId);
-	},
+	// 	this.$firebaseRefs['passedResource'] = db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.$route.params.resourceId);
+	// },
 	computed: {
 		...mapState({
 			answers: state => state.quiz.answeredQuestions,
 			submitted: state => state.quiz.submittedStatus,
 			selectedCount: state => state.quiz.result.selectedCount,
-			result: state => state.quiz.result
+			result: state => state.quiz.result,
+			passedResources: state => state.passedResources
 		}),
 		score() {
 			if ( this.resource.quiz === undefined ) return; // not sure if there is a better way of catching the reload issue at quiz route but this is working.

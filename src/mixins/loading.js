@@ -1,13 +1,18 @@
 export default {
+    // computed: {
+    //     loading: state => state.loading
+    // },
     data() {
         return {
-            loading: false
+            loading: true
         }
     },
     created() {
         this.loading = true;
-        // console.log('Created', this.$firebaseRefs);
-        let fbRefs = this.$firebaseRefs;
+        // console.log('Created', this, this.$firebaseRefs);
+        let fbRefs = Object.assign({}, this.$parent.$firebaseRefs, this.$firebaseRefs); // parent firebase refs included to
+        console.log('created', fbRefs);
+
         if (!fbRefs) {
             this.loading = false; // no firebase ref defined
             return;

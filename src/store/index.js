@@ -5,7 +5,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 import{ actions } from './actions'
 import { getters } from './getters'
-import { mutations } from './mutations'
+import mutations from './mutations'
 
 import quiz from './modules/quiz'
 
@@ -21,7 +21,8 @@ const state = {
     modal: {
         el: '',     // el = modal container
         show: false // toggle visibility of modal attached to above el
-    }
+    },
+    loading: true
 };
 
 const plugins = [

@@ -15,17 +15,17 @@
       </div>
     </div>
     <h1>Your passed quizes</h1>
-    <!--<pre>-->
-    <!--{{passedResources | json(4)}}-->
-    <!--</pre>-->
+    <pre>
+      {{passedResources | json(4)}}
+    </pre>
     <resource-card v-for="resource in passedResources" :resource="resource"></resource-card>
 
     <pre>
-<!--{{JSON.stringify(users, null, 2)}}-->
+      <!--{{JSON.stringify(users, null, 2)}}-->
     </pre>
     <!--{{joinedResources}}-->
     <h1>Your created resources</h1>
-    <!--<created-resources :data="joinedResources" :passed="passedResources"></created-resources>-->
+    <created-resources :data="joinedResources" :passed="passedResources"></created-resources>
   </div>
 </template>
 

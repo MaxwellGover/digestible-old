@@ -1,8 +1,10 @@
 import VuexFire from 'vuexfire'
+import { mapMutations} from 'vuex'
+
 var VuexFireMutations = VuexFire.mutations;
 
-export const mutations = {
-    VuexFireMutations,
+let mutations = {
+    // VuexFireMutations,
     mutateResources (state, resources) {
       // state.resources.push(resources);
       console.log('mutate resources', resources);
@@ -28,3 +30,9 @@ export const mutations = {
       state.modal.show = !state.modal.show;
     }
 }
+
+Object.assign(mutations, VuexFireMutations);
+
+// console.log('mutations', mutations);
+
+export default mutations

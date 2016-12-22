@@ -1,17 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import VuexFire from 'vuexfire'
+
 import 'animate.css'
 import '../node_modules/spinkit/css/spinkit.css'
 
 import App from './App'
+import db from './db'
 
 import vuexStore from './store'
 import router from './router';
+// import loadingMixin from './mixins/loading'
 
 
 
 Vue.use(Vuex);
+Vue.use(VuexFire)
 Vue.use(VueRouter);
 
 const store = new Vuex.Store(vuexStore);
@@ -22,6 +27,14 @@ new Vue({
   // this will inject the store instance to all child components.
   store,
   router,
+  firebase: function() {
+    console.log('firebase refs', store.state.userInfo.uid); //this.$store.state);
+    return {
+      resources: db.ref().child('resources'),
+      users: db.ref().child('users'),
+      passedResources: db.ref('/users/' + store.state.userInfo.uid + '/passedResources')
+    };
+  },
   render: h => h(App)
 })
 

@@ -47,6 +47,7 @@
     <div v-else>
       <router-view></router-view>
     </div>
+    <!--{{loading}}-->
   </div>
 </template>
 
@@ -60,28 +61,13 @@ import db from './db'
 export default {
   name: 'app',
   mixins: [loadingMixin], // adds loading behaviour
-  firebase: function() {
-    return {
-      resources: db.ref().child('resources'),
-      users: db.ref().child('users')
-    };
-  },
-  // data() {
+  // firebase: function() { // moved to main.js to have them globally
+  //   console.log('firebase refs', this.$store); //this.$store.state);
   //   return {
-  //     passedResources: {}
-  //   }
+  //     resources: db.ref().child('resources'),
+  //     users: db.ref().child('users')
+  //   };
   // },
-  created() {
-    console.log('app creat', this.$store.state.userInfo.uid)
-    // this.$firebaseRefs['passedResources'] = db.ref('/users/' + this.$store.state.userInfo.uid + '/passedResources');
-
-    // this.$firebaseRefs['passedResources']
-    db.ref('/users/' + this.$store.state.userInfo.uid + '/passedResources').on('value', (snap) => {
-      console.log('passed Res', snap.val());
-      // this.$store.state.passedResources = snap.val();
-      this.$store.dispatch('addPassedResources', snap.val());
-    });
-  },
   computed: mapState(['userInfo']),
   methods: {
     toggleSignIn () {

@@ -12,6 +12,9 @@
     </div>
     <div class="side card card-block">
       I am a side bar
+    <pre>
+{{passedResources|json}}
+    </pre>
     </div>
     <!--{{resources}}-->
   </div>
