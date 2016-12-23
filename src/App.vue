@@ -97,22 +97,20 @@ export default {
 .nav-title {
   font-family: 'Chewy', cursive;
   font-size: 32px; 
-  color: #324851;
+  color: #000;
 } 
 .button {
-  border-color: #f16233;
+  border-color: #006ce4;
 }
 .button:hover {
-  background-color: #f16233;
-  border-color: #f16233;
+  border-color: #006ce4;
   text-decoration: none;
 }
 .button-text:hover {
-  color: #fff;
   text-decoration: none;
 }
 .button-text {
-  color: #f16233;
+  color: #006ce4;
 }
 .modal-card-head {
   height: 100px;
@@ -140,14 +138,5 @@ export default {
   height: 25px;
   width: 25px;
   margin-right: 15px;
-}
-.notification {
-  padding: 40px;
-  margin-bottom: 0px;
-  background-color: #324851;
-}
-.notification-text {
-  font-size: 18px;
-  color: #75fab4;
 }
 </style>

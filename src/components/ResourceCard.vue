@@ -6,11 +6,7 @@
       <div class="test">
       <p class="card-header-title">
         <a href="#" class="author-link">{{resource.authorName}}</a>
-        <div class="tags" style="margin-left: 10px; margin-top: -10px">
-        <small v-for="tag in resource.tags" style="font-size: 12px"><span style="color: #f16233; font-size: 12px; margin-right: 2px">{{tag.text + ',' | capitalize}} </span></small>
-        </div>
-        <small style="font-size: 12px; margin-left: 10px">Resource type: <span style="color: #f16233">{{resource.type | capitalize}}</span></small>
-        </div>
+        <small style="font-size: 12px">Resource type: <span style="color: #006ce4">{{resource.type | capitalize}}</span></small>
       </p>
     </header>
     
@@ -113,11 +109,11 @@ export default {
   border-bottom: none;
 }
 .learn-button {
-  background-color: #f16233;
-  border-color: #f16233;
+  background-color: #006ce4;
+  border-color: #006ce4;
 }
 .learn-button:hover {
-  border-color: #f16233;
+  border-color: #006ce4;
 }
 .user-image {
   height: 60px;
@@ -138,17 +134,14 @@ export default {
   margin-right: -5px;
 }
 .author-link {
-  color: #f16233;
+  color: #006ce4;
   text-decoration: none
 }
 .user-name {
-  color: #4e30f9;
+  color: #006ce4;
 }
 .user-name:hover {
   text-decoration: none;
-}
-.tags {
-  display: flex;
 }
 .test {
   display: flex;

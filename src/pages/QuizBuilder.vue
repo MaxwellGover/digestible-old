@@ -1,11 +1,8 @@
 <template>
 	<div class="quiz-builder container">
-    <h1 class="quiz-header">Create your quiz!</h1>
-    <div class="notification is-info" v-if="show">
-      <button class="delete" v-on:click="removeNotification"></button>
-      <b>Quick tip: </b> Questions should cover the main points you want users to take away from your resource (5 question maximum).
-    </div>
+  
     <div class="box" v-for="(question, index) in questions">
+      <div style="width: 95%">
       <label class="label" style="margin-bottom: 10px">Question {{index++}}</label>
       <p class="control is-grouped">
         <textarea class="textarea" type="text" placeholder="Enter a question"  v-model="question.text"></textarea>
@@ -13,6 +10,7 @@
           <span style="color: #ff3860">X</span>
         </a>
       </p>
+      </div>
       </br>
       <div class="input-group" v-for="(option, index) in question.options" style="margin-bottom: 20px">
         <p class="control is-grouped">
@@ -108,7 +106,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   margin-top: 60px;
-  width: 800px;
+  width: 80%;
 }
 .quiz-header {
   margin-bottom: 20px;
@@ -156,5 +154,11 @@ export default {
 }
 .input:focus {
   border-color: #f16233;
+}
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px;
 }
 </style>

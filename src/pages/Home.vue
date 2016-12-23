@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="notification is-info" v-if="show">
+  <div class="notification" v-if="show">
     <button class="delete" v-on:click="removeNotification"></button>
     <div class="container">
     <p class="notification-text">Hey there! Are you an absolute beginner to web design or development? Click <router-link to="/getting-started" style="color: #1da1f2"><em>here</em></router-link></p>
@@ -104,7 +104,7 @@ export default {
   justify-content: center;
   margin-bottom: 40px;
   height: 300px;
-  background-color: #75fab4;
+  background-color: #fff;
 }
 .categories {
   margin-top: 60px
@@ -116,8 +116,8 @@ export default {
   margin-top: 20px;
   padding: 20px;
   border-radius: 50px;
-  border-color: #324851;
-  background-color: #324851;
+  border-color: #006ce4;
+  background-color: #006ce4;
 }
 .button:hover {
   border-color: #75fab4;
@@ -128,10 +128,8 @@ export default {
 .notification {
   padding: 40px;
   margin-bottom: 0px;
-  background-color: #324851;
 }
 .notification-text {
   font-size: 18px;
-  color: #75fab4;
 }
 </style>

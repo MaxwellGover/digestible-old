@@ -19,7 +19,7 @@
         <div class="box">
             <img class="resource-image" src="../assets/learn.png" alt="book image"/>
             <div>
-                <h1 class="resource-title"><a href="https://medium.freecodecamp.com/the-practical-guide-to-becoming-a-professional-web-developer-2f255bc25c90#.mrhvohj1n"><b>The Practical Guide to Becoming a Professional Web Developer</b></a></h1>
+                <h1 class="resource-title"><a style="color: #000" href="https://medium.freecodecamp.com/the-practical-guide-to-becoming-a-professional-web-developer-2f255bc25c90#.mrhvohj1n"><b>The Practical Guide to Becoming a Professional Web Developer</b></a></h1>
                 <p class="resource-author">Author: Bill Sourour</p>
                 <p class="resource-text">This amazing free guide walks you, step-by-step, through the learning process of becoming a professional web developer.</p>
             </div>
