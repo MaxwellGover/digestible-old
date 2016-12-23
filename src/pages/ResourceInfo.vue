@@ -49,7 +49,7 @@ import store from '../store'
 import { mapState } from 'vuex'
 import Vue from 'vue'
 import router from '../router'
-import modal from '../components/modal'
+import modal from '../components/Modal'
 
 export default {
   name: 'resource-info',
