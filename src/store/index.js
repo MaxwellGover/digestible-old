@@ -11,7 +11,7 @@ import quiz from './modules/quiz'
 
 const debug = process.env.NODE_ENV !== 'production'
 
-const state = {
+export const state = {
     userInfo: {},
     users: {},
     resources: [],
@@ -28,7 +28,7 @@ const state = {
 const plugins = [
     debug ? createLogger(): null,
     createPersistedState({
-        paths: ['userInfo']
+        paths: ['userInfo', 'postKey']
     })
 ];
 

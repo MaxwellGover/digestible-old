@@ -28,11 +28,10 @@ new Vue({
   store,
   router,
   firebase: function() {
-    console.log('firebase refs', store.state.userInfo.uid); //this.$store.state);
+    // console.log('firebase refs', store.state.userInfo.uid); //this.$store.state);
     return {
-      resources: db.ref().child('resources'),
-      users: db.ref().child('users'),
-      passedResources: db.ref('/users/' + store.state.userInfo.uid + '/passedResources')
+      // resources: db.ref().child('resources'),
+      users: db.ref().child('users')
     };
   },
   render: h => h(App)

@@ -8,7 +8,7 @@
           </li>
           <div class="links">
             <li class="nav-item">
-              <router-link :to="{name: 'createInfo'}" class="create-quiz-link">Create a quiz</router-link>
+              <router-link to="/info" class="create-quiz-link">Create a quiz</router-link>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Study</a>
@@ -61,13 +61,13 @@ import db from './db'
 export default {
   name: 'app',
   mixins: [loadingMixin], // adds loading behaviour
-  // firebase: function() { // moved to main.js to have them globally
-  //   console.log('firebase refs', this.$store); //this.$store.state);
-  //   return {
-  //     resources: db.ref().child('resources'),
-  //     users: db.ref().child('users')
-  //   };
-  // },
+  firebase: function() { // moved to main.js to have them globally
+    console.log('firebase refs', this.$store); //this.$store.state);
+    return {
+      // resources: db.ref().child('resources'),
+      users: db.ref().child('users')
+    };
+  },
   computed: mapState(['userInfo']),
   methods: {
     toggleSignIn () {

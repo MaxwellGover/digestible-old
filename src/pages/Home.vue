@@ -8,13 +8,13 @@
   </div>
   <div class="home container">
     <div class="feed">
-      <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources[resource['.key']]"></resource-card>
+      <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources"></resource-card>
     </div>
     <div class="side card card-block">
       I am a side bar
-    <pre>
+    <!--<pre>
 {{passedResources|json}}
-    </pre>
+    </pre>-->
     </div>
     <!--{{resources}}-->
   </div>
@@ -40,16 +40,19 @@ export default {
     Categories
   },
   computed: mapState({
-    userInfo: state => state.userInfo,
-    passedResources: state => state.passedResources
+    userInfo: state => state.userInfo
   }),
   // vuex: {
   //   getters: {
   //     resources: state => state.resources
   //   }
   // },
-  firebase: {
-    resources: db.ref().child('resources')
+  firebase() {
+
+    return {
+      resources: db.ref().child('resources'),
+      passedResources: db.ref('/users/' + this.$parent.$store.state.userInfo.uid + '/passedResources')
+    }
   } 
 }
 </script>

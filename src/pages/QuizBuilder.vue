@@ -34,6 +34,10 @@
         Create quiz
       </button>
     </div>
+    <pre>
+    {{questions | json}}
+{{$store.state.quiz | json}}
+    </pre>
  	</div>
 </template>
 
@@ -45,6 +49,8 @@
 // import store from '../store'
 import db from '../db'
 import router from '../router'
+import { mapState } from 'vuex'
+import {state} from '../store'
 
 const createNewOption = () => { 
 	return {
@@ -64,32 +70,79 @@ export default {
   name: "quiz-builder",
 	data () {
     return {
-      questions: [createNewQuestion()],
+      // questions: [],
+      // questions: [createNewQuestion()],
       showQuestions: false,
     }
   },
-  created() {
-    console.log('firebase', this.$store.state);
-    let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
-    this.$bindAsArray('questions', quizRef);
-
-    quizRef.once('value', (snapshot) => {
-      let questions = snapshot.val();
-      if (!questions) {
-        this.questions = [createNewQuestion()];
-      } // else firebase binding will load the questions correctly.
-    })
-
+  computed: {
+    ...mapState({
+        quiz: state => state.quiz,
+        questions: state => state.quiz.questions
+    }),
+    // postKey: state => state.postKey
+    // questions: state => {
+    //   console.log('questions', state);
+    //   if (state.quiz.questions.length === 0) {
+    //     state.commit('initQuestions', createNewQuestion); // mutate store to init. questions array
+    //   }
+    //   console.log('Questions', state.quiz);
+    //   return state.quiz.questions;
+    // }
   },
+  firebase() {
+    console.log(this.postKey);
+    return {
+      'quiz.questions': {
+        // source: db.ref('/resources/' + this.$parent.$store.state.postKey + '/quiz'), //<<<<<<<<<<todo is there a better way to get the store here?! maybe we can use a computed property
+        source: db.ref('/resources/' + this.postKey + '/quiz'), //<<<<<<<<<<todo is there a better way to get the store here?! maybe we can use a computed property --> not working
+        bindAsObject: true
+      }
+    }
+  },
+  created() {
+		console.log('created', this.$store.state.postKey);
+
+		let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz'); // this.$firebaseRefs['questions'] 
+    // this.$firebaseRefs['quiz.questions'] = quizRef;
+    this.$bindAsArray('quiz.questions', quizRef);
+
+    quizRef.on('value', (snapshot) => {
+      let questions = snapshot.val();
+      console.log(questions,  this.$store.state.postKey );
+      if (!questions) {
+        this.$store.dispatch('initQuestions', [createNewQuestion()]); // mutate store to init. questions array (dispatch because this is asynch.)
+      } // else firebase binding will load the questions correctly.
+    });
+  },
+  // created() {
+  //   console.log('firebase', this.$store.state);
+  //   let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
+  //   this.$firebaseRefs['quiz'] = quizRef;
+
+  //   console.log(this.$store.state.postKey);
+  //   // this.$bindAsArray('questions', quizRef);
+
+  //   quizRef.once('value', (snapshot) => {
+  //     let questions = snapshot.val();
+  //     console.log(questions);
+  //     if (!questions) {
+  //       this.questions = [createNewQuestion()];
+  //     } // else firebase binding will load the questions correctly.
+  //   })
+
+  // },
   methods: {
     addQuestion () {
-    	this.questions.push(createNewQuestion())
+    	this.questions.push(createNewQuestion());
     },
     removeQuestion (index) {
-      this.questions.splice(index, 1)
+      this.questions.splice(index, 1);
     },
     addOption (question) {
-    	question.options.push(createNewOption())
+      let index = this.questions.indexOf(question);
+      console.log('add opt', index, this.questions)
+    	this.questions[index].options.push(createNewOption());
     },
     removeOption (question, option) {
       var index = question.options.indexOf(option);
@@ -100,17 +153,26 @@ export default {
     saveToFirebase (e) {
     	e.preventDefault();
       let updates = {};
-      console.log('update quiz', this.$store.state.postKey);
-      updates['/resources/' + this.$store.state.postKey + '/quiz'] = this.questions;
-      // updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/'] = this.questions; // no need to add it to users
+      
+      console.log('save', this.questions);
+      this.$firebaseRefs['quiz.questions'].set(this.questions);
 
-      console.log('saving quiz...', updates);
-      db.ref().update(updates);
+      console.log('vuex fire will mutate state and save data...'); // not working. with-out code below - probably because manual binding
+
+
+      console.log(this.$firebaseRefs);
+      // this.$firebaseRefs.quiz.questions.set(this.questions);
+      // console.log('update quiz', this.$store.state.postKey, this.questions);
+      // updates['/resources/' + this.$store.state.postKey + '/quiz'] = this.questions;
+      // // updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/'] = this.questions; // no need to add it to users
+
+      // console.log('saving quiz...', updates);
+      // db.ref().update(updates);
 
       // store.state.postyKey = '' // How do I put his before the return statement without it erasing key?
 
       // Push to route {{ $route.params.resourceId }}
-      router.push('/info/' + this.$store.state.postKey);
+      router.push('/info/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)
     }
 	}
 }

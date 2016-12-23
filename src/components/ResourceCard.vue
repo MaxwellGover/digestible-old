@@ -1,5 +1,9 @@
 <template>
   <div class="card">
+    <!--<div v-if="error" class="alert alert-danger">
+      {{error.msg}}
+    </div>-->
+
     <h6 class="card-header">
       <img class="user-image" :src="resource.authorImage" alt=""/>
       <a href="#" class="user-name">{{resource.authorName}}</a>
@@ -9,8 +13,8 @@
       <p class="card-text">{{resource.description}}</p>
       <div v-if="!options.lightResource">
         <!-- only show in list of resources -->
-        <router-link class="card-btn btn btn-primary" :to="{name: 'info', params: { resourceId: resource['.key'] }}">Go To Resource</router-link>
-        <router-link class="card-btn btn btn-primary" :to="{name: 'quiz', params: { resourceId: resource['.key'] }}">quiz</router-link>
+        <router-link class="card-btn btn btn-primary" :to="'/info/'+ resource['.key']">Go To Resource</router-link>
+        <router-link class="card-btn btn btn-primary" :to="'/quiz/'+ resource['.key']">quiz</router-link>
       </div>
       <!--<div v-else>
       </div>-->
@@ -19,8 +23,9 @@
     </div>
     <div class="footer card-block">
       <img class="icon" src="../assets/validate.png" alt=""/>
-      {{passed.timesPassed || 0}}
+      {{findResourceByKeyInPassed(resource)}}
     </div>
+    
   </div>
 </template>
 
@@ -30,7 +35,16 @@ import { mapState } from 'vuex'
 export default {
   name: 'resource-card',
   props: {
-    resource: Object, 
+    resource: {
+      types: Object,
+      default: function() {
+        return {
+          // error: {
+          //   msg: 'resource not available!'
+          // }
+        }
+      }
+    }, 
     passed: {
       types: Object,
       default: function() {
@@ -45,10 +59,25 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      error: false
+    };
+  },
   computed: {
     ...mapState({
-      userInfo: state => state.userInfo
+      userInfo: state => state.userInfo,
     })
+  },
+  methods: {
+    findResourceByKeyInPassed(resource) {
+      // if (typeof this.passed !== 'Array') return;
+
+      let found = this.passed.filter(passedRes => 
+        passedRes['.key'] === resource['.key'])[0];
+        
+      return found? found.timesPassed : 0;
+    }
   }
 }
 </script>

@@ -32,7 +32,7 @@
         <small id="category-help" class="form-text text-muted">Add some categories.</small>
       </div>
       <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
-      <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner">Delete resource</button>
+      <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
     </form>
     <!--{{resource}}-->
 
@@ -97,12 +97,14 @@ export default {
     };
 
     return {
-      resource: this.resource || emptyResource
+      resource: this.resource || emptyResource,
+      DEBUG_EN_DELETE: false // if true, can delete every post --> later this could be stored in a user_role collection for each user.
     };
   },
   methods: {
     confirmedDelete() {
       // console.log('ok');
+
       db.ref('/users/' + this.$store.state.userInfo.uid + '/createdResources/' + this.resource['.key']).remove(); // remove from createdResources
       this.$firebaseRefs.resource.remove();
 
@@ -129,7 +131,7 @@ export default {
     saveToFB () {
       // console.log('saving', newPostKey);
       var newPostKey = this.resource['.key'] || db.ref('resources').push().key; // only create new key if undefined
-      this.$store.state.postKey = newPostKey;
+      this.$store.state.postKey = newPostKey; // mutates stated --> move to store and use commit!!!
       var updates = {};
 
       delete this.resource['.key']; // remove key before storing (if any) --> was a problem with updating existing resources

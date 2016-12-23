@@ -1,15 +1,22 @@
 <template>
 	<div class="quiz container">
-		<resource-card :resource="resource" :passed="passedResources[resource['.key']]" :options="options" style="margin-right: 0"></resource-card>
+		<resource-card :resource="resource" :passed="passedResources" :options="options" style="margin-right: 0"></resource-card>
 		
 		<flash-card :score="score" :visible="submitted"></flash-card>
-		{{passedResources}}
+		<!--{{passedResources}}
+
+		<br/>
+		<hr/>
+		{{resourceId}}-->
 		<div class="card">
 			<form @submit.prevent="submitQuiz"> 
 				<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>
-				<button type="submit" class="btn btn-primary pull-right">submit</button>
+				<button type="submit" class="btn btn-primary pull-right" :disabled="submitted">submit</button>
 			</form>
 		</div>
+<!--<pre>
+		{{answeredQuestions|json}}
+</pre>-->
 	</div>
 </template>
 
@@ -35,7 +42,9 @@ export default {
 			resource: {
 				source: db.ref('resources/' + this.$route.params.resourceId),
 				asObject: true
-			}
+			},
+			passedResources: db.ref('/users/' + this.$parent.$store.state.userInfo.uid + '/passedResources'), //<<<<<<<<<<todo is there a better way to get the store here?!
+			answeredQuestions: db.ref('/users/' + this.$parent.$store.state.userInfo.uid + '/answeredQuestions')
 		};
 	},
 	data() {
@@ -45,21 +54,18 @@ export default {
 		return {
 			options: {
 				lightResource: true // hides quiz link
-			}
+			},
+			resourceId: this.$route.params.resourceId
 			// passedResource: {}
 		};
 	},
-	// created() {
-
-	// 	this.$firebaseRefs['passedResource'] = db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.$route.params.resourceId);
-	// },
 	computed: {
 		...mapState({
 			answers: state => state.quiz.answeredQuestions,
 			submitted: state => state.quiz.submittedStatus,
 			selectedCount: state => state.quiz.result.selectedCount,
 			result: state => state.quiz.result,
-			passedResources: state => state.passedResources
+			// passedResources: state => state.passedResources
 		}),
 		score() {
 			if ( this.resource.quiz === undefined ) return; // not sure if there is a better way of catching the reload issue at quiz route but this is working.
@@ -102,22 +108,56 @@ export default {
 
 			this.$store.commit('displayAnswers');
 
+			let getCorrectAnswerText = () => {
+				let result = {}
+				this.result.correctIds.forEach(({quizIndex, index}) =>{
+					let quiz = this.resource.quiz[quizIndex];
+					result[quizIndex] = result[quizIndex] || {}; // default to empty obj.
+
+					Object.assign(result[quizIndex], {
+						questionText: quiz.text,
+						[index]: {
+							text: quiz.options[index].text
+						}
+					});
+				});
+
+				return {
+					[this.resource['.key']]: {
+						quizText: result
+					}
+				};
+			};
+
 			this.$nextTick(function () {
 				// delay to next tick, so we have lates computed values
-				console.log(this.score);
+				// console.log(this.score);
 				if (this.score.amount == this.score.total) {
 					// 100% answer
 					// Push specific resource object to Firebase under `/users/ ` + userInfo.uid + ` /passedResources` node ONCE score reaches 100% on submit. 
 					// console.log('100% answer', this.$store.state.userInfo.uid)
 					// let passedKey = db.ref('resources').push().key;
-					let update = Object.assign({}, 
-					{
-						timesPassed: this.resource.timesPassed++,
-					});
+					this.resource.timesPassed++;
 
-					delete update['.key'];
+					let update = { 
+						[this.resource['.key']]: {
+							timesPassed: this.resource.timesPassed
+						}
+					};
 
-					db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.resource['.key']).update(update);
+					console.log(update)
+					// delete update['.key'];
+
+					// save answered quiz in passedResources
+					this.$firebaseRefs.passedResources.set(update);
+					// db.ref('users/' + this.$store.state.userInfo.uid + '/passedResources/' + this.resource['.key']).update(update);
+					
+					let answerData = getCorrectAnswerText();
+					// console.log('answeredQuestions', answerData);
+
+					this.$firebaseRefs.answeredQuestions.set(answerData);
+					// console.log(getCorrectAnswerText());
+					// save answeredQuestion as text in user/uid/answeredQuestion/resourceID
 					// console.log(this.resource.timesPassed);
 					// update times passed if all questions answered or score = 100%
 					// --> all questions answered info not available yet.

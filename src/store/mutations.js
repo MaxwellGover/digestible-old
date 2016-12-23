@@ -1,5 +1,4 @@
 import VuexFire from 'vuexfire'
-import { mapMutations} from 'vuex'
 
 var VuexFireMutations = VuexFire.mutations;
 
