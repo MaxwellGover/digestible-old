@@ -6,14 +6,14 @@
       <div class="test">
       <p class="card-header-title">
         <a href="#" class="author-link">{{resource.authorName}}</a>
-        <small style="font-size: 12px">Resource type: <span style="color: #006ce4">{{resource.type | capitalize}}</span></small>
+        <small style="font-size: 12px; color: #9fa6ad">Resource type: <span style="color: #006ce4">{{resource.type | capitalize}}</span></small>
       </p>
     </header>
     
     <div class="card-content">
       <div class="content">
-        <h1>{{resource.title}}</h1>
-        <p>{{resource.description}}</p>
+        <p style="font-size: 32px; margin-bottom: 5px"><b>{{resource.title}}</b></p>
+        <p style="font-size: 18px">{{resource.description}}</p>
         <a class="learn-button button is-inverted">
           <span style="color: #fff">Learn</span>
         </a>
@@ -93,7 +93,7 @@ export default {
 
 <style scoped>
 .card {
-  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+  font-family: 'Khula', sans-serif;
   margin-right: 20px;
   margin-top: 40px;
   width: 800px;

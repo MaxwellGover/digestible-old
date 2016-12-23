@@ -5,9 +5,9 @@
       <div style="width: 95%">
       <label class="label" style="margin-bottom: 10px">Question {{index++}}</label>
       <p class="control is-grouped">
-        <textarea class="textarea" type="text" placeholder="Enter a question"  v-model="question.text"></textarea>
+        <textarea class="textarea is-medium" type="text" placeholder="Enter a question"  v-model="question.text"></textarea>
         <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeQuestion(index)">
-          <span style="color: #ff3860">X</span>
+          <span style="color: #ff3860"><i class="fa fa-trash-o 5x" aria-hidden="true"></i></span>
         </a>
       </p>
       </div>
@@ -17,11 +17,18 @@
           <input class="checkbox" type="checkbox" v-model="option.isAnswer">
           <input class="input is-medium is-expanded" type="text" placeholder="Enter an option" v-model="option.text">
           <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeOption(question, option)">
-            <span class="remove" style="color: #ff3860">X</span>
+            <span class="remove" style="color: #ff3860"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
           </a>
         </p>
       </div>
-      <a class="add-option button is-white" @click="addOption(question)"><span class="remove" style="color: #f16233">Add an option</span></a>
+      <a class="add-option button is-white" @click="addOption(question)"><span class="remove" style="color: #006ce4">Add an option</span></a>
+      <div>
+      <label class="label">Summary</label>
+      <p class="control">
+        <textarea class="textarea" type="text" v-model="question.summaryText"></textarea>
+      </p>
+      <small style="font-size: 12px">This will be shown when a user quizzes themselves. Summaries can help the user improve their mental model and really understand the <em>WHY </em>behind the answer.</small>
+      </div>
     </div></br>
     <div>
       <a class="add-question-btn button" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
@@ -51,7 +58,8 @@ const createNewOption = () => {
 const createNewQuestion = () => {
   return {
   	text: '',
-  	options: [createNewOption()]
+  	options: [createNewOption()],
+  	summaryText: ''
   }
 }
 
@@ -61,7 +69,6 @@ export default {
     return {
       questions: [createNewQuestion()],
       showQuestions: false,
-      show: true
     }
   },
   methods: {
@@ -99,7 +106,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .quiz-builder {
   display: flex;
@@ -119,7 +125,7 @@ export default {
   cursor:pointer;
 }
 .create-quiz-btn {
-  background-color: #f16233;
+  background-color: #006ce4;
   padding: 15px;
 }
 .alert {
@@ -137,14 +143,14 @@ export default {
 .add-option {
   margin-bottom: 30px;
   color: #f16233;
-  border-color: #f16233;
+  border-color: #006ce4;
 }
 .add-question-btn {
-  border-color: #f16233;
+  border-color: #006ce4;
   padding: 15px;
 }
 .add-question-text {
-  color: #f16233;
+  color: #006ce4;
 }
 .button-text {
   color: #fff
@@ -152,13 +158,16 @@ export default {
 .remove:hover {
   color: #fff;
 }
-.input:focus {
-  border-color: #f16233;
-}
 .box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 60px;
+}
+.fa:hover {
+  color: #fff;
+}
+.input:focus {
+  border-color: #006ce4;
+}
+.textarea:focus {
+  border-color: #006ce4;
 }
 </style>
