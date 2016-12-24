@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import VuexFire from 'vuexfire'
+import VueFire from 'vuefire'
+// import VuexFire from 'vuexfire'
 
 import 'animate.css'
 import '../node_modules/spinkit/css/spinkit.css'
@@ -16,7 +17,8 @@ import router from './router';
 
 
 Vue.use(Vuex);
-Vue.use(VuexFire)
+Vue.use(VueFire);
+// Vue.use(VuexFire)
 Vue.use(VueRouter);
 
 const store = new Vuex.Store(vuexStore);
@@ -39,4 +41,10 @@ new Vue({
 
 Vue.filter('json', function(value, spaces) {
   return JSON.stringify(value, null, spaces || 2);
-})
+});
+
+
+Vue.filter('isEmptyObject', function(obj) {
+  console.log('isEmptyObject filter', obj);
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+});

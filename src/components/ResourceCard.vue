@@ -6,7 +6,7 @@
 
     <h6 class="card-header">
       <img class="user-image" :src="resource.authorImage" alt=""/>
-      <a href="#" class="user-name">{{resource.authorName}}</a>
+      <router-link :to="'/profile/' + resource.authorId" class="user-name">{{resource.authorName}}</router-link>
     </h6>
     <div class="card-block">
       <h3 class="card-title">{{resource.title}}</h3>
@@ -20,6 +20,7 @@
       </div>-->
       <!--<router-link :to="{name: 'info', params: {key: resource['.key']}}" class="card-link" style="margin-top: 10px">Learn</router-link>-->
       <!--{{resource['.key']}}-->
+      <!--{{resource}}-->
     </div>
     <div class="footer card-block">
       <img class="icon" src="../assets/validate.png" alt=""/>

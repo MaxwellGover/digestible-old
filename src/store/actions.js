@@ -41,10 +41,17 @@ export const actions = {
                 commit('mutateSignIn', user);
                 // Set a user in firebase
                 var uid = user.uid;
-                db.ref('users/' + user.uid).set({
-                    name: user.displayName,
-                    email: user.email,
-                    profilePicture : user.photoURL,
+
+                db.ref('users/' + uid).once('value').then((snapshot) => {
+                    let fbUser = snapshot.val();
+
+                    Object.assign(fbUser, {
+                        name: user.displayName,
+                        email: user.email,
+                        profilePicture : user.photoURL,
+                    });
+
+                    db.ref('users/' + user.uid).set(fbUser); // update user
                 })
             // ...
             }).catch( error => {

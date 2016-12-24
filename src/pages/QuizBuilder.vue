@@ -33,11 +33,18 @@
       <button class="create-quiz-btn btn btn-primary" @click="saveToFirebase">
         Create quiz
       </button>
+      <!--<button class="create-quiz-btn btn btn-primary" @click="testQuiz">
+        Test quiz
+      </button>-->
     </div>
     <pre>
     {{questions | json}}
 {{$store.state.quiz | json}}
     </pre>
+
+    <!--<modal ref="quizTestModal" title="Test your quiz" :options="quizTestOptions">
+      <quiz :options="{testMode: true}"></quiz>
+    </modal>-->
  	</div>
 </template>
 
@@ -51,6 +58,8 @@ import db from '../db'
 import router from '../router'
 import { mapState } from 'vuex'
 import {state} from '../store'
+// import modal from '../components/Modal'
+// import quiz from './Quiz'
 
 const createNewOption = () => { 
 	return {
@@ -68,6 +77,10 @@ const createNewQuestion = () => {
 
 export default {
   name: "quiz-builder",
+  // components: { // for feature quiz-test in modal
+  //   modal,
+  //   quiz
+  // },
 	data () {
     return {
       // questions: [],
@@ -77,7 +90,7 @@ export default {
   },
   computed: {
     ...mapState({
-        quiz: state => state.quiz,
+        // quiz: state => state.quiz,
         questions: state => state.quiz.questions
     }),
     // postKey: state => state.postKey
@@ -90,29 +103,23 @@ export default {
     //   return state.quiz.questions;
     // }
   },
-  firebase() {
-    console.log(this.postKey);
-    return {
-      'quiz.questions': {
-        // source: db.ref('/resources/' + this.$parent.$store.state.postKey + '/quiz'), //<<<<<<<<<<todo is there a better way to get the store here?! maybe we can use a computed property
-        source: db.ref('/resources/' + this.postKey + '/quiz'), //<<<<<<<<<<todo is there a better way to get the store here?! maybe we can use a computed property --> not working
-        bindAsObject: true
-      }
-    }
+  firebase: { // vuefire only used for storing db.ref from created hook
+    // we could add the reference here but I still don't know how to access $store.state here
   },
   created() {
-		console.log('created', this.$store.state.postKey);
+    // this.quizTestOptions = {cancelOnly: true, cancelCaption: 'Close'};
 
-		let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz'); // this.$firebaseRefs['questions'] 
-    // this.$firebaseRefs['quiz.questions'] = quizRef;
-    this.$bindAsArray('quiz.questions', quizRef);
+		// console.log('created', this.$store.state.postKey);
+		let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
+    this.$firebaseRefs['questions'] = quizRef;
+    this.$bindAsObject('questions', quizRef);
 
     quizRef.on('value', (snapshot) => {
       let questions = snapshot.val();
-      console.log(questions,  this.$store.state.postKey );
-      if (!questions) {
-        this.$store.dispatch('initQuestions', [createNewQuestion()]); // mutate store to init. questions array (dispatch because this is asynch.)
-      } // else firebase binding will load the questions correctly.
+
+      // init questions 
+      // vuefire would be only bound to local state --> dispatch so we have it on store
+      this.$store.dispatch('initQuestions', questions || [createNewQuestion()]); // mutate store to init. questions array (dispatch because this is asynch.)
     });
   },
   // created() {
@@ -133,6 +140,9 @@ export default {
 
   // },
   methods: {
+    testQuiz() {
+      this.$store.commit('modalToggle', this.$refs.quizTestModal.$el); 
+    },
     addQuestion () {
     	this.questions.push(createNewQuestion());
     },
@@ -155,21 +165,7 @@ export default {
       let updates = {};
       
       console.log('save', this.questions);
-      this.$firebaseRefs['quiz.questions'].set(this.questions);
-
-      console.log('vuex fire will mutate state and save data...'); // not working. with-out code below - probably because manual binding
-
-
-      console.log(this.$firebaseRefs);
-      // this.$firebaseRefs.quiz.questions.set(this.questions);
-      // console.log('update quiz', this.$store.state.postKey, this.questions);
-      // updates['/resources/' + this.$store.state.postKey + '/quiz'] = this.questions;
-      // // updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + store.state.postKey + '/quiz/'] = this.questions; // no need to add it to users
-
-      // console.log('saving quiz...', updates);
-      // db.ref().update(updates);
-
-      // store.state.postyKey = '' // How do I put his before the return statement without it erasing key?
+      this.$firebaseRefs['questions'].set(this.questions); //vuefire to update questions
 
       // Push to route {{ $route.params.resourceId }}
       router.push('/info/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)

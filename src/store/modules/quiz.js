@@ -1,4 +1,4 @@
-import VuexFire from 'vuexfire'
+// import VuexFire from 'vuexfire'
 
 const quiz = {
     state: {
@@ -27,7 +27,7 @@ const quiz = {
         }
     },
     mutations: Object.assign({}, 
-        VuexFire.moduleMutations('quiz'),
+        // VuexFire.moduleMutations('quiz'),
         {
             /**
              * Prepare answer array
@@ -60,6 +60,10 @@ const quiz = {
             },
             resetForm(state) {
                 state.submittedStatus = false;
+                state.result = {
+                    correctIds: [],
+                    selectedCount: 0
+                };
             },
             markAnswer(state, {questionIndex, index, value}) {
                 // console.log('mark question', questionIndex, index, value);

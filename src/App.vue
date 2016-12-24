@@ -45,7 +45,7 @@
       </div>
     </div>
     <div v-else>
-      <router-view></router-view>
+      <router-view keep-alive></router-view>
     </div>
     <!--{{loading}}-->
   </div>

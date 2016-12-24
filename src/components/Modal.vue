@@ -11,8 +11,8 @@
                     <slot></slot>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="okModal">Delete</button>
-                    <button type="button" class="btn btn-default" @click="cancelModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @click="okModal" v-if="!options.cancelOnly">Delete</button>
+                    <button type="button" class="btn btn-default" @click="cancelModal">{{options.cancelCaption}}</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -47,6 +47,15 @@ export default {
             type: Function,
             default: function() {
                 
+            }
+        },
+        options: {
+            type: Object, 
+            default: function() {
+                return {
+                    cancelOnly: false,
+                    cancelCaption: 'Cancel'
+                };
             }
         }
     },

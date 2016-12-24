@@ -31,7 +31,7 @@
         <h5><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; margin-top: 5px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h5>
         <small id="category-help" class="form-text text-muted">Add some categories.</small>
       </div>
-      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
+      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB" v-id="userInfo.uid">Next</button>
       <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
     </form>
     <!--{{resource}}-->
@@ -83,25 +83,31 @@ export default {
     // let key = this.$route.params.resourceId;
 		// let resource = this.$store.state.resources[key];
 
-    let emptyResource = {
-        type: '',
-        title: '',
-        url: '',
-        description: '',
-        timesPassed: 0,
-        tags: [],
-        text: '',
-        authorName: this.$store.state.userInfo.displayName,
-        authorImage: this.$store.state.userInfo.photoURL,
-        authorId: this.$store.state.userInfo.uid
-    };
-
-    return {
-      resource: this.resource || emptyResource,
-      DEBUG_EN_DELETE: false // if true, can delete every post --> later this could be stored in a user_role collection for each user.
-    };
+    return this.loadData();
   },
+  watch: {
+		'$route': 'loadData'
+	},
   methods: {
+    loadData() {
+        let emptyResource = {
+          type: '',
+          title: '',
+          url: '',
+          description: '',
+          timesPassed: 0,
+          tags: [],
+          text: '',
+          authorName: this.$store.state.userInfo.displayName,
+          authorImage: this.$store.state.userInfo.photoURL,
+          authorId: this.$store.state.userInfo.uid
+      };
+
+      return {
+        resource: this.resource || emptyResource,
+        DEBUG_EN_DELETE: false // if true, can delete every post --> later this could be stored in a user_role collection for each user.
+      };
+    },
     confirmedDelete() {
       // console.log('ok');
 
@@ -129,9 +135,10 @@ export default {
       this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
     },
     saveToFB () {
-      // console.log('saving', newPostKey);
+      console.log('saving', newPostKey);
       var newPostKey = this.resource['.key'] || db.ref('resources').push().key; // only create new key if undefined
-      this.$store.state.postKey = newPostKey; // mutates stated --> move to store and use commit!!!
+      // this.$store.state.postKey = newPostKey; // mutates stated --> move to store and use commit!!!
+      this.$store.commit('addPostKey', newPostKey);
       var updates = {};
 
       delete this.resource['.key']; // remove key before storing (if any) --> was a problem with updating existing resources
