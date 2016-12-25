@@ -3,11 +3,11 @@
 		<resource-card :resource="resource" :passed="passedResources" :options="options" style="margin-right: 0"></resource-card>
 		
 		<flash-card :score="score" :visible="submitted"></flash-card>
-		{{passedResources}}
+		<!--{{passedResources}}-->
 
 		<br/>
 		<hr/>
-		{{resourceId}}
+		<!--{{resourceId}}-->
 		<div class="card">
 			<form @submit.prevent="submitQuiz"> 
 				<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>

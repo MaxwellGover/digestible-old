@@ -10,27 +10,34 @@
             <h1 class="display-5">{{userDataPublic.name}}</h1>
             <!--{{userInfo}}-->
             <p class="lead"></p>
+            <badge :users="users"></badge>
           </div>
         </div>
       </div>
     </div>
-    <h1>Your passed quizes</h1>
-    <resource-card v-for="resource in joinedPassedResources" :resource="resource" :passed="passedResources"></resource-card>
-    <p v-if="!joinedPassedResources">No quizes passed yet.</p>
-<!--{{joinedPassedResources && joinedPassedResources.length > 0}}-->
-    <h1>Your created resources</h1>
-    <created-resources :data="joinedResources" :passed="passedResources"></created-resources>
-    <p v-if="createdResources.length===0">No resources created.</p>
+    <nav class="nav has-shadow">
+      <div class="container">
+        <div class="nav-center">
+          <a class="nav-item is-tab" :class="{'is-active': tab['passed']}" style="color: #f16233" href="#passed" role="tab" data-toggle="tab" @click="tab={};tab['passed']=true">Passed resources</a>
+          <a class="nav-item is-tab" :class="{'is-active': tab['created']}" style="color: #f16233" href="#created" role="tab" data-toggle="tab"  @click="tab={};tab['created']=true">Created resources</a>
+        </div>
+      </div>
+    </nav>
 
-    <!--<h1>Your user information:</h1>
-    <pre>
-{{userDataPublic | json}}-->
-    </pre>
-    <br/>
-    <pre>
-    <!--{{joinedResources}}<br/>-->
-    <!--{{joinedPassedResources}}-->
-    </pre>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="passed">
+        <div class="container">
+          <resource-card v-for="resource in joinedPassedResources" :resource="resource" :passed="passedResources"></resource-card>
+          <p v-if="!joinedPassedResources">No quizes passed yet.</p>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="created">
+        <created-resources :data="joinedResources" :passed="passedResources"></created-resources>
+        <p v-if="createdResources.length===0">No resources created.</p>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -40,6 +47,8 @@ import db, { joinPaths } from '../db'
 import store from '../store'
 import CreatedResources from '../components/CreatedResources'
 import ResourceCard from '../components/ResourceCard'
+
+import Badge from '../components/Badge'
 import { mapState } from 'vuex'
 
 export default {
@@ -54,7 +63,8 @@ export default {
   },
   computed: {
       ...mapState({
-        userInfo: state => state.userInfo
+        userInfo: state => state.userInfo,
+        users: state => state.users
         // passedResources: state => state.passedResources
       }),
       uid: function() {
@@ -88,7 +98,10 @@ export default {
       passedResources: [],
       joinedResources: [],
       joinedPassedResources: [],
-      resources: []
+      resources: [],
+      tab: {
+        passed: true
+      } // active tab
       // userDataPublicRef: '',
       // createdResourcesRef: '',
       // passedResourcesRef: ''
@@ -179,20 +192,24 @@ export default {
     },
     components: { 
       CreatedResources,
-      ResourceCard
+      ResourceCard,
+      Badge
     }
 }
 </script>
 
-<style>
-  .profile-pic {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%
-  }
-  
-  .jumbotron {
-    background-color: white;
-    margin-bottom: 0px
-  }
+<style scoped>
+.profile-pic {
+  border-radius: 50%
+}
+.jumbotron {
+  background-color: white;
+  margin-bottom: 0px
+}
+.nav-item:hover {
+  color: #f16233
+}
+.display-name {
+  font-size: 28px
+}
 </style>

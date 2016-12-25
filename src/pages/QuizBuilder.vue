@@ -1,46 +1,47 @@
 <template>
 	<div class="quiz-builder container">
-    <h4 class="quiz-header">Build your quiz!</h4>
-    <div class="alert alert-info alert-dismissible fade in" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    <strong>Quick tip:</strong> Questions should cover the main points from your resource that you want the user to remember!
-    </div>
-    <div v-for="(question, index) in questions">
-      <div class="input-group">
-        <input type="text" class="form-control" v-model="question.text" placeholder="Enter a question">
-         <span class="input-group-btn">
-          <button class="btn btn-danger" type="button" @click="removeQuestion(index)">X</button>
-        </span>
+  
+    <div class="box" v-for="(question, index) in questions">
+      <div style="width: 95%">
+      <label class="label" style="margin-bottom: 10px">Question {{index++}}</label>
+      <p class="control is-grouped">
+        <textarea class="textarea is-medium" type="text" placeholder="Enter a question"  v-model="question.text"></textarea>
+        <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeQuestion(index)">
+          <span style="color: #ff3860"><i class="fa fa-trash-o 5x" aria-hidden="true"></i></span>
+        </a>
+      </p>
       </div>
       </br>
       <div class="input-group" v-for="(option, index) in question.options" style="margin-bottom: 20px">
-        <span class="input-group-addon">
-          <input type="checkbox" v-model="option.isAnswer">
-        </span>
-        <input type="text" class="form-control" v-model="option.text" placeholder="Enter an option">
-        <span class="input-group-btn">
-          <button class="btn btn-danger" type="button" @click="removeOption(question, option)">X</button>
-        </span>
+        <p class="control is-grouped">
+          <input class="checkbox" type="checkbox" v-model="option.isAnswer">
+          <input class="input is-medium is-expanded" type="text" placeholder="Enter an option" v-model="option.text">
+          <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeOption(question, option)">
+            <span class="remove" style="color: #ff3860"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+          </a>
+        </p>
       </div>
-      <p class="add-option" @click="addOption(question)">Add an option</p>
+      <a class="add-option button is-white" @click="addOption(question)"><span class="remove" style="color: #006ce4">Add an option</span></a>
+      <div>
+      <label class="label">Summary</label>
+      <p class="control">
+        <textarea class="textarea" type="text" v-model="question.summaryText"></textarea>
+      </p>
+      <small style="font-size: 12px">This will be shown when a user quizzes themselves. Summaries can help the user improve their mental model and really understand the <em>WHY </em>behind the answer.</small>
+      </div>
     </div></br>
     <div>
-      <button class="add-question-btn btn btn-default" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
-        Add another question
-      </button>
-      <button class="create-quiz-btn btn btn-primary" @click="saveToFirebase">
-        Create quiz
-      </button>
-      <!--<button class="create-quiz-btn btn btn-primary" @click="testQuiz">
-        Test quiz
-      </button>-->
+      <a class="add-question-btn button" @click="addQuestion" :disabled="questions.length >= 5 ? true : false">
+        <span class="add-question-text">Add another question</span>
+      </a>
+      <a class="create-quiz-btn button" @click="saveToFirebase">
+        <span class="button-text">Create quiz</span>
+      </a>
     </div>
-    <pre>
+    <!--<pre>
     {{questions | json}}
 {{$store.state.quiz | json}}
-    </pre>
+    </pre>-->
 
     <!--<modal ref="quizTestModal" title="Test your quiz" :options="quizTestOptions">
       <quiz :options="{testMode: true}"></quiz>
@@ -71,7 +72,8 @@ const createNewOption = () => {
 const createNewQuestion = () => {
   return {
   	text: '',
-  	options: [createNewOption()]
+  	options: [createNewOption()],
+  	summaryText: ''
   }
 }
 
@@ -160,6 +162,9 @@ export default {
           question.options.splice(index, 1);
         }
     },
+    removeNotification () {
+      this.show = false 
+    },
     saveToFirebase (e) {
     	e.preventDefault();
       let updates = {};
@@ -174,32 +179,68 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .quiz-builder {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-top: 60px;
-  width: 800px;
+  width: 80%;
 }
 .quiz-header {
   margin-bottom: 20px;
-  text-align: center
+  text-align: center;
+  font-size: 40px
 }
 .add-option {
   color: #4e30f9;
   text-decoration: none;
   cursor:pointer;
 }
-.add-question-btn {
-  border-radius: 2px;
-}
 .create-quiz-btn {
-  border-radius: 2px;
-  background-color: #4e30f9;
+  background-color: #006ce4;
+  padding: 15px;
 }
 .alert {
   margin-bottom: 40px
+}
+.control {
+  display: flex;
+}
+.checkbox {
+  align-self: center;
+  height: 15px;
+  width: 15px;
+  margin-right: 10px;
+}
+.add-option {
+  margin-bottom: 30px;
+  color: #f16233;
+  border-color: #006ce4;
+}
+.add-question-btn {
+  border-color: #006ce4;
+  padding: 15px;
+}
+.add-question-text {
+  color: #006ce4;
+}
+.button-text {
+  color: #fff
+}
+.remove:hover {
+  color: #fff;
+}
+.box {
+  padding: 60px;
+}
+.fa:hover {
+  color: #fff;
+}
+.input:focus {
+  border-color: #006ce4;
+}
+.textarea:focus {
+  border-color: #006ce4;
 }
 </style>

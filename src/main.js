@@ -4,7 +4,6 @@ import VueRouter from 'vue-router'
 import VueFire from 'vuefire'
 // import VuexFire from 'vuexfire'
 
-import 'animate.css'
 import '../node_modules/spinkit/css/spinkit.css'
 
 import App from './App'

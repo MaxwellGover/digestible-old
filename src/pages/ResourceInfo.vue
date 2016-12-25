@@ -1,51 +1,65 @@
+<!-- Add option for authors to write in a description of the answer --> 
 <template>
-  <div class="resource-info container">
-    <form id="resource-info">
-      <div class="form-group">
-        <label for="type">This quiz is for (required)</label>
-        <select id="type" class="form-control" v-model="resource.type">
-          <option value="article">An online article</option>
-          <option value="book">A chapter in a book</option>
-          <option value="video">A video</option>
-          <option value="podcast">A podcast</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="title">Resource title (required)</label>
-        <input type="text" class="form-control" id="title" v-model="resource.title">
-        <small id="title-help" class="form-text text-muted">Enter the title of your resource.</small>
-      </div>
-      <div class="form-group">
-        <label for="url">Resource link (required)</label>
-        <input type="url" class="form-control" id="url" v-model="resource.url">
-        <small id="url-help" class="form-text text-muted">Copy and paste the url to your resource.</small>
-      </div>
-      <div class="form-group">
-        <label for="desc">Resource description (optional)</label>
-        <textarea class="form-control" id="desc" v-model="resource.description"></textarea>
-        <small id="desc-help" class="form-text text-muted">Enter a short description of your resource.</small>
-      </div>
-      <div class="form-group">
-        <label for="categories">Categories (required)</label>
-        <input type="text" class="form-control" id="categories" @keyup.enter="addTag" v-model="resource.text">
-        <h5><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; margin-top: 5px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h5>
-        <small id="category-help" class="form-text text-muted">Add some categories.</small>
-      </div>
-      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
-      <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
-    </form>
-    <!--{{resource}}-->
-
-    <modal ref="confirmModal" title="Confirm delete" :ok="confirmedDelete" :cancel="cancel">
+    <!-- Quiz container -->
+    <div class="box container" style="width: 60%; margin-top: 60px">
+      <!-- Form -->
+      <form id="resource-info">
+        <!-- Resource type dropdown -->
+        <label class="label">What type of resource is this quiz for?</label>
+        <p class="control">
+          <span class="select is-medium">
+            <select id="type" v-model="resource.type">
+              <option value="article">An online article</option>
+              <option value="book">A chapter in a book</option>
+              <option value="video">An online video</option>
+              <option value="podcast">A podcast</option>
+            </select>
+          </span>
+        </p>
+        <!-- Resource title input -->
+        <label class="label" style="margin-top: 20px">Resource title</label>
+        <p class="control">
+          <input class="input is-medium" type="text" v-model="resource.title">
+        </p>
+        <small>Enter the title of your resource.</small>
+        <!-- Resource URL input -->
+        <label class="label" style="margin-top: 20px">Resource URL</label>
+        <p class="control">
+          <input class="input is-medium" type="url" v-model="resource.url">
+        </p>
+        <small>Copy and paste the url to your resource above.</small>
+        <!-- Resource description text area -->
+        <label class="label" style="margin-top: 20px">Resource description</label>
+        <p class="control">
+          <textarea class="textarea is-medium" v-model="resource.description"></textarea>
+        </p>
+        <small>Optionally add a short description of what your resource is about.</small>
+        <!-- Topics input -->
+        <label class="label" style="margin-top: 20px">Topics</label>
+        <p class="control">
+          <input class="input is-medium" type="text" placeholder="front-end development" @keyup.enter="addTag" v-model="resource.text">
+        </p>
+          <span class="tag is-info is-medium" v-for="(tag, index) in resource.tags" style="margin-top: 10px; margin-bottom: 10px; margin-right: 5px">
+          {{tag.text | capitalize}}
+          <button class="delete is-small" @click="handleDelete(index)"></button>
+          </span><br>
+          <small>Add some topics to help users find your resource.</small>
+          <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
+        <button type="button" class="button is-info" v-on:click.prevent="saveToFB">Next</button>
+      
+      </form> <!-- End form -->
+      
+      <modal ref="confirmModal" title="Confirm delete" :ok="confirmedDelete" :cancel="cancel">
       Are you sure to delete resource <strong>{{resource.title}}</strong>?
-    </modal>
-  </div>
+      </modal>
+    </div> <!-- End form container -->
+
 </template>
 
 <script>
+
 // var db = firebase.database();
 import db from '../db'
-import store from '../store'
 import { mapState } from 'vuex'
 import Vue from 'vue'
 import router from '../router'
@@ -66,7 +80,8 @@ export default {
   },
   firebase() {
     if ( !this.$route.params.resourceId ) return; // no route param
-		
+		console.log('db', db);
+    console.log('firebase', this.$route.params.resourceId);
     return {
 			resource: {
 				source: db.ref('resources/' + this.$route.params.resourceId),
@@ -82,9 +97,16 @@ export default {
     // console.log('resource to display', this.$route.params.key, this.$firebaseRefs);
     // let key = this.$route.params.resourceId;
 		// let resource = this.$store.state.resources[key];
-    console.log('data', this.$store.state.userInfo)
+    // console.log('data', this.$store.state.userInfo)
     
     return this.loadData();
+  },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return;
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
   },
   watch: {
 		'$route': 'loadData'
@@ -121,17 +143,22 @@ export default {
     cancel() {
       console.log('cancel');
     },
+    // TODO: Figure out why tags are overwriting each other.
     addTag: function () {
-      let tags = this.resource.tags;
+      var tags = this.resource.tags;
       console.log(tags);
       tags.push({
         id: this.resource.tags.length + 1,
         text: this.resource.text
-      })
-      this.resource.text = ''
+      });
+      this.resource.text = '';
+    },
+    handleDelete: function(index) {
+        var tags = this.resource.tags;
+        tags.splice(index, 1);
     },
     deleteResource() {
-      console.log('delete', this.$refs, this.$refs.confirmModal.$el);
+      // console.log('delete', this.$refs, this.$refs.confirmModal.$el);
 
       this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
     },
@@ -153,6 +180,7 @@ export default {
       
       db.ref().update(updates);
 
+      // TODO: Find out how to clear inputs before the return statement.  
 
       this.resource.title = '',
       this.resource.type = '',
@@ -160,23 +188,48 @@ export default {
       this.resource.url = '',
       this.resource.tags = []
 
-
       // navigate to create route by pushing to router
       router.push('/create');
     }
   }
-}
+};
+
 </script>
 
 <style scoped>
-.resource-info {
-  margin-top: 40px;
-  width: 700px
-}
-.btn {
+
+.button {
   float: right; 
-  background-color: #4e30f9; 
+  background-color: #006ce4; 
   border: none;
   border-radius: 2px;
+  padding: 15px;
+  margin-top: 20px;
 }
+
+.notification {
+  padding: 40px;
+  margin-bottom: 0px;
+}
+
+.notification-text {
+  font-size: 16px;
+}
+
+.input:focus {
+  border-color: #006ce4;
+}
+
+.textarea:focus {
+  border-color: #006ce4;
+}
+
+select:focus {
+  border-color: #006ce4;
+}
+
+small {
+  font-size: 12px;
+}
+
 </style>
