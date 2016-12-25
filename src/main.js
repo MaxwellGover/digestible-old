@@ -10,18 +10,13 @@ import '../node_modules/spinkit/css/spinkit.css'
 import App from './App'
 import db from './db'
 
-import vuexStore from './store'
+import store from './store'
 import router from './router';
 // import loadingMixin from './mixins/loading'
 
-
-
-Vue.use(Vuex);
 Vue.use(VueFire);
 // Vue.use(VuexFire)
 Vue.use(VueRouter);
-
-const store = new Vuex.Store(vuexStore);
 
 new Vue({
   el: '#app',

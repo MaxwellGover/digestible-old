@@ -6,20 +6,57 @@ import QuizBuilder from './pages/QuizBuilder'
 import Profile from './pages/Profile'
 import Quiz from './pages/Quiz'
 import NotFoundComponent from './pages/NotFound'
+import {firebase} from './db'
+import store from './store'
+
+// const user = firebase.auth().currentUser // not working because not authenticated on reload but user stored locally
 
 export const routes = [
   { path: '/', component: Home },
-  { path: '/info/:resourceId', component: ResourceInfo },
-  { path: '/info', component: ResourceInfo },
-  { path: '/create', component: QuizBuilder },
+  { path: '/info', component: ResourceInfo,
+    // a meta field
+    meta: { requiresAuth: true }
+  },
+  { path: '/info/:resourceId', component: ResourceInfo,
+    // a meta field
+    meta: { requiresAuth: true }
+  },
+  { path: '/create', component: QuizBuilder,
+    // a meta field
+    meta: { requiresAuth: true }
+  },
   { path: '/profile/:uid', component: Profile },
   { path: '/quiz/:resourceId', component: Quiz },
   { path: '*', component: NotFoundComponent }
 ];
 
-export const router = new VueRouter({
+let router = new VueRouter({
   routes, // short for routes: routes
   mode: 'history'
 });
+
+router.beforeEach((to, from, next) => {
+  // console.log('beforeEach', to, from, next)
+  // console.log('user', store.state.userInfo)
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    // console.log('check user', store.state.userInfo)
+    //if (!store.state.userInfo) { // can not get userInfo here
+      // next({
+      //   path: '/login',
+      //   query: { redirect: to.fullPath }
+      // })
+    store.dispatch('checkAuth') // login if not authenticated
+
+    next() // stay on restricted page --> check what happens if login fails
+    // } else {
+    //   next()
+    // }
+  } 
+  else {
+    next() // make sure to always call next()!
+  }
+})
 
 export default router;

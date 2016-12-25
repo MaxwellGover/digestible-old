@@ -20,8 +20,8 @@
               <span v-else>Sign In/Sign Up</span>
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <router-link  class="dropdown-item" v-if="userInfo.uid" :to="'/profile/' + userInfo.uid">Profile</router-link>
-                <a class="dropdown-item" href="#" @click.prevent="toggleSignIn()">Sign <span>{{userInfo.uid? 'Out': 'In'}}</span></a>
+                <router-link v-if="userInfo" class="dropdown-item" :to="'/profile/' + userInfo.uid">Profile</router-link>
+                <a class="dropdown-item" href="#" @click.prevent="toggleSignIn()">Sign <span>{{userInfo.uid ? 'Out' : 'In'}}</span></a>
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </li>
@@ -68,7 +68,16 @@ export default {
       users: db.ref().child('users')
     };
   },
-  computed: mapState(['userInfo']),
+  data() {
+    return {
+      userInfo: {
+        uid: ''
+      }
+    }
+  },
+  computed: {
+    ...mapState(['userInfo'])
+  },
   methods: {
     toggleSignIn () {
       this.$store.dispatch('watchSignIn');

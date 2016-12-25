@@ -31,7 +31,7 @@
         <h5><span class="tag tag-default" v-for="tag in resource.tags" style="margin: 2px; margin-top: 5px; color: #525252; padding: 10px; background-color: #F0F0F0">{{tag.text}}</span></h5>
         <small id="category-help" class="form-text text-muted">Add some categories.</small>
       </div>
-      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB" v-id="userInfo.uid">Next</button>
+      <button type="button" class="btn btn-primary" id="next-button" v-on:click.prevent="saveToFB">Next</button>
       <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
     </form>
     <!--{{resource}}-->
@@ -82,7 +82,8 @@ export default {
     // console.log('resource to display', this.$route.params.key, this.$firebaseRefs);
     // let key = this.$route.params.resourceId;
 		// let resource = this.$store.state.resources[key];
-
+    console.log('data', this.$store.state.userInfo)
+    
     return this.loadData();
   },
   watch: {
@@ -148,6 +149,9 @@ export default {
       updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; //this.resource;
 
       // console.log('updating', updates);
+      console.log("Saving resource data...", updates)
+      
+      db.ref().update(updates);
 
 
       this.resource.title = '',
@@ -156,10 +160,6 @@ export default {
       this.resource.url = '',
       this.resource.tags = []
 
-      console.log("Saving resource data...", updates)
-      
-      // Clear inputs before return statement without losing them?  
-      db.ref().update(updates);
 
       // navigate to create route by pushing to router
       router.push('/create');

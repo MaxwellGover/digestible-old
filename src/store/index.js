@@ -1,5 +1,5 @@
+import Vue from 'vue'
 import Vuex from 'vuex'
-
 import createLogger from 'vuex/dist/logger'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -32,9 +32,11 @@ const plugins = [
     })
 ];
 
+Vue.use(Vuex);
+
 // A Vuex instance is created by combining the state, mutations, actions,
 // and getters.
-export default {
+export default new Vuex.Store({
     // root state
     state,
     actions,
@@ -45,4 +47,4 @@ export default {
     },
     // strict: debug, // <<<<<<<< todo: check why we're getting mutation errors if uncommented
     plugins
-}
+})
