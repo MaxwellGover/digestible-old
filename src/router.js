@@ -6,7 +6,12 @@ import QuizBuilder from './pages/QuizBuilder'
 import Profile from './pages/Profile'
 import Quiz from './pages/Quiz'
 import NotFoundComponent from './pages/NotFound'
+import ArticleFeed from './pages/ArticleFeed'
+import VideoFeed from './pages/VideoFeed'
+import BookFeed from './pages/BookFeed'
+import PodcastFeed from './pages/PodcastFeed'
 import Beginner from './pages/Beginner'
+import Study from './components/Study'
 import {firebase} from './db'
 import store from './store'
 
@@ -26,7 +31,12 @@ export const routes = [
   },
   { path: '/profile/:uid', component: Profile },
   { path: '/getting-started', component: Beginner },
+  { path: '/type/articles', component: ArticleFeed },
+  { path: '/type/videos', component: VideoFeed },
+  { path: '/type/books', component: BookFeed },
+  { path: '/type/podcasts', component: PodcastFeed },
   { path: '/quiz/:resourceId', component: Quiz },
+  { path: '/study', component: Study },
   { path: '*', component: NotFoundComponent }
 ];
 

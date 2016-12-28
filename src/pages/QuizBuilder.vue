@@ -16,6 +16,7 @@
           <input class="input is-medium is-expanded" type="text" placeholder="Enter an option" v-model="option.text">
             <span class="remove" style="color: #ff3860; margin-left: 15px; margin-top: 10px" @click="removeOption(question, option)"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
         </p>
+        <small style="font-size: 14px; margin-left: 25px">Mark the checkbox to the left is this is the right answer.</small>
       </div>
       <a class="add-option button is-white" @click="addOption(question)"><span class="remove" style="color: #006ce4">Add an option</span></a>
       <div>
@@ -101,13 +102,7 @@ export default {
     //   return state.quiz.questions;
     // }
   },
-  firebase: { // vuefire only used for storing db.ref from created hook
-    // we could add the reference here but I still don't know how to access $store.state here
-  },
   created() {
-    // this.quizTestOptions = {cancelOnly: true, cancelCaption: 'Close'};
-
-		// console.log('created', this.$store.state.postKey);
 		let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
     this.$firebaseRefs['questions'] = quizRef;
     this.$bindAsObject('questions', quizRef);
@@ -169,7 +164,7 @@ export default {
       this.$firebaseRefs['questions'].set(this.questions); //vuefire to update questions
 
       // Push to route {{ $route.params.resourceId }}
-      router.push('/info/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)
+      router.push('/quiz/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)
     }
 	}
 }

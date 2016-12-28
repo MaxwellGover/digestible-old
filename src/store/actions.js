@@ -24,6 +24,7 @@ function signIn(commit) {
         name: user.displayName,
         email: user.email,
         profilePicture: user.photoURL,
+        isExpert: false
       });
 
       db.ref('users/' + user.uid).set(fbUser); // update user

@@ -3,17 +3,17 @@
   
     <header class="card-header">
       <img class="user-image" :src="resource.authorImage" alt=""/>
-      <div class="test">
-      <p class="card-header-title">
-        <router-link :to="'/profile/' + resource.authorId" class="author-link">{{resource.authorName}}</a>
-        <small style="font-size: 12px; color: #9fa6ad">Resource type: <span style="color: #006ce4">{{resource.type | capitalize}}</span></small>
-      </p>
+      <div class="right">
+        <p class="card-header-title">
+          <router-link :to="'/profile/' + resource.authorId" class="author-link">{{resource.authorName}}</router-link><br>
+          <small style="font-size: 14px; color: #8f8f8f">Resource type: <span><router-link :to="'/type/' + resource.type + 's'" style="color: #006ce4">{{resource.type | capitalize}}</router-link></span></small>
+        </p>
     </header>
     
     <div class="card-content">
       <div class="content">
-        <p style="font-size: 32px; margin-bottom: 5px"><b>{{resource.title}}</b></p>
-        <p style="font-size: 18px">{{resource.description}}</p>
+        <p style="font-size: 32px; margin-bottom: 5px; font-family: 'Patua One', cursive"><b>{{resource.title}}</b></p>
+        <p style="font-size: 18px; color: #8f8f8f">{{resource.description}}</p>
         <!-- Learn button -->
         <router-link v-if="showLearn" class="button is-light is-medium" :to="'/quiz/' + resource['.key']">
           Learn
@@ -25,14 +25,23 @@
     </div>
     
     <footer class="card-footer">
-      <img class="icon" src="../assets/passed-icon.png" title="Number of times this quiz has been passed" alt=""/>
-      {{resource.timesPassed}}
-      <div class="bookmark">
-        <img v-if="!isBookmarked" class="bookmark-icon" src="../assets/book.png" title="Number of times this quiz has been passed" alt="" @click="openModal"/>
-        <img v-else class="bookmark-icon animated tada" src="../assets/book-fill.png" title="Click to save this resource for later" alt="" @click="unBookmark"/>
-      </div>
+        <i class="fa fa-thumbs-o-up fa-3x" aria-hidden="true"></i>
+        <p style="font-size: 16px; margin-top: 5px">{{resource.timesPassed}}</p>
+        <i v-if="showShare" @click="showModal()" class="share fa fa-share-alt fa-3x" aria-hidden="true"></i>
     </footer>
-  </div>
+
+    <div class="modal" v-bind:is-active="false">
+      <div class="modal-background"></div>
+        <div class="modal-content" style="padding: 20px">
+        <!-- Any other Bulma elements you want -->
+        <label class="label" style="margin-bottom: 10px">Share this resource</label>
+        <p class="control">
+          {{resourceLink}}
+        </p>
+        </div>
+       <button class="modal-close" @click="hideModal()"></button>
+      </div>
+    </div>
 
 </template>
 
@@ -41,8 +50,7 @@ import { mapState } from 'vuex'
 import Vue from 'vue'
 var VueFire = require('vuefire')
 Vue.use(VueFire)
-
-// var db = firebase.database();
+import db from '../db'
 
 export default {
   name: 'resource-card',
@@ -72,13 +80,19 @@ export default {
     },
     showLearn: {
       type: Boolean, 
+    },
+    showShare: {
+      type: Boolean
+    },
+    resourceLink: {
+      type: String
     }
   },
   data() {
     return {
       error: false,
       isBookmarked: false,
-      showModal: false
+      modalOpen: false,
     };
   },
   computed: {
@@ -102,6 +116,12 @@ export default {
         
       return found? found.timesPassed : 0;
     },
+    hideModal () {
+      modalOpen = false 
+    },
+    showModal () {
+      modalOpen = true
+    },
     toggleSignIn () {
       this.$store.dispatch('watchSignIn');
     },
@@ -116,22 +136,13 @@ export default {
     closeModal () {
       this.showModal = false;
     },
-    bookmark () {
-      // db.ref('/users/').push(this.resource);
-      console.log(this.resource);
-      // Push to firebase array
-    },
-    unBookmark () {
-      this.isBookmarked = false;
-      // Remove from firebase array
-    }
   }
 }
 </script>
 
 <style scoped>
 .card {
-  font-family: 'Khula', sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin-right: 20px;
   margin-top: 40px;
   width: 800px;
@@ -140,9 +151,13 @@ export default {
   background-color: #fff;
   border-bottom: none
 }
+.card-footer {
+  padding: 20px
+}
 .card-header-title {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   background-color: #fff;
   border-bottom: none;
 }
@@ -164,15 +179,11 @@ export default {
   align-items: center;
   background-color: #fafafa
 }
-.icon {
-  height: 70px;
-  width: 70px;
-  margin-left: -20px;
-  margin-right: -5px;
-}
 .author-link {
   color: #006ce4;
-  text-decoration: none
+  font-size: 16px;
+  text-decoration: none;
+  margin-bottom: -20px
 }
 .user-name {
   color: #006ce4;
@@ -180,18 +191,17 @@ export default {
 .user-name:hover {
   text-decoration: none;
 }
-.test {
+.right {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: -5px
 }
-.bookmark-icon {
-  height: 70px;
-  width: 70px;
+.fa {
+  color: #006ce4;
+  margin-right: 15px
+}
+.share {
+  margin-left: 700px;
   cursor: pointer;
-}
-.bookmark {
-  float: right;
 }
 </style>

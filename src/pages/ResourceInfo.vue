@@ -37,7 +37,7 @@
         <!-- Topics input -->
         <label class="label" style="margin-top: 20px">Topics</label>
         <p class="control">
-          <input class="input is-medium" type="text" placeholder="front-end development" @keyup.enter="addTag" v-model="resource.text">
+          <input class="input is-medium" type="text" placeholder="front-end development" @keyup.enter="addTag()" v-model="resource.text">
         </p>
           <span class="tag is-info is-medium" v-for="(tag, index) in resource.tags" style="margin-top: 10px; margin-bottom: 10px; margin-right: 5px">
           {{tag.text | capitalize}}
@@ -89,16 +89,7 @@ export default {
 			}
 		};
 	},
-  // firebase: {
-  //     resources: db.ref().child('resources')
-  //     // users: db.ref().child('users')
-  // },
   data () {
-    // console.log('resource to display', this.$route.params.key, this.$firebaseRefs);
-    // let key = this.$route.params.resourceId;
-		// let resource = this.$store.state.resources[key];
-    // console.log('data', this.$store.state.userInfo)
-    
     return this.loadData();
   },
   filters: {
@@ -148,7 +139,7 @@ export default {
       var tags = this.resource.tags;
       console.log(tags);
       tags.push({
-        id: this.resource.tags.length + 1,
+        id: this.resource.length + 1,
         text: this.resource.text
       });
       this.resource.text = '';
@@ -158,35 +149,22 @@ export default {
         tags.splice(index, 1);
     },
     deleteResource() {
-      // console.log('delete', this.$refs, this.$refs.confirmModal.$el);
-
       this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
     },
     saveToFB () {
       console.log('saving', newPostKey);
-      var newPostKey = this.resource['.key'] || db.ref('resources').push().key; // only create new key if undefined
-      // this.$store.state.postKey = newPostKey; // mutates stated --> move to store and use commit!!!
+      var newPostKey = this.resource['.key'] || db.ref('resources').push().key;
       this.$store.commit('addPostKey', newPostKey);
       var updates = {};
 
-      delete this.resource['.key']; // remove key before storing (if any) --> was a problem with updating existing resources
+      delete this.resource['.key']; 
 
-      // console.log('resource', this.resource);
       updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
-      updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; //this.resource;
+      updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; 
 
-      // console.log('updating', updates);
       console.log("Saving resource data...", updates)
       
       db.ref().update(updates);
-
-      // TODO: Find out how to clear inputs before the return statement.  
-
-      this.resource.title = '',
-      this.resource.type = '',
-      this.resource.desc = '',
-      this.resource.url = '',
-      this.resource.tags = []
 
       // navigate to create route by pushing to router
       router.push('/create');

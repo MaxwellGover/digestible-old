@@ -14,17 +14,17 @@
        
         <div class="nav-right nav-menu">
           <!-- Create quiz link -->
-          <router-link :to="'/info'" class="nav-item">
+          <router-link :to="'/info'" class="nav-item" style="font-size: 14px">
             Create a Quiz
           </router-link>
           <!-- Study link -->
-          <router-link :to="'/study'" class="nav-item">
+          <router-link :to="'/study'" class="nav-item" style="font-size: 14px">
             Study
           </router-link>
           <!-- Dropdown -->
           <div class="nav-item dropdown" v-if="userInfo.uid">
-            <a class="button dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {{userInfo.displayName}}
+            <a class="button dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <p style="font-size: 14px">{{userInfo.displayName}}</p>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -39,6 +39,16 @@
       <!-- End nav container -->
       </div>
     <!-- End nav -->
+    </nav>
+
+    <nav class="sub-nav nav has-shadow">
+      <div class="container">
+        <p class="nav-item" style="color: #9fa6ad; font-size: 14px"><b>Search resources by type:</b></p>
+        <router-link :to="'/type/articles'" class="nav-item is-tab sub-link">Online articles</router-link>
+        <router-link :to="'/type/videos'" class="nav-item is-tab sub-link">Videos</router-link>
+        <router-link :to="'/type/books'" class="nav-item is-tab sub-link">Books</router-link>
+        <router-link :to="'/type/podcasts'" class="nav-item is-tab sub-link">Podcasts</router-link>
+      </div>
     </nav>
 
     <div v-if="loading" class="spinner-wrapper">
@@ -119,15 +129,17 @@ export default {
 
 <style scoped>
 #app {
-  font-family: 'Khula', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   color: #2c3e50;
 }
 
 /* Navigation */
 .nav {
-  padding: 20px;
+  padding: 10px;
 }
-
+.sub-nav {
+  padding: 0px;
+}
 .nav-title {
   font-family: 'Chewy', cursive;
   font-size: 32px; 
@@ -146,11 +158,12 @@ export default {
 }
 
 .button {
-  border-color: #006ce4;
+  border-color: #fff;
+  background-color: #fff
 }
 
 .button:hover {
-  border-color: #006ce4;
+  border-color: #fff;
   text-decoration: none;
 }
 
@@ -213,6 +226,14 @@ export default {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.sub-link {
+  font-size: 14px
+}
+
+.dropdown-menu {
+  z-index: 500
 }
 
 /*.absolute-center {

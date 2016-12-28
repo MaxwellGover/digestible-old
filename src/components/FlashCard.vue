@@ -2,16 +2,17 @@
     <div class="notification" v-if="visible" transition="expand">
         <h2 class="message">{{message}}</h2>
         <p class="result">{{scoreText}} <strong> {{score.amount / score.total * 100}}%</strong></p>
-        <p class="note">Once you have answered all questions in a quiz correctly the resource will be added to your profile so other users can see what you've been learning! Correctly answered questions are also saved so you can study them later.</p>
+        <hr>
+        <p>Once you have answered all questions in a quiz correctly the resource will be added to your profile so other users can see what you've been learning! Correctly answered questions are also saved so you can study them later.</p>
     </div>
 </template>
 
 <script>
     const scoreMessages = {
-        0: 'Poor result. Please try again and check the resources for help.',
-        50: 'Not bad. But you can do better. Try again.',
-        80: 'Very good result.',
-        90: 'Perfect result'
+        0: '',
+        50: '',
+        80: '',
+        90: ''
     };
 
     export default {

@@ -1,19 +1,21 @@
 <template>
     <div class="question">
-        <h1>{{quiz.text}}</h1>
+        <h1 class="question-text"><b>{{quiz.text}}</b></h1>
         <div class="form-group" v-for="(option, index) in quiz.options" :class="answeredQuestions[quizIndex].answers[index].style = isCorrectAnswer(quizIndex, index)">
             <div class="checkbox">
-                <label>
+                <div class="answer">
                     <input type="checkbox" 
                         name="question"
                         :true-value="true"
                         :false-value="false" 
-                        @click="select(quizIndex, index, answeredQuestions[quizIndex].answers[index].selected)"/>{{option.text}}
-                </label>
-                <i class="fa fa-check-circle-o fa-2x pull-right" v-if="submitted && answeredQuestions[quizIndex].answers[index].style === 'correct'"></i>
-                <i class="fa fa-exclamation-circle fa-2x pull-right" v-if="submitted && answeredQuestions[quizIndex].answers[index].style === 'wrong-answer'"></i>
+                        @click="select(quizIndex, index, answeredQuestions[quizIndex].answers[index].selected)"/> 
+                        <p class="answer-text">{{option.text}}</p>
+                </div>
+                <i class="fa fa-check-circle-o fa-2x pull-right" style="color: #23d160" v-if="submitted && answeredQuestions[quizIndex].answers[index].style === 'correct'"></i>
+                <i class="fa fa-exclamation-circle fa-2x pull-right" v-if="submitted && answeredQuestions[quizIndex].answers[index].style === 'wrong-answer'" style="color: #ff3860"></i>
             </div>
         </div>
+        <hr>
     </div>
 </template>
 
@@ -77,13 +79,44 @@
     }
 </script>
 
-<style>
+<style scoped>
     .correct {
-        border: 1px solid green !important;
+        border: 2px solid #23d160 !important;
+        padding: 20px;
     }
 
     .wrong-answer {
-        border: 1px solid red !important;
+        border: 2px solid #ff3860 !important;
+        padding: 20px;
+    }
+
+    .question-text {
+        font-size: 28px;
+        margin-bottom: 20px;
+        font-family: 
+    }
+
+    .question {
+        margin-bottom: 20px;
+    }
+
+    .answer-text {
+        font-size: 16px;
+        color: #8f8f8f;
+        margin-left: 15px;
+    }
+
+    .checkbox {
+        display: flex;
+    }
+
+    .answer {
+        display: flex;
+        align-items: center;
+    }
+
+    .fa {
+        margin-left: 600px
     }
 
 </style>

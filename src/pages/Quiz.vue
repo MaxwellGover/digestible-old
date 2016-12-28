@@ -2,9 +2,7 @@
 
 	<div class="quiz container">
 
-		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" style="margin-right: 0"></resource-card>
-		
-		{{ resourceLink }}
+		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" :showShare="showShare" :resourceLink="resourceLink"style="margin-right: 0"></resource-card>
 
 		<div class="questions box container">
 			<div>
@@ -43,7 +41,7 @@ export default {
 				source: db.ref('resources/' + this.$route.params.resourceId),
 				asObject: true
 			},
-		};
+		}
 	},
 	data() {
 		this.$store.commit('resetForm');
@@ -53,6 +51,7 @@ export default {
 				lightResource: true 
 			},
 			showLearn: true,
+			showShare: false,
 			resourceId: this.$route.params.resourceId,
 			passedResources: [],
 			answeredQuestionsRes: [],
@@ -68,13 +67,15 @@ export default {
 
 		// Swap out buttons
 		this.showLearn = false;
+		this.showShare = true
 	},
 	computed: {
 		...mapState({
 			answers: state => state.quiz.answeredQuestions,
 			submitted: state => state.quiz.submittedStatus,
 			selectedCount: state => state.quiz.result.selectedCount,
-			result: state => state.quiz.result
+			result: state => state.quiz.result,
+			userInfo: state => state.userInfo
 		}),
 		score() {
 			if ( this.resource.quiz === undefined ) return; 
@@ -107,7 +108,7 @@ export default {
 
 			let getCorrectAnswerText = () => {
 				let result = {}
-				this.result.correctIds.forEach(({quizIndex, index}) =>{
+				this.result.correctIds.forEach(({quizIndex, index}) => {
 					let quiz = this.resource.quiz[quizIndex];
 					result[quizIndex] = result[quizIndex] || {}; // default to empty obj.
 
@@ -122,8 +123,10 @@ export default {
 
 				return {
 					[this.resource['.key']]: {
-						quizText: result
-					}
+						quizText: quizText(15).fill(result)
+					},
+
+					// TODO: router.push('/profile/' + authorId );
 				};
 			};
 
@@ -164,7 +167,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 	.questions {
 		margin-top: 20px;
 		padding: 40px;
@@ -175,5 +178,9 @@ export default {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+	.quiz-link {
+		display: flex;
+		margin-top: 20px
 	}
 </style>
