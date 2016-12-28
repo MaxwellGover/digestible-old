@@ -1,5 +1,6 @@
 <template>
 	<div class="container">
+		<p class="title">Online articles</p>
 		<resource-card v-for="(resource, index) in resources" v-if="resource.type === 'article'" :resource="resource" :showLearn="showLearn"></resource-card>
 	</div>
 </template>
@@ -46,4 +47,9 @@ export default {
 	align-self: center;
 	margin-top: 40px;
 }	
+.title {
+	font-size: 40px;
+	font-family: Patua One, cursive; 
+	margin-top: 40px
+}
 </style>

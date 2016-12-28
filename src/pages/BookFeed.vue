@@ -1,5 +1,6 @@
 <template>
 	<div class="container">
+		<p class="title">Books</p>
 		<resource-card v-for="(resource, index) in resources" v-if="resource.type === 'book'" :resource="resource" :showLearn="showLearn"></resource-card>
 	</div>
 </template>
@@ -45,5 +46,10 @@ export default {
 .button {
 	align-self: center;
 	margin-top: 40px;
+}
+.title {
+	font-size: 40px;
+	font-family: Patua One, cursive; 
+	margin-top: 40px
 }
 </style>

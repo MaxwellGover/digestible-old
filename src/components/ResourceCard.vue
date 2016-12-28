@@ -30,19 +30,6 @@
         <i v-if="showShare" @click="showModal()" class="share fa fa-share-alt fa-3x" aria-hidden="true"></i>
     </footer>
 
-    <div class="modal" v-bind:is-active="false">
-      <div class="modal-background"></div>
-        <div class="modal-content" style="padding: 20px">
-        <!-- Any other Bulma elements you want -->
-        <label class="label" style="margin-bottom: 10px">Share this resource</label>
-        <p class="control">
-          {{resourceLink}}
-        </p>
-        </div>
-       <button class="modal-close" @click="hideModal()"></button>
-      </div>
-    </div>
-
 </template>
 
 <script>
@@ -91,8 +78,6 @@ export default {
   data() {
     return {
       error: false,
-      isBookmarked: false,
-      modalOpen: false,
     };
   },
   computed: {

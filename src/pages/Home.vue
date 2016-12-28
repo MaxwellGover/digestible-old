@@ -24,6 +24,7 @@
       </div>
       <div class="side-bar">
         <p class="side-bar-header"><b>Here are some users to check out</b></p>
+        <small style="font-size: 12px; margin-top: 5px; color: #8f8f8f">See what other users are learning.</small>
         <hr>
         <side-bar v-for="(user, index) in users" :user="user"></side-bar>
       </div>

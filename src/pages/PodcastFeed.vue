@@ -1,5 +1,6 @@
 <template>
 	<div class="container">
+		<p class="title">Podcasts</p>
 		<resource-card v-for="(resource, index) in resources" v-if="resource.type === 'podcast'" :resource="resource" :showLearn="showLearn"></resource-card>
 	</div>
 </template>
@@ -32,18 +33,23 @@ export default {
 </script>
 
 <style scoped>
-	.none {
-		font-size: 32px;
-		margin-top: 40px;
-		
-	}
-	.none-messasge {
-		display: flex;
-		flex-direction: column;
-		align-items: center
-	}
-	.button {
-		align-self: center;
-		margin-top: 40px;
-	}
+.none {
+	font-size: 32px;
+	margin-top: 40px;
+	
+}
+.none-messasge {
+	display: flex;
+	flex-direction: column;
+	align-items: center
+}
+.button {
+	align-self: center;
+	margin-top: 40px;
+}
+.title {
+	font-size: 40px;
+	font-family: Patua One, cursive; 
+	margin-top: 40px
+}
 </style>
