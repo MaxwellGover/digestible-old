@@ -26,7 +26,7 @@ export const state = {
 };
 
 const plugins = [
-    debug ? createLogger(): null,
+    debug ? createLogger(): function () { },
     createPersistedState({
         paths: ['userInfo', 'postKey']
     })

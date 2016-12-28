@@ -27,7 +27,7 @@
     <!-- Tab panes -->
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="passed">
-        <div class="container">
+        <div class="container passed-resources">
           <resource-card v-for="resource in joinedPassedResources" :resource="resource" :passed="passedResources"></resource-card>
           <p v-if="!joinedPassedResources">No quizes passed yet.</p>
         </div>
@@ -199,6 +199,10 @@ export default {
 </script>
 
 <style scoped>
+.passed-resources {
+  width: 700px;
+}
+
 .profile-pic {
   border-radius: 50%
 }
