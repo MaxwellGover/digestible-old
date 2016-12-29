@@ -87,6 +87,9 @@ export default {
       showQuestions: false,
     }
   },
+  firebase: {
+
+  },
   computed: {
     ...mapState({
         // quiz: state => state.quiz,
@@ -104,11 +107,12 @@ export default {
   },
   created() {
 		let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
-    this.$firebaseRefs['questions'] = quizRef;
-    this.$bindAsObject('questions', quizRef);
+    this.$firebaseRefs['fbQuestions'] = quizRef;
+    this.$bindAsObject('fbQuestions', quizRef);
 
     quizRef.on('value', (snapshot) => {
       let questions = snapshot.val();
+      console.log('init questions', questions);
 
       // init questions 
       // vuefire would be only bound to local state --> dispatch so we have it on store
@@ -161,7 +165,7 @@ export default {
       let updates = {};
       
       console.log('save', this.questions);
-      this.$firebaseRefs['questions'].set(this.questions); //vuefire to update questions
+      this.$firebaseRefs['fbQuestions'].set(this.questions); //vuefire to update questions
 
       // Push to route {{ $route.params.resourceId }}
       router.push('/quiz/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)

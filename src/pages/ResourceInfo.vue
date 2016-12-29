@@ -152,8 +152,8 @@ export default {
       this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
     },
     saveToFB () {
-      console.log('saving', newPostKey);
       var newPostKey = this.resource['.key'] || db.ref('resources').push().key;
+      console.log('saving', newPostKey);
       this.$store.commit('addPostKey', newPostKey);
       var updates = {};
 

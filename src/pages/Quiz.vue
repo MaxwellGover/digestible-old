@@ -114,16 +114,17 @@ export default {
 
 					Object.assign(result[quizIndex], {
 						questionText: quiz.text,
-						summaryText: quiz.summaryText,
+						summaryText: quiz.summaryText || '', // default to empty string --> model changed / new property (check how it is used)
 						[index]: {
 							text: quiz.options[index].text
 						}
 					});
 				});
+        console.log('correct answers', result);
 
 				return {
 					[this.resource['.key']]: {
-						quizText: quizText(15).fill(result)
+						'quizText': result // quizText(15).fill(result) <--- quizText is not defined.
 					},
 
 					// TODO: router.push('/profile/' + authorId );
@@ -150,7 +151,7 @@ export default {
 
 						// save answeredQuestion as text in user/uid/answeredQuestion/resourceID
 						let answerData = getCorrectAnswerText();
-						// console.log('answeredQuestions', answerData);
+						console.log('answeredQuestions', answerData);
 						this.$firebaseRefs.answeredQuestions.set(answerData);
 						// no need to update store --> will be loaded into state in study component
 

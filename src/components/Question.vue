@@ -3,12 +3,12 @@
         <h1 class="question-text"><b>{{quiz.text}}</b></h1>
         <div class="form-group" v-for="(option, index) in quiz.options" :class="answeredQuestions[quizIndex].answers[index].style = isCorrectAnswer(quizIndex, index)">
             <div class="checkbox">
-                <div class="answer">
+                <div class="answer" @click.prevent="select(quizIndex, index, answeredQuestions[quizIndex].answers[index].selected)">
                     <input type="checkbox" 
                         name="question"
+                        v-model="answeredQuestions[quizIndex].answers[index].selected"
                         :true-value="true"
-                        :false-value="false" 
-                        @click="select(quizIndex, index, answeredQuestions[quizIndex].answers[index].selected)"/> 
+                        :false-value="false"/> 
                         <p class="answer-text">{{option.text}}</p>
                 </div>
                 <i class="fa fa-check-circle-o fa-2x pull-right" style="color: #23d160" v-if="submitted && answeredQuestions[quizIndex].answers[index].style === 'correct'"></i>
@@ -16,6 +16,7 @@
             </div>
         </div>
         <hr>
+        {{quiz}}
     </div>
 </template>
 
