@@ -1,25 +1,19 @@
 <template v-if="this.userInfo">
+<div>
   <div>
     <div class="jumbotron jumbotron-fluid">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-2">
-            <img class="profile-pic" :src="userDataPublic.profilePicture" alt="User image">
-          </div>
-          <div class="col-md-10">
-            <h1 class="display-5">{{userDataPublic.name}}</h1>
-            <!--{{userInfo}}-->
-            <p class="lead"></p>
-            <badge :users="users"></badge>
-          </div>
-        </div>
+      <div class="user-info container">
+        <img class="profile-pic" :src="userDataPublic.profilePicture" alt="User image">
+        <h1 class="user-name">{{userDataPublic.name}}</h1>
       </div>
     </div>
+  </div>
+    
     <nav class="nav has-shadow">
       <div class="container">
         <div class="nav-center">
-          <a class="nav-item is-tab" :class="{'is-active': tab['passed']}" style="color: #f16233" href="#passed" role="tab" data-toggle="tab" @click="tab={};tab['passed']=true">Passed resources</a>
-          <a class="nav-item is-tab" :class="{'is-active': tab['created']}" style="color: #f16233" href="#created" role="tab" data-toggle="tab"  @click="tab={};tab['created']=true">Created resources</a>
+          <a class="nav-item is-tab" :class="{'is-active': tab['passed']}" style="color: #006ce4" href="#passed" role="tab" data-toggle="tab" @click="tab={};tab['passed']=true">Passed resources</a>
+          <a class="nav-item is-tab" :class="{'is-active': tab['created']}" style="color: #006ce4" href="#created" role="tab" data-toggle="tab"  @click="tab={};tab['created']=true">Created resources</a>
         </div>
       </div>
     </nav>
@@ -28,17 +22,20 @@
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="passed">
         <div class="container passed-resources">
-          <resource-card v-for="resource in joinedPassedResources" :resource="resource" :passed="passedResources"></resource-card>
+          <resource-card v-for="resource in joinedPassedResources" :resource="resource" :passed="passedResources" :showLearn="showLearn" style="align: center"></resource-card>
           <p v-if="!joinedPassedResources">No quizes passed yet.</p>
         </div>
       </div>
       <div role="tabpanel" class="tab-pane" id="created">
-        <created-resources :data="joinedResources" :passed="passedResources"></created-resources>
-        <p v-if="createdResources.length===0">No resources created.</p>
+        <div class="container created-resources">
+          <created-resources :data="joinedResources" :passed="passedResources"></created-resources>
+          <p v-if="createdResources.length === 0">No resources created.</p>
+        </div>
       </div>
     </div>
 
   </div>
+</div>
 </template>
 
 <script>
@@ -99,6 +96,7 @@ export default {
       joinedResources: [],
       joinedPassedResources: [],
       resources: [],
+      showLearn: true,
       tab: {
         passed: true
       } // active tab
@@ -199,21 +197,39 @@ export default {
 </script>
 
 <style scoped>
-.passed-resources {
-  width: 700px;
-}
-
 .profile-pic {
-  border-radius: 50%
+  border-radius: 50%;
+  height: 120px;
+  width: 120px;
+}
+.user-info {
+  display: flex;
+  align-items: center
+}
+.user-name {
+  font-size: 32px;
+  margin-left: 40px
 }
 .jumbotron {
   background-color: white;
   margin-bottom: 0px
 }
+.nav-item {
+  color: #006ce4;
+}
 .nav-item:hover {
-  color: #f16233
+  color: #006ce4;
+  text-decoration: none
 }
 .display-name {
   font-size: 28px
+}
+.passed-resources {
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+}
+.created-resources {
+  width: 700px;
 }
 </style>

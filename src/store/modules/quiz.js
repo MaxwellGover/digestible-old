@@ -15,26 +15,71 @@ const quiz = {
             // }]
             selectedCount: 0 // store alle selected checkboxes
         },
+        singleQuestion: undefined, // needed for score for study, undef or question to count totalCorrectAnswers
+        resource: {},
         questions: []
     },
     getters: {
     // submittedStatus: state => state.submittedStatus
+      score (state) {
+        console.log('getter', state);
+        if ( state.resource.quiz === undefined ) return; 
+
+        let isAnswer = (option) => option.isAnswer===true;
+        let totalCorrectAnswers = 0;
+
+        if (!state.singleQuestion) {
+          state.resource.quiz.forEach((question) => {
+            totalCorrectAnswers += question.options.filter(isAnswer).length;
+          });
+        }
+        else {
+          totalCorrectAnswers = state.singleQuestion.options.filter(isAnswer).length;
+          console.log('singleQuestion', totalCorrectAnswers);
+        }
+        let selected = state.selectedCount;
+        let incorrectCount = (selected > totalCorrectAnswers) ? selected - totalCorrectAnswers: 0; 
+        let correctCount = state.result.correctIds.length;
+
+        let amount = correctCount - incorrectCount;
+        
+        if (amount < 0) { 
+          amount = 0;
+        }
+
+        return {
+          amount,
+          total: totalCorrectAnswers // total correct answer count - used to calculated messages
+        };
+      }
     },
     actions: {
         initQuestions({commit}, initData) {
             console.log('initQuestions', initData);
             commit('mutateQuestions', initData);
+        },
+        updateSingleQuestion({commit}, question) {
+          commit('mutateSingleQuestion', question);
+        },
+        updateResource({commit}, resource) {
+          commit('mutateResource', resource);
+        },
+        prepareAnswerList({commit}, resource) {
+          commit('mutateAnswerList', resource);
         }
     },
     mutations: Object.assign({}, 
         // VuexFire.moduleMutations('quiz'),
         {
+            mutateSingleQuestion(state, question) { // needed for study component score computation
+              state.singleQuestion = question
+            },
             /**
              * Prepare answer array
              * @input resource
              */
-            prepareAnswerList(state, resource) {
-                // console.log('prepareAnswerList', resource);
+            mutateAnswerList(state, resource) {
+                console.log('prepareAnswerList', resource);
                 let answers = resource.quiz.map((question, index) => {
                     console.log('question prepare', question);
                     return {
@@ -51,6 +96,9 @@ const quiz = {
                 });
 
                 state.answeredQuestions = answers;
+            },
+            mutateResource(state, resource) {
+              state.resource = resource;
             },
             mutateQuestions(state, questions) {
                 state.questions = questions;

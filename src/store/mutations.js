@@ -4,6 +4,9 @@
 
 const mutations = {
     // VuexFireMutations,
+    mutateAnsweredQuestions(state, questions) {
+      state.answeredQuestions = questions;
+    },
     addPostKey(state, key) {
       state.postKey = key;
     },

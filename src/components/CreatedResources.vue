@@ -1,7 +1,7 @@
 <template v-if="this.userInfo">
   <div class="created-resources container">
     <div v-for="resource in data"> <!-- div just for debugging-->
-    <resource-card  :resource="resource" :passed="passed"></resource-card>
+    <resource-card  :resource="resource" :passed="passed" :showLearn="showLearn"></resource-card>
     <!--created-resources passed: {{getPassedResource(resource)}}
 
     <br/>
@@ -28,12 +28,14 @@ Vue.use(VueFire)
 export default {
   name: 'created-resources',
   props: ['data', 'passed'],
-  components: { ResourceCard }
+  components: { ResourceCard },
+  data () {
+    return {
+      showLearn: true 
+    }
+  }
 }
 </script>
 
 <style>
-.created-resources {
-  width: 700px
-}
 </style>

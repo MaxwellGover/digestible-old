@@ -4,7 +4,7 @@
       <button class="delete" v-on:click="removeNotification"></button>
       <div class="container">
         <p class="notification-text">Hey there! Are you an absolute beginner to web design or development? Click
-          <router-link to="/getting-started" style="color: #1da1f2"><em>here</em></router-link>
+          <router-link to="/getting-started" style="color: #75fab4"><em>here</em></router-link>
         </p>
       </div>
     </div>
@@ -20,10 +20,12 @@
     </div>
     <div class="home container">
       <div class="feed">
-        <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources"></resource-card>
+        <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources" :showLearn="showLearn"></resource-card>
       </div>
       <div class="side-bar">
         <p class="side-bar-header"><b>Here are some users to check out</b></p>
+        <small style="font-size: 12px; margin-top: 5px; color: #8f8f8f">See what other users are learning.</small>
+        <hr>
         <side-bar v-for="(user, index) in users" :user="user"></side-bar>
       </div>
       <!--{{resources}}-->
@@ -53,18 +55,19 @@ export default {
   },
   computed: mapState({
     userInfo: state => state.userInfo,
-    users: state => state.users
   }),
   firebase() {
     return {
       resources: db.ref().child('resources'),
-      passedResources: db.ref('/users/' + this.$parent.$store.state.userInfo.uid + '/passedResources')
+      passedResources: db.ref('/users/' + this.$parent.$store.state.userInfo.uid + '/passedResources'),
+      users: db.ref().child('users')
     }
   },
   data () {
     return {
       jumbotronHeader: "<strong>Retain the Web</strong>",
-      show: true
+      show: true,
+      showLearn: true
     }
   },
   methods: {
@@ -99,12 +102,14 @@ export default {
   }
   
   .side-bar {
+    display: flex;
+    flex-direction: column;
     margin-top: 40px;
   }
   
   .side-bar-header {
     font-size: 16px;
-    margin-bottom: 15px;
+    
   }
   
   .jumbotron {
@@ -120,6 +125,22 @@ export default {
     margin-top: 60px
   }
   
+  .popular-resources {
+    margin-top: 40px;
+    font-size: 16px
+  }
+
+  .popular-resources-list {
+    margin-top: 10px
+  }
+
+  .popular-resource-item {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 18px
+  }
+
   .hero-header {
     font-size: 40px;
   }
@@ -140,12 +161,17 @@ export default {
     color: #fff;
   }
   
-  .notification {
-    padding: 40px;
-    margin-bottom: 0px;
-  }
-  
   .notification-text {
     font-size: 18px;
+    color: #fff;
+  }
+
+  .notification {
+    background-color: #006ce4
+  }
+  
+  a {
+    color: #000;
+    text-decoration: none
   }
 </style>

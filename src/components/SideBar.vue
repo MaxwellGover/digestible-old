@@ -1,7 +1,7 @@
 <template>
 	<div class="side-bar-item">
 	    <img class="side-bar-img" :src="user.profilePicture" alt=""/>
-	    {{user.name}}
+	    <router-link class="user-link" :to="'/profile/' + user['.key']"><b>{{user.name}}</b></router-link>
 	</div>
 </template>
 
@@ -27,5 +27,13 @@ export default {
     height: 40px;
     width: 40px;
     border-radius: 50%;
+  }
+  .user-link {
+    color: #8f8f8f;
+    font-size: 14px;
+    text-decoration: none
+  }
+  .user-link:hover {
+    color: #000;
   }
 </style>

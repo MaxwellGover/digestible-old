@@ -14,6 +14,7 @@ const debug = process.env.NODE_ENV !== 'production'
 export const state = {
     userInfo: {},
     users: {},
+    // resource: {},
     resources: [],
     passedResources: [],
     answeredQuestions: [],
@@ -26,7 +27,7 @@ export const state = {
 };
 
 const plugins = [
-    debug ? createLogger(): function () { },
+    debug ? createLogger(): null,
     createPersistedState({
         paths: ['userInfo', 'postKey']
     })

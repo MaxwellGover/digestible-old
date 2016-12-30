@@ -24,6 +24,7 @@ function signIn(commit) {
         name: user.displayName,
         email: user.email,
         profilePicture: user.photoURL,
+        isExpert: false
       });
 
       db.ref('users/' + user.uid).set(fbUser); // update user
@@ -44,6 +45,9 @@ function signIn(commit) {
 export const actions = {
   addPassedResources({commit}, data) {
     commit('mutatePassedResources', data);
+  },
+  updateAnsweredQuestions({commit}, answeredQuestions) {
+    commit('mutateAnsweredQuestions', answeredQuestions);
   },
   checkAuth({commit}) {
     // console.log('checkAuth', auth.currentUser, this)

@@ -6,9 +6,7 @@
       <label class="label" style="margin-bottom: 10px">Question {{index++}}</label>
       <p class="control is-grouped">
         <textarea class="textarea is-medium" type="text" placeholder="Enter a question"  v-model="question.text"></textarea>
-        <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeQuestion(index)">
-          <span style="color: #ff3860"><i class="fa fa-trash-o 5x" aria-hidden="true"></i></span>
-        </a>
+          <span style="color: #ff3860; margin-left: 15px" @click="removeQuestion(index)"><i class="fa fa-trash-o 5x" aria-hidden="true"></i></span>
       </p>
       </div>
       </br>
@@ -16,10 +14,9 @@
         <p class="control is-grouped">
           <input class="checkbox" type="checkbox" v-model="option.isAnswer">
           <input class="input is-medium is-expanded" type="text" placeholder="Enter an option" v-model="option.text">
-          <a class="button is-danger is-medium is-outlined" style="margin-left: 10px" @click="removeOption(question, option)">
-            <span class="remove" style="color: #ff3860"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
-          </a>
+            <span class="remove" style="color: #ff3860; margin-left: 15px; margin-top: 10px" @click="removeOption(question, option)"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
         </p>
+        <small style="font-size: 14px; margin-left: 25px">Mark the checkbox to the left is this is the right answer.</small>
       </div>
       <a class="add-option button is-white" @click="addOption(question)"><span class="remove" style="color: #006ce4">Add an option</span></a>
       <div>
@@ -90,6 +87,9 @@ export default {
       showQuestions: false,
     }
   },
+  firebase: {
+
+  },
   computed: {
     ...mapState({
         // quiz: state => state.quiz,
@@ -105,19 +105,14 @@ export default {
     //   return state.quiz.questions;
     // }
   },
-  firebase: { // vuefire only used for storing db.ref from created hook
-    // we could add the reference here but I still don't know how to access $store.state here
-  },
   created() {
-    // this.quizTestOptions = {cancelOnly: true, cancelCaption: 'Close'};
-
-		// console.log('created', this.$store.state.postKey);
 		let quizRef = db.ref('/resources/' + this.$store.state.postKey + '/quiz');
-    this.$firebaseRefs['questions'] = quizRef;
-    this.$bindAsObject('questions', quizRef);
+    this.$firebaseRefs['fbQuestions'] = quizRef;
+    this.$bindAsObject('fbQuestions', quizRef);
 
     quizRef.on('value', (snapshot) => {
       let questions = snapshot.val();
+      console.log('init questions', questions);
 
       // init questions 
       // vuefire would be only bound to local state --> dispatch so we have it on store
@@ -170,10 +165,10 @@ export default {
       let updates = {};
       
       console.log('save', this.questions);
-      this.$firebaseRefs['questions'].set(this.questions); //vuefire to update questions
+      this.$firebaseRefs['fbQuestions'].set(this.questions); //vuefire to update questions
 
       // Push to route {{ $route.params.resourceId }}
-      router.push('/info/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)
+      router.push('/quiz/' + this.$store.state.postKey); // postKey saved in localstorage (so reloading will work)
     }
 	}
 }
@@ -235,7 +230,7 @@ export default {
   padding: 60px;
 }
 .fa:hover {
-  color: #fff;
+  cursor: pointer;
 }
 .input:focus {
   border-color: #006ce4;
