@@ -1,30 +1,56 @@
 <template>
-
 	<div class="quiz container">
-
-		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" :showShare="showShare" :resourceLink="resourceLink"style="margin-right: 0"></resource-card>
-
+		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" :showShare="showShare" :resourceLink="resourceLink" style="margin-right: 0"></resource-card>
 		<div class="questions box container">
-			<div>
+			
+			<div class="quiz-form">
 				<form @submit.prevent="submitQuiz"> 
 					<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>
 					<flash-card :score="score" :visible="submitted" style="margin-top: 40px"></flash-card>
-					<button type="submit" class="button is-info pull-right" :disabled="submitted" @click="submitQuiz()">Submit</button>
+					<button type="submit" class="button is-black" :disabled="submitted" @click="submitQuiz()">Submit</button>
 				</form>
 			</div>
+			
+			<div class="side-bar">
+				<div class="share-box">
+					<p class="side-item-header"><b>SHARE THIS RESOURCE</b></p>
+					<social 
+						class="social-links"
+						v-bind:url="resourceLink"
+						v-bind:title="resource.title"
+						v-bind:description="resource.description"
+						hashtags="digestible"
+						inline-template>
+						<div>
+							<facebook class="icon">
+								<i class="fa fa-facebook"></i>
+							</facebook>
+							<twitter class="icon">
+	        					<i class="fa fa-twitter"></i>
+	      					</twitter>
+	      					<linkedin class="icon">
+	        					<i class="fa fa-linkedin"></i>
+	      					</linkedin>
+						</div>
+					</social>
+				</div>
+				
+				<div class="related-resources">
+					<p class="side-item-header"><b>RELATED RESOURCES</b></p>
+				</div>
+			
+			</div>
 		</div>
-	
 	</div>
-
 </template>
 
 <script>
-
 import db from '../db';
 
 import ResourceCard from '../components/ResourceCard'
 import FlashCard from '../components/FlashCard' // display info after submitting the answers
 import Question from '../components/Question'
+var social = require('vue-social-sharing');
 
 import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 
@@ -33,7 +59,8 @@ export default {
 	components: { 
     	ResourceCard, 
 		FlashCard,
-		Question
+		Question,
+		social
 	},
 	firebase() {
 		return {
@@ -169,18 +196,53 @@ export default {
 
 <style scoped>
 	.questions {
+		display: flex;
+		justify-content: space-between;
 		margin-top: 20px;
-		padding: 40px;
-		width: 800px;
-		background-color: white;
+		width: 900px;
+		
+	}
+	.quiz-form {
+		width: 700px;
+		padding: 20px;
+		align-self: flex-start;
+		border-right: 2px solid #eceeef;
 	}
 	.quiz {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
-	.quiz-link {
+	.button {
+		margin-top: 40px;
+	}
+	.side-bar {
 		display: flex;
-		margin-top: 20px
+		flex-direction: column;
+		width: 250px;
+	}
+	.share-box {
+		display: flex;
+		flex-direction: column;
+		align-content: center;
+		padding: 5px;
+		margin-left: 10px;
+	}
+	.side-item-header {
+		font-size: 14px;
+		color: #8f8f8f;
+	}
+	.social-links {
+		display: flex;
+		justify-content: space-around;
+		margin-top: 25px;
+	}
+	.related-resources {
+		display: flex;
+		flex-direction: column;
+		align-content: center;
+		padding: 5px;
+		margin-left: 10px;
+		margin-top: 40px;
 	}
 </style>

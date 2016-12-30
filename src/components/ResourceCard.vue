@@ -6,13 +6,13 @@
       <div class="right">
         <p class="card-header-title">
           <router-link :to="'/profile/' + resource.authorId" class="author-link">{{resource.authorName}}</router-link><br>
-          <small style="font-size: 14px; color: #8f8f8f">Resource type: <span><router-link :to="'/type/' + resource.type + 's'" style="color: #006ce4">{{resource.type | capitalize}}</router-link></span></small>
+          <small style="font-size: 14px; color: #8f8f8f">Resource type: <span><router-link :to="'/type/' + resource.type + 's'" style="color: #333; font-size: 14px">{{resource.type | capitalize}}</router-link></span></small>
         </p>
     </header>
     
     <div class="card-content">
       <div class="content">
-        <p style="font-size: 32px; margin-bottom: 5px; font-family: 'Patua One', cursive"><b>{{resource.title}}</b></p>
+        <router-link :to="'/quiz/' + resource['.key']"><p class="resource-title"><b>{{resource.title}}</b></p></router-link>
         <p style="font-size: 18px; color: #8f8f8f">{{resource.description}}</p>
         <!-- Learn button -->
         <router-link v-if="showLearn" class="button is-light is-medium" :to="'/quiz/' + resource['.key']">
@@ -27,7 +27,6 @@
     <footer class="card-footer">
         <i class="fa fa-thumbs-o-up fa-3x" aria-hidden="true"></i>
         <p style="font-size: 16px; margin-top: 5px">{{resource.timesPassed}}</p>
-        <i v-if="showShare" @click="showModal()" class="share fa fa-share-alt fa-3x" aria-hidden="true"></i>
     </footer>
 
 </template>
@@ -68,12 +67,6 @@ export default {
     showLearn: {
       type: Boolean, 
     },
-    showShare: {
-      type: Boolean
-    },
-    resourceLink: {
-      type: String
-    }
   },
   data() {
     return {
@@ -126,6 +119,9 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none
+}
 .card {
   font-family: 'Roboto', sans-serif;
   margin-right: 20px;
@@ -146,6 +142,13 @@ export default {
   background-color: #fff;
   border-bottom: none;
 }
+.resource-title {
+  font-size: 32px; 
+  color: #333;
+  margin-bottom: 5px; 
+  font-family: 'Patua One', cursive;
+  text-decoration: none;
+}
 .button {
   text-decoration: none
 }
@@ -165,8 +168,8 @@ export default {
   background-color: #fafafa
 }
 .author-link {
-  color: #006ce4;
-  font-size: 16px;
+  color: #333;
+  font-size: 14px;
   text-decoration: none;
   margin-bottom: -20px
 }
@@ -182,11 +185,7 @@ export default {
   justify-content: center;
 }
 .fa {
-  color: #006ce4;
+  color: #333;
   margin-right: 15px
-}
-.share {
-  margin-left: 700px;
-  cursor: pointer;
 }
 </style>

@@ -95,6 +95,7 @@ export default {
       passedResources: [],
       joinedResources: [],
       joinedPassedResources: [],
+      answeredQuestions: [],
       resources: [],
       showLearn: true,
       tab: {

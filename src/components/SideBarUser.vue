@@ -1,14 +1,14 @@
 <template>
 	<div class="side-bar-item">
 	    <img class="side-bar-img" :src="user.profilePicture" alt=""/>
-	    <router-link class="user-link" :to="'/profile/' + user['.key']"><b>{{user.name}}</b></router-link>
+	    <router-link class="user-link" :to="'/profile/' + user['.key']">{{user.name}}</router-link>
 	</div>
 </template>
 
 <script>
 
 export default {
-	name: 'side-bar',
+	name: 'SideBarUser',
 	props: ['user'],
 	data () {
 	  return {};  

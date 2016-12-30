@@ -36,7 +36,7 @@ export const routes = [
   { path: '/type/books', component: BookFeed },
   { path: '/type/podcasts', component: PodcastFeed },
   { path: '/quiz/:resourceId', component: Quiz },
-  { path: '/study', component: Study },
+  { path: '/profile/:uid/study', component: Study },
   { path: '*', component: NotFoundComponent }
 ];
 

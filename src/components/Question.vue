@@ -15,7 +15,6 @@
                 <i class="fa fa-exclamation-circle fa-2x pull-right" v-if="submitted && answeredQuestions[quizIndex].answers[index].style === 'wrong-answer'" style="color: #ff3860"></i>
             </div>
         </div>
-        <hr>
     </div>
 </template>
 
@@ -91,9 +90,8 @@
     }
 
     .question-text {
-        font-size: 28px;
+        font-size: 18px;
         margin-bottom: 20px;
-        font-family: 
     }
 
     .question {
@@ -101,9 +99,10 @@
     }
 
     .answer-text {
-        font-size: 16px;
+        font-size: 14px;
         color: #8f8f8f;
         margin-left: 15px;
+        margin-bottom: 10px;
     }
 
     .checkbox {
@@ -112,7 +111,7 @@
 
     .answer {
         display: flex;
-        align-items: center;
+        align-items: baseline;
     }
 
     .fa {
