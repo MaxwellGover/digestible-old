@@ -18,7 +18,7 @@
         <router-link v-if="showLearn" class="button is-light is-medium" :to="'/quiz/' + resource['.key']">
           Learn
         </router-link>
-        <a v-bind:href="resource.url" class="button is-light is-medium" v-else>
+        <a v-bind:href="resource.url" class="button is-light is-medium" target="_blank" v-else>
           Go to resource
         </a>
       </div>

@@ -1,6 +1,6 @@
 <template>
     <div class="share-box box">
-    	<p class="share-box-header"><b>FIND DIGESTIBLE HELPFUL? SHARE US WITH YOUR FRIENDS!</b></p>
+    	<p class="share-box-header"><b>FIND DIGESTIBLE HELPFUL? SHARE IT WITH YOUR FRIENDS!</b></p>
     	<social 
     		class="social-links"
     		url="http://www.digestible.io"
