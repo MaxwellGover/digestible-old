@@ -18,6 +18,10 @@ export const state = {
     resources: [],
     passedResources: [],
     answeredQuestions: [],
+    // studyStatus: {
+    //   allDone: false,
+    //   quizAvailable: false
+    // },
     postKey: '',
     modal: {
         el: '',     // el = modal container

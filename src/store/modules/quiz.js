@@ -15,7 +15,6 @@ const quiz = {
             // }]
             selectedCount: 0 // store alle selected checkboxes
         },
-        singleQuestion: undefined, // needed for score for study, undef or question to count totalCorrectAnswers
         resource: {},
         questions: []
     },
@@ -28,15 +27,10 @@ const quiz = {
         let isAnswer = (option) => option.isAnswer===true;
         let totalCorrectAnswers = 0;
 
-        if (!state.singleQuestion) {
-          state.resource.quiz.forEach((question) => {
+        state.resource.quiz.forEach((question) => {
             totalCorrectAnswers += question.options.filter(isAnswer).length;
-          });
-        }
-        else {
-          totalCorrectAnswers = state.singleQuestion.options.filter(isAnswer).length;
-          console.log('singleQuestion', totalCorrectAnswers);
-        }
+        });
+
         let selected = state.selectedCount;
         let incorrectCount = (selected > totalCorrectAnswers) ? selected - totalCorrectAnswers: 0; 
         let correctCount = state.result.correctIds.length;
@@ -58,9 +52,6 @@ const quiz = {
             console.log('initQuestions', initData);
             commit('mutateQuestions', initData);
         },
-        updateSingleQuestion({commit}, question) {
-          commit('mutateSingleQuestion', question);
-        },
         updateResource({commit}, resource) {
           commit('mutateResource', resource);
         },
@@ -71,9 +62,6 @@ const quiz = {
     mutations: Object.assign({}, 
         // VuexFire.moduleMutations('quiz'),
         {
-            mutateSingleQuestion(state, question) { // needed for study component score computation
-              state.singleQuestion = question
-            },
             /**
              * Prepare answer array
              * @input resource

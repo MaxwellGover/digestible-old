@@ -49,6 +49,9 @@ export const actions = {
   updateAnsweredQuestions({commit}, answeredQuestions) {
     commit('mutateAnsweredQuestions', answeredQuestions);
   },
+  updateStudyStatus({commit}, status) {
+    commit('mutateStudyStatus', status);
+  },
   checkAuth({commit}) {
     // console.log('checkAuth', auth.currentUser, this)
     // if (!auth.currentUser && !window.localStorage.get('vuex').userInfo) {

@@ -7,8 +7,14 @@ const mutations = {
     mutateAnsweredQuestions(state, questions) {
       state.answeredQuestions = questions;
     },
+    updateAnsweredQuestion(state, {key, index, props}) {
+      state.answeredQuestions[key][index] = props;
+    },
     addPostKey(state, key) {
       state.postKey = key;
+    },
+    mutateStudyStatus (state, status) {
+      state.studyStatus = status
     },
     mutateResources (state, resources) {
       // state.resources.push(resources);

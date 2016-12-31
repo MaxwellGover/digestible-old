@@ -19,12 +19,12 @@
 </template>
 
 <script>
-
 import db from '../db';
 
 import ResourceCard from '../components/ResourceCard'
 import FlashCard from '../components/FlashCard' // display info after submitting the answers
 import Question from '../components/Question'
+import {SPACED_REPETITION_DEFAULT} from '../components/spacedrepetition-constants'
 
 import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 
@@ -121,9 +121,19 @@ export default {
 				// 		'quizText': result // quizText(15).fill(result) <--- quizText is not defined.
 				// 	}
 				// };
-        return {
-					[this.resource['.key']]: true
+        // console.log('resource', this.resource);
+        let newAnswer = {
+          [this.resource['.key']]: Array(this.resource.quiz.length).fill(SPACED_REPETITION_DEFAULT)
+          // {
+          //     difficulty: SPACED_REPETITION_DEFAULT.difficulty,
+          //     daysBetweenReviews: SPACED_REPETITION_DEFAULT.daysBetweenReviews,
+          //     percentOverdue: SPACED_REPETITION_DEFAULT.percentOverdue,
+          //     dateLastReviewed: SPACED_REPETITION_DEFAULT.dateLastReviewed()
+          // })
 				};
+        console.log(newAnswer);
+        
+        return newAnswer;
 			};
 
 			if (!this.options.testMode) {
@@ -147,7 +157,7 @@ export default {
 						// save answeredQuestion as text in user/uid/answeredQuestions/resourceID
 						let answerData = getCorrectAnswerText();
 						console.log('answeredQuestions', answerData);
-						this.$firebaseRefs.answeredQuestions.push(answerData);
+						this.$firebaseRefs.answeredQuestions.update(answerData);
 						// no need to update store --> will be loaded into state in study component
 
 						// --> all questions answSered - increment timesPassed on resource
