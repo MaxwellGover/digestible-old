@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueFire from 'vuefire'
 import AsyncComputed from 'vue-async-computed'
+// import VueResource from 'vue-resource'
 
 // import VuexFire from 'vuexfire'
 
@@ -19,6 +20,7 @@ Vue.use(VueFire);
 // Vue.use(VuexFire)
 Vue.use(VueRouter);
 Vue.use(AsyncComputed)
+// Vue.use(VueResource)
 
 new Vue({
   el: '#app',
