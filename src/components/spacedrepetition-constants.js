@@ -16,4 +16,4 @@ export const BEST = 1.0
 
 export const PERFORMANCE_CUTOFF = 0.6;
 
-export const PERCENT_OVERDUE_LIMIT = 1.5; // limited to 2.0
+export const PERCENT_OVERDUE_LIMIT = 1.0; // limited to 2.0

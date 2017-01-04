@@ -73,34 +73,63 @@ export default {
       default: SPACED_REPETITION_DEFAULT.daysBetweenReviews // 1
     },
     dateLastReviewed: {
-      type: String,
+      type: Number,
       default: SPACED_REPETITION_DEFAULT.dateLastReviewed 
       // function() {
       //   return moment();
       // }
     }
   },
-  computed: {
-    correct() { // in repo https://github.com/lo-tp/sm2-plus/blob/master/source/src/index.js it is compared to WORST = performaceRating = 0
-      return (this.performanceRating > PERFORMANCE_CUTOFF); // correct if > 0.6
-    },
+  computed: { 
     percentOverdue() {
       // calculate percentageOverdue = (today - word.lastReviewed) / word.timeBetween;
-      let durationLastReviewed = moment.unix(this.newDateLastReviewed).days();
-
-      console.log('percentOverdue', Math.min(2, moment().utc().subtract(durationLastReviewed, 'days').days() / this.newDaysBetweenReviews), durationLastReviewed, this.newDaysBetweenReviews);
-      if (this.correct) {
-        return Math.min(2, moment().utc().subtract(durationLastReviewed, 'days').days() / this.newDaysBetweenReviews);
-      } 
-      else {
-        return 1;
-      }
+      // let durationLastReviewed_ms = moment().valueOf() - parseInt(this.dateLastReviewed);
+      // if (!this.rated) return; // not rated yet
+      
+      let durationLastReviewed = moment.duration(moment().valueOf()).subtract(parseInt(this.dateLastReviewed)).days();
+      // if (this.correct) {
+      // console.log('percentOverdue', Math.min(2, durationLastReviewed / this.daysBetweenReviews));
+      return Math.min(2, durationLastReviewed / this.daysBetweenReviews);
+      // } else {
+      //   console.log('percentOverdue (incorrect)', 1);
+      //   return 1;
+      // }
+      // below with-out moment (also working)
+      // console.log('duration', durationLastReviewed_ms, durationLastReviewed_ms / (1000 * 3600 *24) / this.daysBetweenReviews);
+      // return Math.min(2, durationLastReviewed_ms / (1000 * 3600 *24) / this.daysBetweenReviews); //result;
     },
-    difficultyWeight() {
-      return 3 * 1.7 * this.newDifficulty;
-    }
+    // moved most computed to methods --> we need to ensure the call order
+    // correct() { // in repo https://github.com/lo-tp/sm2-plus/blob/master/source/src/index.js it is compared to WORST = performaceRating = 0
+    //   return (this.performanceRating > PERFORMANCE_CUTOFF); // correct if > 0.6
+    // },
+    // percentOverdue() {
+    //   // calculate percentageOverdue = (today - word.lastReviewed) / word.timeBetween;
+    //   // let durationLastReviewed_ms = moment().valueOf() - parseInt(this.dateLastReviewed);
+    //   // if (!this.rated) return; // not rated yet
+      
+    //   let durationLastReviewed = moment.duration(moment().valueOf()).subtract(parseInt(this.dateLastReviewed)).days();
+    //   if (this.correct) {
+    //     console.log('percentOverdue', Math.min(2, durationLastReviewed / this.daysBetweenReviews));
+    //     return Math.min(2, durationLastReviewed / this.daysBetweenReviews);
+    //   } else {
+    //     console.log('percentOverdue (incorrect)', 1);
+    //     return 1;
+    //   }
+    //   // below with-out moment (also working)
+    //   // console.log('duration', durationLastReviewed_ms, durationLastReviewed_ms / (1000 * 3600 *24) / this.daysBetweenReviews);
+    //   // return Math.min(2, durationLastReviewed_ms / (1000 * 3600 *24) / this.daysBetweenReviews); //result;
+    // },
+    // difficultyWeight() {
+    //   return 3 * 1.7 * this.newDifficulty;
+    // }
   },
   methods: {
+    checkCorrect(performanceRating) { // in repo https://github.com/lo-tp/sm2-plus/blob/master/source/src/index.js it is compared to WORST = performaceRating = 0
+      return (performanceRating > PERFORMANCE_CUTOFF); // correct if > 0.6
+    },
+    calcDifficultyWeight(difficulty) {
+      return 3 - 1.7 * difficulty;
+    },
     reset() {
       // just for testing --> removed later
       Object.assign(this, { 
@@ -110,6 +139,7 @@ export default {
         newDateLastReviewed: this.dateLastReviewed
       });
     },
+    
     spaced(rating) {
       const mapping = { // just for different naming in template soon, good, easy
         soon: WORST,
@@ -117,51 +147,64 @@ export default {
         easy: BEST
       };
 
-      this.performaceRating = mapping[rating];
-
-      console.log('rating', this.performaceRating);
+      var performanceRating = this.performanceRating = mapping[rating];
 
       this.$nextTick(() => { // delay to next digest --> correct value calculated
-        this.calcDifficulty();
-        this.calcDaysBetweenReviews();
-        let newDateLastReviewed = moment().utc().format('x');
-        console.log('new date', newDateLastReviewed)
-        console.log('spaced review date', this.newDateLastReviewed);
-        this.$emit('selected', {
+        // console.log('input data', this.difficulty, this.daysBetweenReviews, this.dateLastReviewed);
+        let correct = this.checkCorrect(performanceRating);
+
+        let percentOverdue = this.percentOverdue;
+        let difficulty = this.newDifficulty = this.calcDifficulty(this.difficulty, percentOverdue);
+        let difficultyWeight = this.difficultyWeight = this.calcDifficultyWeight(difficulty);
+        // console.log('difficultyWeight', difficultyWeight);
+        this.newDaysBetweenReviews = this.calcDaysBetweenReviews(correct, difficultyWeight, percentOverdue);
+        this.newDateLastReviewed = moment().valueOf();
+        // this.calcDifficulty();
+        // this.calcDaysBetweenReviews();
+        // console.log('new date', newDateLastReviewed)
+        // console.log('spaced review date', this.newDateLastReviewed);
+        let result = {
           daysBetweenReviews: this.newDaysBetweenReviews,
-          //dueDate: newDateLastReviewed + this.newDaysBetweenReviews, //today + interval --> not needed percentOverdue should be enough
+          dueDate: this.newDateLastReviewed + this.newDaysBetweenReviews, //today + interval --> not needed percentOverdue should be enough for filtering (just as info)
           difficulty: this.newDifficulty,
-          dateLastReviewed: newDateLastReviewed,
+          dateLastReviewed: this.newDateLastReviewed,
           percentOverdue: this.percentOverdue
-        });
+        };
+
+        // console.log('result', result);
+        this.$emit('selected', result);
       });
     },
-    calcDaysBetweenReviews() {
-      if(this.correct) {
-        this.newDaysBetweenReviews *= 1 + (this.difficultyWeight - 1) * this.percentOverdue
+    calcDaysBetweenReviews(correct, difficultyWeight, percentOverdue) {
+      // console.log('correct in daysBetweenReviews', correct);
+      if(correct) {
+        // console.log('correct days between reviews');
+        return 1 + Math.round((difficultyWeight - 1) * percentOverdue)
       } else {
-        this.newcalcDaysBetweenReviews *= 1/(this.difficultyWeight^2)  // (min days = 1) 
-        if ( this.newCalcDaysBetweenReviews < 1 ) {
-          this.newCalcDaysBetweenReviews = 1;
-        }
+        return Math.round(1 / ( difficultyWeight^2)) || 1;
       }
-      console.log('calculated days between', this.newDaysBetweenReviews);
     },
-    calcDifficulty() {
+    calcDifficulty(difficulty, percentOverdue) {
       //difficulty += percentOverdue * 1/17(8-9 *performaceRating), clamp to [0, 1]
-      this.newDifficulty += this.percentOverdue * 1 / 17 * ( 8 - 9 * this.performanceRating);
-
+      // console.log('difficulty before', difficulty, percentOverdue, this.performanceRating);
+      let newDifficulty = difficulty + ( 8 - 9 * this.performanceRating) * percentOverdue / 17;
+      // console.log('difficulty calc', newDifficulty);
       // limiting to [0,1]
-      if (this.newDifficulty < 0) {
-        this.newDifficulty = 0;
+      if (newDifficulty < 0) {
+        newDifficulty = 0;
       }
-      if (this.newDifficulty > 1) {
-        this.newDifficulty = 1;
+      if (newDifficulty > 1) {
+        newDifficulty = 1;
       }
+
+      return newDifficulty;
     }
   },
   data() {
     return {
+      correct: false,
+      difficultyWeight: 0,
+      percentOverdue: 0,
       performanceRating: 0,
       // new values are created later
       newDifficulty: this.difficulty,

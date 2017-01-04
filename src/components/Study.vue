@@ -135,7 +135,7 @@ export default {
     },
     dateLastReviewed () {
       console.log('dateLastReviewed', this.answeredQuestion.dateLastReviewed);
-      return parseInt(this.answeredQuestion.dateLastReviewed) === 0 ?  moment().utc().format('x') : this.answeredQuestion.dateLastReviewed; // if 0 --> get current date for first run
+      return parseInt(this.answeredQuestion.dateLastReviewed) === 0 ?  moment().unix() : this.answeredQuestion.dateLastReviewed; // if 0 --> get current date for first run
     }
   },
   asyncComputed: {
@@ -159,16 +159,25 @@ export default {
         let limit=0; // limit counter to 15 questions
         // filter based on percentOverdue (if > 1 --> study required)
         let quizAvailable = Object.keys(Object.assign({}, this.answeredQuestions)).length > 0; // copy answeredQuestions otherwise this would be falsy because ref. to same obj.
-        this.answeredQuestionsFiltered = Object.assign({}, this.answeredQuestions);
-        for(let key in this.answeredQuestionsFiltered) {
-          this.answeredQuestionsFiltered[key] = this.answeredQuestionsFiltered[key].filter((spacedProps) => {
+        this.answeredQuestionsFiltered = {}; //Object.assign({}, this.answeredQuestions);
+        let keysSorted = Object.keys(this.answeredQuestions); // sorting problematic because we're having a nested structure key: [opt1, opt2], key2: [optx, opty]
+        //we should sort it by percentOverdue highest first --> easier limiting later
+        // .sort((a,b) => {
+        //   console.log(a,b,  this.answeredQuestions[a], this.answeredQuestions[b]);
+        //   return this.answeredQuestions[a].percentOverdue - this.answeredQuestions[b].percentOverdue
+        // }).reverse(); // due desc. highest first
+        console.log('keys', keysSorted);
+        // for(let key in this.answeredQuestionsFiltered) {
+        for (let i=0; i < keysSorted.length; i++) { // limiting --> just change length to a fixed value
+          let key = keysSorted[i];
+          this.answeredQuestionsFiltered[key] = this.answeredQuestions[key].filter((spacedProps) => {
             // console.log('filtering', spacedProps.dateLastReviewed);
             // let lastReviewed8h = (parseInt(spacedProps.dateLastReviewed) === 0) || moment(spacedProps.dateLastReviewed).utc().add(8, 'hours').isBefore(moment().utc()); // older than 8h --> OK or 0 as start value
             // let reviewTimePassed = moment().utc().isAfter(spacedProps.dateLastReviewed + spacedProps.daysBetweenReviews); // not needed percentOverdue should be enough
             // limit++;
             // console.log('last review check', lastReviewed8h, spacedProps.dateLastReviewed, moment(spacedProps.dateLastReviewed).utc().add(8, 'hours').isBefore(moment().utc()));
-            return ( parseInt(spacedProps.daysBetweenReviews) === 0 ) || // if sooner/worst click --> keep repeating 
-              (spacedProps.percentOverdue >= PERCENT_OVERDUE_LIMIT); // e.g. <= 1.0 overdue and limit to 15 questions and discarding items reviewed in the past 8 or so hours.
+            return ( parseInt(spacedProps.daysBetweenReviews) === 0 ) || // if first time review --> daysBetweenReviews = 0
+              (spacedProps.percentOverdue > PERCENT_OVERDUE_LIMIT); // e.g. > 1.0 overdue and limit to 15 questions and discarding items reviewed in the past 8 or so hours.
           });
 
           if (this.answeredQuestionsFiltered[key].length === 0) {

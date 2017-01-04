@@ -18,7 +18,7 @@ var webpackConfig = merge(baseConfig, {
   devtool: '#inline-source-map',
   vue: {
     loaders: {
-      js: 'babel-loader'
+      js: 'isparta'
     }
   },
   plugins: [
@@ -26,18 +26,27 @@ var webpackConfig = merge(baseConfig, {
       'process.env': require('../../config/test.env')
     })
   ],
-  node: {
-    fs: "empty"
+  node: { // disable fs & child_process in node --> polyfilled from webpack
+    fs: "empty",
+    "child_process": "empty"
   }
 })
 
 // no need for app entry during tests
 delete webpackConfig.entry
 
-// Use babel for test files too
+// make sure isparta loader is applied before eslint
+webpackConfig.module.preLoaders = webpackConfig.module.preLoaders || []
+webpackConfig.module.preLoaders.unshift({
+  test: /\.js$/,
+  loader: 'isparta',
+  include: path.resolve(projectRoot, 'src')
+})
+
+// only apply babel for test files when using isparta
 webpackConfig.module.loaders.some(function (loader, i) {
-  if (/^babel(-loader)?$/.test(loader.loader)) {
-    loader.include.push(path.resolve(projectRoot, 'test/unit'))
+  if (loader.loader === 'babel') {
+    loader.include = path.resolve(projectRoot, 'test/unit')
     return true
   }
 })
@@ -48,7 +57,8 @@ module.exports = function (config) {
     // 1. install corresponding karma launcher
     //    http://karma-runner.github.io/0.13/config/browsers.html
     // 2. add it to the `browsers` array below.
-    browsers: ['PhantomJS'],
+    // browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
     // frameworks: ['mocha', 'sinon-chai'],
     frameworks: ['jasmine'],
     reporters: ['spec', 'coverage'],
@@ -67,5 +77,12 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ]
     }
+    // browserConsoleLogOptions: {
+    //   captureConsole: true
+    // }
+    // logLevel: config.LOG_DEBUG,
+    // client: {
+    //   captureConsole: true
+    // }
   })
 }
