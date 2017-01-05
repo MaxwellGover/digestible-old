@@ -5,7 +5,7 @@ import 'vue/'
 import SpacedRepetition from 'src/components/SpacedRepetition'
 import {SPACED_REPETITION_DEFAULT, PERFORMANCE_CUTOFF, WORST, GOOD, BEST} from 'src/components/spacedrepetition-constants'
 
-const TODAY = new Date().getTime(); //format('x') --> creates a string in ms
+const TODAY = new Date().getTime(); // time in ms
 const YESTERDAY = moment().subtract(1, 'days').valueOf()
 const THREE_DAYS_AGO = moment().subtract(3, 'days').valueOf()
 const GetDaysAgo = (days) => moment().subtract(days, 'days').valueOf();
@@ -21,7 +21,8 @@ const testDataDifficulty = [
     result: { // next dueDay = TOMORROW, update = nextDateLastReviewed = TODAY
       nextDaysBetweenReviews: 1,
       nextDifficulty: 0.2, //0.2,   // 0,2 + 0,2 *1/17 (8-9*1) = 0,188 --> verify! Why 0.2
-      nextDateLastReviewed: TODAY
+      nextDateLastReviewed: TODAY,
+      nextDueDate: TODAY + moment.duration(1, 'days').valueOf()
     }
   },
   {
@@ -34,7 +35,8 @@ const testDataDifficulty = [
     result: {  // next dueDay = TOMORROW, update = nextDateLastReviewed = TODAY
       nextDaysBetweenReviews: 1,
       nextDifficulty: 0.19,
-      nextDateLastReviewed: TODAY
+      nextDateLastReviewed: TODAY,
+      nextDueDate: TODAY + moment.duration(1, 'days').valueOf()
     }
   },
   {
@@ -47,7 +49,8 @@ const testDataDifficulty = [
     result: {
       nextDaysBetweenReviews: 4,
       nextDifficulty: 0.1,
-      nextDateLastReviewed: TODAY
+      nextDateLastReviewed: TODAY,
+      nextDueDate: TODAY + moment.duration(4, 'days').valueOf()
     }
   },
   // incorrect intervals (1 test)
@@ -61,7 +64,8 @@ const testDataDifficulty = [
     result: {
       nextDaysBetweenReviews: 1,
       nextDifficulty: 1,
-      nextDateLastReviewed: TODAY
+      nextDateLastReviewed: TODAY,
+      nextDueDate: TODAY + moment.duration(1, 'days').valueOf()
     }
   }
 ];
@@ -90,29 +94,6 @@ const dataPercentOverdue = [
   }
 ]
 
-const getComponent = (data) => {
-  let vm = new Vue({
-      name: 'SpacedRepetition',
-      template: `<div>
-        <spaced-repetition ref="component" v-if="submitted" 
-              :difficulty="answeredQuestion.difficulty" 
-              :days-between-rewiews="answeredQuestion.daysBetweenReviews" 
-              :date-last-reviewed="answeredQuestion.dateLastReviewed"></spaced-repetition>
-      </div>
-      `,
-              // v-on:selected="nextQuestion"></spaced-repetition>
-      components: {
-        SpacedRepetition
-      },
-      data() {
-        return Object.assign({}, {
-          answeredQuestion: data
-        }, {submitted: true});
-      }
-    })
-  return vm; 
-}
-
 // helper function that mounts and returns the rendered text
 function getComponentData (Component, propsData) {
   const Ctor = Vue.extend(Component);
@@ -139,7 +120,7 @@ describe('SpacedRepetition.vue - render', () => {
 
     // console.log(vm.$el.querySelectorAll('.button'));
     expect(vm.$el.querySelectorAll('.button').length)
-      .toBe(4) // later 3 buttons
+      .toBe(3)
   });
 })
 
@@ -180,7 +161,7 @@ describe('Calculation spaced values', () => {
       Vue.nextTick(() => {
         expect(component.newDifficulty).toBeCloseTo(data.result.nextDifficulty, 8); //, 'Difficulty Calculation Is Not Right');
         expect(component.newDaysBetweenReviews).toBe(data.result.nextDaysBetweenReviews); //, 'Interval Calculation Is Not Right');
-        // expect(calculated.dueDate, today + d.nextInterval, 'Due Date Calculation Is Not Right');
+        expect(Math.abs(component.newDueDate - data.result.nextDueDate)).toBeLessThan(1000); //, 'Update Calculation Is Not Right'); //+-1000ms --> typical 200ms delta
         expect(Math.abs(component.newDateLastReviewed - data.result.nextDateLastReviewed)).toBeLessThan(1000); //, 'Update Calculation Is Not Right'); //+-1000ms --> typical 300ms - 600ms delta
         done();
       });

@@ -31,7 +31,7 @@ export const state = {
 };
 
 const plugins = [
-    debug ? createLogger(): null,
+    debug ? createLogger(): () => {},
     createPersistedState({
         paths: ['userInfo', 'postKey']
     })
