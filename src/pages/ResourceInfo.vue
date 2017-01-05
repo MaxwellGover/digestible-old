@@ -37,14 +37,10 @@
         <!-- Topics input -->
         <label class="label" style="margin-top: 20px">Topics</label>
 
-        <!--tag input-->
-        <!--<input-tag 
-                :tags="resource.tags"
-                :on-change="resourceChange"></input-tag>-->
-
-        <!--typeahead-->
-
+        <!--typeahead & tags -->
+          <!--todo userRole isAdmin not implemented yet. Add a collection userRoles/uid/role-value='isAdmin' so we can secure this with firebase & join the role to userInfo during loading-->
           <input-tag
+                :new-tags-allowed="userInfo.isAdmin"
                 :tags="resource.tags"
                 :on-change="tagChange"
                 />
@@ -66,7 +62,7 @@
       <modal ref="confirmModal" title="Confirm delete" :ok="confirmedDelete" :cancel="cancel">
       Are you sure to delete resource <strong>{{resource.title}}</strong>?
       </modal>
-      <pre>{{resource | json}}</pre>
+      <!--<pre>{{resource | json}}</pre>-->
     </div> <!-- End form container -->
 
 </template>
@@ -177,7 +173,7 @@ export default {
     tagChange(data) {
       let tagsRef = db.ref('tags');
       let key = data[0];
-      console.log('tag data', data);
+      // console.log('tag data', data);
       // console.log('type of string', typeof data[0] === 'string');
       // see fetch for getting typeahead data from firebase
       // data = ['string'] --> if not in firebase
@@ -186,11 +182,13 @@ export default {
         // test if string is in db
         // tagsRef.orderByChild('name').equalTo(data[0]).once('value').then((snap) => {
       if (data[0]) {
+          data[0] = data[0].replace(/[\.\#\$\[\]]/g, '-'); // replace invalid key chars with hyphen --> these chars are not allowed in keys
+          // console.log(data);
         tagsRef.child(data[0]).once('value').then((snap) => {
           let tagValue = snap.val();
           let newKey = data[0]; //tagsRef.push().key;
-          
-          console.log('tagValue', tagValue);
+
+          // console.log('tagValue', tagValue);
           if (!tagValue) {
             // not in db --> add it
             let newData = {
@@ -199,24 +197,18 @@ export default {
                 authorId: this.userInfo.uid
               }
             };
-            console.log('update tags', newData);
+            // console.log('update tags', newData);
             tagsRef.update(newData);
-            // tagsRef.update({
-            //   [newKey]: newData
-            // });
           }
           else {
             console.log('tag exists');
           }
-          // else {
-          //   console.log('tag in db', snap.key);
-          //   newKey = snap.key;
-          // }
+
           key = newKey;
         });
       }
 
-      console.log('key', key);
+      // console.log('key', key);
       if (!this.resource.tags.includes(key)) {
         this.resource.tags.push(key);
       }

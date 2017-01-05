@@ -26,6 +26,10 @@
         type: Boolean,
         default: false,
       },
+      newTagsAllowed: { // true = adding new tags allowed
+        type: Boolean,
+        default: false
+      }
     },
     computed: {
       query() {
@@ -39,7 +43,8 @@
         // (required)
         // src: 'https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search',
         limit: 5,
-        minChars: 3
+        minChars: 3,
+        selectFirst: true // typeahead option
       };
     },
     methods: {
@@ -48,11 +53,33 @@
         this.$el.querySelector('.new-tag').focus();
       },
       addNew(tag) {
-        if (tag && !this.tags.includes(tag)) { //&& !this.items.length) {
+        console.log('adding', tag, this.items.indexOf(tag), this.current);
+        let index = this.items.indexOf(tag);
+        let selected = index > -1 ? this.current > index: false;
+
+        if ( tag && !this.tags.includes(tag) && // not in tags array
+             this.current === -1 && // not in typeahead
+             !selected && // nothing selected in typeahead
+             this.newTagsAllowed // prop for enabling/disabling adding of new tags
+            ) {  
           this.tags.push(tag);
-          this.tagChange();
           this.newTag = '';
         }
+        else {
+          this.onHit(this.items[this.current]);
+        }
+        // else {
+        //   let index = this.items.indexOf(tag);
+        //   console.log('index', index, this.items);
+        //   if (index !== -1) {
+        //     this.setActive(index);
+        //   }
+        // this.onHit(tag);
+          // if (index === -1) {
+          // not in typeahead 
+          // this.onHit(tag);
+          
+        // }
       },
       remove(index) {
         this.tags.splice(index, 1);
@@ -100,13 +127,18 @@
                 let data = snapshot.val() || [];
                 console.log('firebase data', data);
                 // let keys = Object.keys(data).filter((key) => data[key].name.startsWith(this.query));
-                let tags = Object.keys(data).filter((key) => key.startsWith(this.query));
+                let tags = Object.keys(data).filter((key) => 
+                  (this.tags.indexOf(key) !== -1) ? 
+                    false : // already added in tags
+                    key.startsWith(this.query) // check for new tags for typeahead
+                );
+
                 // let tags = keys.map((key) => {
                 //   return {
                 //     '.key': key, ...data[key]
                 //   };
                 // });
-                console.log(tags)
+                // console.log(tags) 
                 resolve({
                   data: tags
                 });
@@ -117,7 +149,7 @@
       onHit(item) {
         console.log('typeahead', item);
         // this.addNew(item);
-        if (!this.tags.includes(item)) {
+        if (item && !this.tags.includes(item)) {
           this.tags.push(item);
           this.tagChange();
         }
@@ -143,15 +175,16 @@
           <a v-if="!readOnly" @click.prevent.stop="remove(index)" class="remove"></a>
         </span>
         <input v-if="!readOnly" v-bind:placeholder="getPlaceholder()" type="text" v-model="newTag" v-on:keydown.delete.stop="removeLastTag()" 
-            v-on:keydown.enter.prevent.stop="addNew(newTag)"
             class="new-tag Typeahead__input"
             autocomplete="off"
+            @keydown.enter="addNew(newTag)"
             @keydown.down="down"
             @keydown.up="up"
-            @keydown.enter="hit"
             @keydown.esc="reset"
             @blur="reset"
             @input="update"/>
+            <!--@keydown.enter="hit"-->
+            <!--@keydown.enter.prevent.stop="addNew(newTag)"-->
       </div>
             <!--@change="onChange"-->
             <!--removed normal on enter -> fetch triggered by typeahead-->
