@@ -43,7 +43,7 @@ function signIn(commit) {
 }
 
 export const actions = {
-  addPassedResources({commit}, data) {
+  updatePassedResources({commit}, data) {
     commit('mutatePassedResources', data);
   },
   updateAnsweredQuestions({commit}, answeredQuestions) {

@@ -16,7 +16,7 @@ export const state = {
     users: {},
     // resource: {},
     resources: [],
-    passedResources: [],
+    passedResources: [], // per user data
     answeredQuestions: [],
     // studyStatus: {
     //   allDone: false,
