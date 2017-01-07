@@ -3,12 +3,12 @@
     <!-- Quiz container -->
     <div class="box container" style="width: 60%; margin-top: 60px">
       <!-- Form -->
-      <form id="resource-info">
+      <form id="resource-info" @submit.prevent="saveToFB">
         <!-- Resource type dropdown -->
         <label class="label">What type of resource is this quiz for?</label>
         <p class="control">
           <span class="select is-medium">
-            <select id="type" v-model="resource.type">
+            <select id="type" name="resource type" v-model="resource.type" v-validate.initial="resource.type" data-vv-rules="required" :class="{'is-danger': errors.has('resource type') }">
               <option value="article">An online article</option>
               <option value="book">A chapter in a book</option>
               <option value="video">An online video</option>
@@ -16,12 +16,15 @@
             </select>
           </span>
         </p>
+        <p v-show="errors.has('resource type')">{{ errors.first('resource type') }}</p>
+        
         <!-- Resource title input -->
         <label class="label" style="margin-top: 20px">Resource title</label>
         <p class="control">
-          <input class="input is-medium" type="text" v-model="resource.title">
+          <input class="input is-medium" name="title" type="text" v-model="resource.title" v-validate.initial="resource.title" data-vv-rules="required|min:5" :class="{'is-danger': errors.has('title') }">
         </p>
         <small>Enter the title of your resource.</small>
+        <p v-show="errors.has('title')">{{ errors.first('title') }}</p>
         <!-- Resource URL input -->
         <label class="label" style="margin-top: 20px">Resource URL</label>
         <p class="control">
@@ -55,7 +58,7 @@
           <br/>
           <small>Add some topics to help users find your resource.</small>
           <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
-        <button type="button" class="button is-info" v-on:click.prevent="saveToFB">Next</button>
+        <button type="submit" class="button is-info">Next</button>
       
       </form> <!-- End form -->
       
@@ -118,7 +121,10 @@ export default {
     }
   },
   watch: {
-		'$route': 'loadData'
+		$route() {
+      // this.resource = {};
+      this.loadData();
+    }
 	},
   methods: {
     loadData() {
@@ -137,7 +143,7 @@ export default {
 
       return {
         // queryTypeahead: '',
-        resource: this.resource || emptyResource,
+        resource: emptyResource,
         DEBUG_EN_DELETE: false // if true, can delete every post --> later this could be stored in a user_role collection for each user.
       };
     },
@@ -167,9 +173,9 @@ export default {
     //     var tags = this.resource.tags;
     //     tags.splice(index, 1);
     // },
-    // deleteResource() {
-    //   this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
-    // },
+    deleteResource() {
+      this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
+    },
     tagChange(data) {
       let tagsRef = db.ref('tags');
       let key = data[0];
@@ -216,22 +222,27 @@ export default {
       // if new key required --> only key saved in resource and in global tags collection
     },
     saveToFB () {
-      var newPostKey = this.resource['.key'] || db.ref('resources').push().key;
-      console.log('saving', newPostKey);
-      this.$store.commit('addPostKey', newPostKey);
-      var updates = {};
+      this.$validator.validateAll();
 
-      delete this.resource['.key']; 
+      // console.log('validator', this.errors);
+      if (!this.errors.any()) {
+        var newPostKey = this.resource['.key'] || db.ref('resources').push().key;
+        console.log('saving', newPostKey);
+        this.$store.commit('addPostKey', newPostKey);
+        var updates = {};
 
-      updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
-      updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; 
+        delete this.resource['.key']; 
 
-      console.log("Saving resource data...", updates)
-      
-      db.ref().update(updates);
+        updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
+        updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; 
 
-      // navigate to create route by pushing to router
-      router.push('/create');
+        console.log("Saving resource data...", updates)
+        
+        db.ref().update(updates);
+
+        // navigate to create route by pushing to router
+        router.push('/create/');
+      }
     }
   }
 };

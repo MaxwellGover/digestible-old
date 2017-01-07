@@ -15,6 +15,7 @@
     "firebase": "^3.6.0",
     "lodash": "^4.17.3",
     "moment": "^2.17.1",
+    "vee-validate": "^2.0.0-beta.18",
     "vue": "^2.0.1",
     "vue-input-tag": "0.0.9",
     "vue-resource": "^1.0.3",
