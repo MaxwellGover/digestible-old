@@ -33,7 +33,7 @@ export const state = {
 const plugins = [
     debug ? createLogger(): () => {},
     createPersistedState({
-        paths: ['userInfo', 'postKey', 'quiz', 'resource']
+        paths: ['userInfo', 'postKey'] //, 'quiz', 'resource']
     })
 ];
 

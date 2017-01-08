@@ -157,6 +157,16 @@ export default {
 
         this.submitted = false;
 
+        // init focussed
+        // console.log('init', questions)
+        Object.keys(questions).forEach((key, qindex) => {
+          // console.log('key', key, questions[key]);
+          questions[key].options.forEach((option, index) => {
+            this.focussed[qindex] = {};
+            this.focussed[qindex][index] = false;
+          });
+        });
+
         // custom validator for checkboxes
         this.$validator.remove('oneChecked'); // remove validator to avoid error message
 

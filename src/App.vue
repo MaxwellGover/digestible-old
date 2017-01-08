@@ -64,7 +64,7 @@
       </div>
     </div>
     <div v-else>
-      <router-view keep-alive></router-view>
+      <router-view></router-view>
     </div>
 
     <div v-if="showModal" class="modal is-active">
