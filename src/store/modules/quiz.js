@@ -34,8 +34,8 @@ const quiz = {
     // submittedStatus: state => state.submittedStatus
     },
     actions: {
-        initQuestions({commit}, initData) {
-            console.log('initQuestions', initData);
+        updateQuestions({commit}, initData) {
+            // console.log('initQuestions', initData);
             commit('mutateQuestions', initData);
         },
         updateResource({commit}, resource) {
@@ -54,22 +54,23 @@ const quiz = {
              */
             mutateAnswerList(state, resource) {
                 // console.log('prepareAnswerList', resource);
-                let answers = resource.quiz.map((question, index) => {
-                    // console.log('question prepare', question);
-                    return {
-                            // question
-                            id: index,
-                            answers: question.options.map((option, idx) => {
-                                    return {
-                                        id: idx, // create id based on index in array --> would be better if we would hava a uuid
-                                        selected: undefined, // undefined so we can check if answer is selected
-                                        isAnswer: option.isAnswer
-                                    };
-                            })
-                    };
-                });
-
-                state.answeredQuestions = answers;
+                if (Array.isArray(resource.quiz)) {
+                  let answers = resource.quiz.map((question, index) => {
+                      // console.log('question prepare', question);
+                      return {
+                              // question
+                              id: index,
+                              answers: question.options.map((option, idx) => {
+                                      return {
+                                          id: idx, // create id based on index in array --> would be better if we would hava a uuid
+                                          selected: undefined, // undefined so we can check if answer is selected
+                                          isAnswer: option.isAnswer
+                                      };
+                              })
+                      };
+                  });
+                  state.answeredQuestions = answers;
+                }
             },
             mutateResource(state, resource) {
               state.resource = resource;
@@ -79,6 +80,10 @@ const quiz = {
             },
             mutateQuestions(state, questions) {
                 state.questions = questions;
+              console.log('new state mutateQuestions', state);
+            },
+            toggleQuestionOption(state, {qindex, index}) {
+              state.questions[qindex].options[index].isAnswer = !state.questions[qindex].options[index].isAnswer;
             },
             displayAnswers(state) {
                 state.submittedStatus = true

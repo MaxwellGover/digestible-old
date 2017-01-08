@@ -177,7 +177,7 @@
         <input v-if="!readOnly" v-bind:placeholder="getPlaceholder()" type="text" v-model="newTag" v-on:keydown.delete.stop="removeLastTag()" 
             class="new-tag Typeahead__input"
             autocomplete="off"
-            @keydown.enter="addNew(newTag)"
+            @keydown.prevent.enter="addNew(newTag)"
             @keydown.down="down"
             @keydown.up="up"
             @keydown.esc="reset"

@@ -39,6 +39,9 @@
               </ul>
             </div>
           </article>
+          <p>
+          <span class="tag is-light">{{studyCount}}</span>questions to study.
+          </p>
           <button @click="submitQuiz()" v-if="!submitted" class="button">Show answer</button>
           <!--<button @click="nextQuestion()" v-else class="button">Next</button>-->
           <spaced-repetition v-if="submitted" 
@@ -94,7 +97,8 @@ export default {
       resourceKey: '',
       questionIndex: 0,
       quizAvailable: false, // show info that quiz is required --> moved to state because setting this in asyncComputed wasn't working
-      allDone: false // Congratulations! You're done for today.
+      allDone: false, // Congratulations! You're done for today.
+      studyCount: 0
     }
   },
   firebase: {
@@ -210,6 +214,7 @@ export default {
       let filteredQuestions = {};
       if (!this.quizAvailable) return {};
 
+      this.studyCount = 0;
       // let limit=0; // limit counter to 15 questions
       // filter based on percentOverdue (if > 1 --> study required)
       let keysSorted = Object.keys(this.answeredQuestions); // sorting problematic because we're having a nested structure key: [opt1, opt2], key2: [optx, opty]
@@ -226,6 +231,8 @@ export default {
         if (filteredQuestions[key].length === 0) {
           // no item --> remove key
           delete filteredQuestions[key];
+        } else {
+          this.studyCount += filteredQuestions[key].length;
         }
       }
 

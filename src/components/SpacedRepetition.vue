@@ -2,15 +2,12 @@
   <div>
     <div class="columns has-text-centered">
       <div class="column is-4">
-        {{estimated.soon}} m<br/>
         <a class="button" @click="spaced('soon')">Soon</a>
       </div>
       <div class="column is-4">
-        {{estimated.good}} m<br/>
         <a class="button" @click="spaced('good')">Good</a>
       </div>
       <div class="column is-4">
-        {{estimated.easy}} days<br/>
         <a class="button" @click="spaced('easy')">Easy</a>
       </div>
 

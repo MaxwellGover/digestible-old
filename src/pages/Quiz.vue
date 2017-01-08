@@ -1,7 +1,7 @@
 <template>
 
 	<div class="quiz container" v-if="loaded">
-    <!--<pre>{{resource.quiz|json}}</pre>-->
+    <!--<pre>{{resource|json}}</pre>-->
 		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" :showShare="showShare" :resourceLink="resourceLink"style="margin-right: 0"></resource-card>
 
 		<div class="questions box container">
@@ -191,7 +191,7 @@ export default {
 
 						// --> all questions answered - increment timesPassed on resource
 						let totalTimesPassed = parseInt(this.resource.timesPassed);
-            console.log('total before inc', totalTimesPassed);
+            // console.log('total before inc', totalTimesPassed);
 						totalTimesPassed++;
 						// not working yet --> need to load timesPassed of resource, inc. & save back. or maybe use increment of firebase
 						this.$firebaseRefs.fbResource.child('timesPassed').set(totalTimesPassed); // todo firebase inc. would be handy here!

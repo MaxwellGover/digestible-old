@@ -3,7 +3,7 @@
     <!-- Quiz container -->
     <div class="box container" style="width: 60%; margin-top: 60px">
       <!-- Form -->
-      <form id="resource-info" @submit.prevent="saveToFB">
+      <form id="resource-info" name="resourceForm" @submit.prevent="saveToFB">
         <!-- Resource type dropdown -->
         <label class="label">What type of resource is this quiz for?</label>
         <p class="control">
@@ -28,9 +28,10 @@
         <!-- Resource URL input -->
         <label class="label" style="margin-top: 20px">Resource URL</label>
         <p class="control">
-          <input class="input is-medium" type="url" v-model="resource.url">
+          <input class="input is-medium" name="url" data-vv-as="resource url" type="text" v-model="resource.url" v-validate.initial="resource.url" data-vv-rules="url:google.com" data-vv-delay="1000" :class="{'is-danger': errors.has('url') }">
         </p>
         <small>Copy and paste the url to your resource above.</small>
+        <p v-show="errors.has('url')">{{ errors.first('url') }}</p>
         <!-- Resource description text area -->
         <label class="label" style="margin-top: 20px">Resource description</label>
         <p class="control">
@@ -65,7 +66,9 @@
       <modal ref="confirmModal" title="Confirm delete" :ok="confirmedDelete" :cancel="cancel">
       Are you sure to delete resource <strong>{{resource.title}}</strong>?
       </modal>
-      <!--<pre>{{resource | json}}</pre>-->
+      <!--<pre>{{resource | json}}
+fields
+{{fields.dirty()}}</pre>-->
     </div> <!-- End form container -->
 
 </template>
@@ -73,12 +76,40 @@
 <script>
 // import inputTag from 'vue-input-tag'
 // var db = firebase.database();
+// import Firebase from 'firebase'
+import _ from 'lodash'
 import db from '../db'
 import { mapState } from 'vuex'
 import Vue from 'vue'
 import router from '../router'
 import modal from '../components/Modal'
 import inputTag from '../components/InputTag'
+
+
+function defaultData(store) {
+  let emptyResource = {
+      type: '',
+      title: '',
+      url: '',
+      description: '',
+      timesPassed: 0,
+      tags: [],
+      text: '',
+      authorName: store.state.userInfo.displayName,
+      authorImage: store.state.userInfo.photoURL,
+      authorId: store.state.userInfo.uid,
+      // createdAt: Firebase.database.ServerValue.TIMESTAMP, // --> adds create date to early, better add it after createQuiz click
+  };
+
+  return {
+    // queryTypeahead: '',
+    resource: emptyResource,
+    submitted: false,
+    unwatchResource: undefined,
+    // newQuiz: false,
+    DEBUG_EN_DELETE: true // if true, can delete every post --> later this could be stored in a user_role collection for each user.
+  };
+}
 
 export default {
   name: 'resource-info',
@@ -92,26 +123,52 @@ export default {
   },
   computed: {
     ...mapState({
-      userInfo: state => state.userInfo
+      userInfo: state => state.userInfo,
+      resource: state => state.resource
     }),
     isOwner() {
       return this.resource.authorId === this.$store.state.userInfo.uid;
     }
   },
-  firebase() {
-    if ( !this.$route.params.resourceId ) return; // no route param
-		console.log('db', db);
-    console.log('firebase', this.$route.params.resourceId);
-    return {
-			resource: {
-				source: db.ref('resources/' + this.$route.params.resourceId),
-				asObject: true
-			}
-		};
+  firebase: {
+    // moved to loadData
 	},
+  created() {
+    // console.log('created');
+    this.$validator.attach('global', ''); // no validation just fieldBag global used --> needed for fields with-out validation
+    
+    this.loadData();
+    // testing queries below for deleting wrong resources
+    // var ref = db.ref('resources').once('value').then((snap) => {
+    //   console.log(snap.val());
+      
+    // });
+    // var ref = db.ref('resources/');  // just for bulk deleting not needed data
+    // ref.orderByChild('title').child('Another test of keep-alive!!!!').once('value').then((snap) => {
+    //   console.log('snap', snap.val());
+    //   // var updates = {};
+    //   // snap.forEach(function(child){
+    //   //       updates[child.key] = null;
+    //   // });
+    //   // ref.update(updates);
+    // });
+  },
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    console.log(this.fields.dirty()); // form is dirty
+    if (!this.submitted && this.fields.dirty()) {
+      let stay = confirm('Warning! If you navigate away from this route it is possible to lose data. Leave any way?');
+      console.log(stay);
+      next(stay);
+    } else {
+      next();
+    }
+  },
   data () {
     // db.ref('tags').remove(); // testwise clear all tags
-    return this.loadData();
+    return defaultData(this.$store);
   },
   filters: {
     capitalize: function (value) {
@@ -120,38 +177,54 @@ export default {
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
   },
-  watch: {
-		$route() {
-      // this.resource = {};
-      this.loadData();
-    }
-	},
   methods: {
+    resetData() {
+      if (this.unwatchResource) this.unwatchResource();
+      this.$store.dispatch('updateResource', defaultData(this.$store).resource); // clear resource (if we have a resourceId in route, otherwise we need the data for new form reload)
+      this.clearErrors();
+    },
+    clearErrors() {
+      this.$nextTick(() => {
+        this.fields.reset();
+        this.errors.clear();
+      });
+    },
     loadData() {
-        let emptyResource = {
-          type: '',
-          title: '',
-          url: '',
-          description: '',
-          timesPassed: 0,
-          tags: [],
-          text: '',
-          authorName: this.$store.state.userInfo.displayName,
-          authorImage: this.$store.state.userInfo.photoURL,
-          authorId: this.$store.state.userInfo.uid
-      };
+        const updateResourceInStore =  _.debounce(() => { // works --> but it always runs twice because resource is a computed prop. (other approach with eventlistener on inputs = same behaviour)
+            console.log('debounced update');
+            this.fields.setDirty('global', true); // flag for not validated fields
+            // this.$store.dispatch('updateResource', this.resource);
+          }, 1000);
 
-      return {
-        // queryTypeahead: '',
-        resource: emptyResource,
-        DEBUG_EN_DELETE: false // if true, can delete every post --> later this could be stored in a user_role collection for each user.
-      };
+        const createResourceWatch = () => this.$watch('resource', updateResourceInStore, {deep: true});
+
+        this.resetData();
+
+        if (this.$route.params.resourceId) {
+          const fbResourceRef = this.$firebaseRefs['fbResource'] = db.ref('resources/' + this.$route.params.resourceId);
+          this.$bindAsObject('fbResource', fbResourceRef);
+
+          this.$firebaseRefs.fbResource.once('value').then((snapshot) => {
+            // const resource = Object.assign({}, this.resource, snapshot.val());
+            console.log('firebase', snapshot.val());
+            const resource = snapshot.val();
+            this.$store.dispatch('updateResource', resource);
+            this.clearErrors();
+            
+            this.unwatchResource =  createResourceWatch(); // watch needed to update store, so it is persisted in localstorage later --> reloading with-out losing data possible. (used route guard at the moment)
+          });
+        }
+        else {
+          this.unwatchResource = createResourceWatch(); // needed twice because it would be triggered to early if not in then callback
+        }
+
+        this.$watch('$route', this.loadData); // this.resetData);
     },
     confirmedDelete() {
       // console.log('ok');
 
       db.ref('/users/' + this.$store.state.userInfo.uid + '/createdResources/' + this.resource['.key']).remove(); // remove from createdResources
-      this.$firebaseRefs.resource.remove();
+      this.$firebaseRefs.fbResource.remove();
 
       // navigate to home
       router.push('/');
@@ -215,6 +288,8 @@ export default {
       }
 
       // console.log('key', key);
+      this.resource.tags = this.resource.tags || []; // create tags if undefined
+
       if (!this.resource.tags.includes(key)) {
         this.resource.tags.push(key);
       }
@@ -226,12 +301,14 @@ export default {
 
       // console.log('validator', this.errors);
       if (!this.errors.any()) {
-        var newPostKey = this.resource['.key'] || db.ref('resources').push().key;
-        console.log('saving', newPostKey);
+        var newPostKey =  this.$route.params.resourceId || db.ref('resources').push().key;
+        // this.newQuiz = false;
+        this.submitted = true;
+        console.log('saving', newPostKey, this.$route.params.resourceId);
         this.$store.commit('addPostKey', newPostKey);
         var updates = {};
 
-        delete this.resource['.key']; 
+        // delete this.resource['.key']; 
 
         updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
         updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; 

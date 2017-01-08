@@ -49,6 +49,9 @@ export const actions = {
   updateAnsweredQuestions({commit}, answeredQuestions) {
     commit('mutateAnsweredQuestions', answeredQuestions);
   },
+  updateResource({commit}, data) {
+    commit('mutateResource', data);
+  },
   updateStudyStatus({commit}, status) {
     commit('mutateStudyStatus', status);
   },

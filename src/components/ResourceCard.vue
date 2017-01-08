@@ -21,13 +21,23 @@
         <a v-bind:href="resource.url" class="button is-light is-medium" v-else>
           Go to resource
         </a>
+        <button type="button" class="button is-light is-medium" @click.prevent="$router.push('/info/' + $route.params.resourceId)" v-if="!showLearn && isOwner">Edit resource</button>
+        <!-- remove below just for faster deleting during testing-->
+        <!--<button type="button" class="button is-danger is-medium" @click.prvent="remove(resource)"  v-if="isOwner">Remove</button> -->
       </div>
     </div>
     
     <footer class="card-footer">
-        <i class="fa fa-thumbs-o-up fa-3x" aria-hidden="true"></i>
-        <p style="font-size: 16px; margin-top: 5px">{{resource.timesPassed}}</p>
-        <i v-if="showShare" @click="showModal()" class="share fa fa-share-alt fa-3x" aria-hidden="true"></i>
+      <div class="container">
+        <div class="columns">
+          <div class="column is-half">
+            <p style="font-size: 16px; margin-top: 5px"><i class="fa fa-thumbs-o-up fa-3x" aria-hidden="true"></i>{{resource.timesPassed}}</p>
+          </div>
+          <div class="column is-half">
+            <span class="is-pulled-right">{{creationDate}}</span>
+            <i v-if="showShare" @click="showModal()" class="share fa fa-share-alt fa-3x" aria-hidden="true"></i>
+          </div>
+      </div>
     </footer>
 
 </template>
@@ -35,9 +45,12 @@
 <script>
 import { mapState } from 'vuex'
 import Vue from 'vue'
+import moment from 'moment'
 var VueFire = require('vuefire')
 Vue.use(VueFire)
 import db from '../db'
+
+const DATE_FORMAT = 'dddd, MMMM Do YYYY, hh:mm'
 
 export default {
   name: 'resource-card',
@@ -83,7 +96,25 @@ export default {
   computed: {
     ...mapState({
       userInfo: state => state.userInfo,
-    })
+    }),
+    isOwner() {
+      return this.resource.authorId === this.$store.state.userInfo.uid;
+    },
+    creationDate () {
+      // show up to 2 days ago then shows UTC date
+      let resultText = ''
+      const prefixText = 'created ';
+      if (this.resource.createdAt) {
+        let createdMoment = moment(this.resource.createdAt || 0);
+        // console.log('time ago', this.resource.createdAt, createdMoment);
+        let time = createdMoment < moment() ? moment() : createdMoment // force timeAgo --> avoids in a few seconds display (we can be out of sync. by a few ms)
+        resultText = createdMoment.isBefore(moment.duration(moment().subtract(3, 'days').valueOf())) ? 
+          prefixText + createdMoment.utc().format(DATE_FORMAT) : 
+          prefixText + createdMoment.from(time)
+      }
+
+      return resultText; // if no date --> show nothing
+    }
   },
   filters: {
     capitalize: function (value) {
@@ -121,6 +152,9 @@ export default {
     closeModal () {
       this.showModal = false;
     },
+    remove(resource) {
+      this.$emit('remove', resource);
+    }
   }
 }
 </script>
@@ -186,7 +220,7 @@ export default {
   margin-right: 15px
 }
 .share {
-  margin-left: 700px;
+  /*margin-left: 700px;*/
   cursor: pointer;
 }
 </style>

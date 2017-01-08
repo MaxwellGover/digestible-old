@@ -21,6 +21,9 @@ const mutations = {
       console.log('mutate resources', resources);
       state.resources = resources;
     },
+    mutateResource (state, resource) {
+      state.resource = resource;
+    },
     incPassedResource(state, res) {
       const key = res['.key'];
       if (!state.passedResources[key]) {

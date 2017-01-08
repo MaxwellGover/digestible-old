@@ -22,10 +22,12 @@ export const routes = [
     meta: { requiresAuth: true }
   },
   { path: '/info/:resourceId', component: ResourceInfo,
+    // keepAlive: true,
     // a meta field
     meta: { requiresAuth: true }
   },
   { path: '/create', component: QuizBuilder,
+    // keepAlive: true,
     // a meta field
     meta: { requiresAuth: true }
   },

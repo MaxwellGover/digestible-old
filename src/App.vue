@@ -44,10 +44,10 @@
     <nav class="sub-nav nav has-shadow">
       <div class="container">
         <p class="nav-item" style="color: #9fa6ad; font-size: 14px"><b>Search resources by type:</b></p>
-        <router-link :to="'/type/articles'" class="nav-item is-tab sub-link">Online articles</router-link>
-        <router-link :to="'/type/videos'" class="nav-item is-tab sub-link">Videos</router-link>
-        <router-link :to="'/type/books'" class="nav-item is-tab sub-link">Books</router-link>
-        <router-link :to="'/type/podcasts'" class="nav-item is-tab sub-link">Podcasts</router-link>
+        <router-link :to="'/type/articles'" class="nav-item is-tab sub-link" active-class="is-active">Online articles</router-link>
+        <router-link :to="'/type/videos'" class="nav-item is-tab sub-link" active-class="is-active">Videos</router-link>
+        <router-link :to="'/type/books'" class="nav-item is-tab sub-link" active-class="is-active">Books</router-link>
+        <router-link :to="'/type/podcasts'" class="nav-item is-tab sub-link" active-class="is-active">Podcasts</router-link>
       </div>
     </nav>
 
@@ -64,7 +64,7 @@
       </div>
     </div>
     <div v-else>
-      <router-view></router-view>
+      <router-view keep-alive></router-view>
     </div>
 
     <div v-if="showModal" class="modal is-active">
