@@ -5,7 +5,7 @@
         <div style="width: 95%">
         <label class="label" style="margin-bottom: 10px">Question {{qindex + 1}}</label>
         <p class="control is-grouped">
-          <textarea :data-vv-name="'text' + qindex" v-focus="first" @blur="first=false" data-vv-as="question" class="textarea is-medium" :class="{'is-danger': errors.has('text' + qindex) }" type="text" placeholder="Enter a question" v-validate.initial="question.text" :data-vv-rules="requiredFieldValidator" v-model="question.text"></textarea>
+          <textarea :data-vv-name="'text' + qindex" v-focus="first[qindex]" @blur="first[qindex]=false" @focus.lazy="first[qindex]=true" data-vv-as="question" class="textarea is-medium" :class="{'is-danger': errors.has('text' + qindex) }" type="text" placeholder="Enter a question" v-validate.initial="question.text" :data-vv-rules="requiredFieldValidator" v-model="question.text"></textarea>
             <span style="color: #ff3860; margin-left: 15px" @click="removeQuestion(qindex)"><i class="fa fa-trash-o 5x" aria-hidden="true"></i></span>
         </p>
         <span v-show="errors.has('text' + qindex)">{{ errors.first('text' + qindex) }}</span>
@@ -16,7 +16,8 @@
               <input class="checkbox" type="checkbox" v-model="option.isAnswer" :class="{'is-danger': errors.has('check'+ qindex) }"
                 :data-vv-name="'check'+ qindex" data-vv-as="checkbox" v-validate.initial="option.isAnswer" :data-vv-rules="'oneChecked: '+ qindex + ',isAnswer'">
               <input class="input is-medium is-expanded" type="text" 
-                v-focus="focussed[qindex][index]" @blur="focussed[qindex][index]=false" @focus="focussed[qindex][index]=true" :data-vv-name="'option'+ qindex + '-' + index" data-vv-as="option text" placeholder="Enter an option" v-model="option.text" 
+                v-focus="focussed[qindex][index]" @blur="focussed[qindex][index]=false" @focus.lazy="focussed[qindex][index]=true" 
+                :data-vv-name="'option'+ qindex + '-' + index" data-vv-as="option text" placeholder="Enter an option" v-model="option.text" 
                 :class="{'is-danger': errors.has('option' + qindex + '-' + index)}"
                 v-validate.initial="option.text" :data-vv-rules="requiredFieldValidator" 
                 @keydown.enter.prevent="addOption(question, qindex)"
@@ -50,6 +51,7 @@
         </a>
       </div>
     </form>
+    <!--<pre>{{focussed|json}}</pre>-->
     <!--<pre>{{fields|json}}</pre>-->
     <!--<pre>
     {{questions | json}}
@@ -113,7 +115,7 @@ export default {
       requiredFieldValidator: 'required|min:2', // used for every text field (yes, no is allowed --> length 2) // alpha_num removed --> to allow -?...
       showQuestions: false,
       submitted: false,
-      first: true, // first focuse input of first question
+      first: [], // first focus of question
       focussed: {
         0: {
           0: false
@@ -148,6 +150,7 @@ export default {
         // init questions
         // console.log('loading questions', this.questions);
         const questions = (snapshot.val() || [createNewQuestion()]);
+
         console.log('loaded questions', questions);
         // vuefire would be only bound to local state --> dispatch so we have it on store
         this.$store.dispatch('updateQuestions', questions); // mutate store to init. questions array (dispatch because this is asynch.)
@@ -158,14 +161,10 @@ export default {
         this.submitted = false;
 
         // init focussed
+        this.updateFocussed();
+
+        this.first[0] = true; // focus first question
         // console.log('init', questions)
-        Object.keys(questions).forEach((key, qindex) => {
-          // console.log('key', key, questions[key]);
-          questions[key].options.forEach((option, index) => {
-            this.focussed[qindex] = {};
-            this.focussed[qindex][index] = false;
-          });
-        });
 
         // custom validator for checkboxes
         this.$validator.remove('oneChecked'); // remove validator to avoid error message
@@ -177,6 +176,21 @@ export default {
             // console.log('questions', value, testProp, options.some((option) => option[testProp]));
             return value || options.some((option) => option[testProp]);
           }
+        });
+      });
+    },
+    updateFocussed() {
+      if (!this.questions) return;
+      this.focussed = {};
+      this.first = {};
+
+      Object.keys(this.questions).forEach((key, qindex) => {
+        // console.log('key', key, questions[key]);
+        this.first[qindex] = false;
+
+        this.questions[key].options.forEach((option, index) => {
+          this.focussed[qindex] = {};
+          this.focussed[qindex][index] = false;
         });
       });
     },
@@ -224,13 +238,16 @@ export default {
     },
     addQuestion () {
     	this.questions.push(createNewQuestion());
+      this.updateFocussed();
+      this.first[this.questions.length-1] = true; // focus next question
     },
     removeQuestion (index) {
       this.questions.splice(index, 1);
+      this.updateFocussed();
     },
     addOption (question, qindex) { // remove question prop
       // let index = this.questions.indexOf(question);
-      console.log('add opt', qindex, this.questions)
+      // console.log('add opt', qindex, this.questions)
     	this.questions[qindex].options.push(createNewOption());
       let last = this.questions[qindex].options.length - 1;
       if (qindex >= 0) {
