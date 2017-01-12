@@ -6,19 +6,19 @@
       <div class="right">
         <p class="card-header-title">
           <router-link :to="'/profile/' + resource.authorId" class="author-link">{{resource.authorName}}</router-link><br>
-          <small style="font-size: 14px; color: #8f8f8f">Resource type: <span><router-link :to="'/type/' + resource.type + 's'" style="color: #006ce4">{{resource.type | capitalize}}</router-link></span></small>
+          <small style="font-size: 14px; color: #8f8f8f">Resource type: <span><router-link :to="'/type/' + resource.type + 's'" style="color: #333; font-size: 14px">{{resource.type | capitalize}}</router-link></span></small>
         </p>
     </header>
     
     <div class="card-content">
       <div class="content">
-        <p style="font-size: 32px; margin-bottom: 5px; font-family: 'Patua One', cursive"><b>{{resource.title}}</b></p>
+        <router-link :to="'/quiz/' + resource['.key']"><p class="resource-title"><b>{{resource.title}}</b></p></router-link>
         <p style="font-size: 18px; color: #8f8f8f">{{resource.description}}</p>
         <!-- Learn button -->
         <router-link v-if="showLearn" class="button is-light is-medium" :to="'/quiz/' + resource['.key']">
           Learn
         </router-link>
-        <a v-bind:href="resource.url" class="button is-light is-medium" v-else>
+        <a v-bind:href="resource.url" class="button is-light is-medium" target="_blank" v-else>
           Go to resource
         </a>
         <button type="button" class="button is-light is-medium" @click.prevent="$router.push('/info/' + $route.params.resourceId)" v-if="!showLearn && isOwner">Edit resource</button>
@@ -82,10 +82,8 @@ export default {
       type: Boolean, 
     },
     showShare: {
-      type: Boolean
-    },
-    resourceLink: {
-      type: String
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -160,6 +158,9 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none
+}
 .card {
   font-family: 'Roboto', sans-serif;
   margin-right: 20px;
@@ -180,6 +181,13 @@ export default {
   background-color: #fff;
   border-bottom: none;
 }
+.resource-title {
+  font-size: 32px; 
+  color: #333;
+  margin-bottom: 5px; 
+  font-family: 'Patua One', cursive;
+  text-decoration: none;
+}
 .button {
   text-decoration: none
 }
@@ -199,8 +207,8 @@ export default {
   background-color: #fafafa
 }
 .author-link {
-  color: #006ce4;
-  font-size: 16px;
+  color: #333;
+  font-size: 14px;
   text-decoration: none;
   margin-bottom: -20px
 }
@@ -216,11 +224,7 @@ export default {
   justify-content: center;
 }
 .fa {
-  color: #006ce4;
+  color: #333;
   margin-right: 15px
-}
-.share {
-  /*margin-left: 700px;*/
-  cursor: pointer;
 }
 </style>

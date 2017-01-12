@@ -12,8 +12,8 @@
     <nav class="nav has-shadow">
       <div class="container">
         <div class="nav-center">
-          <a class="nav-item is-tab" :class="{'is-active': tab['passed']}" style="color: #006ce4" href="#passed" role="tab" data-toggle="tab" @click="tab={};tab['passed']=true">Passed resources</a>
-          <a class="nav-item is-tab" :class="{'is-active': tab['created']}" style="color: #006ce4" href="#created" role="tab" data-toggle="tab"  @click="tab={};tab['created']=true">Created resources</a>
+          <a class="nav-item is-tab" :class="{'is-active': tab['passed']}" style="color: #333" href="#passed" role="tab" data-toggle="tab" @click="tab={};tab['passed']=true">Passed resources</a>
+          <a class="nav-item is-tab" :class="{'is-active': tab['created']}" style="color: #333" href="#created" role="tab" data-toggle="tab"  @click="tab={};tab['created']=true">Created resources</a>
         </div>
       </div>
     </nav>
@@ -95,6 +95,7 @@ export default {
       passedResources: [],
       joinedResources: [],
       joinedPassedResources: [],
+      answeredQuestions: [],
       resources: [],
       showLearn: true,
       tab: {
@@ -215,10 +216,10 @@ export default {
   margin-bottom: 0px
 }
 .nav-item {
-  color: #006ce4;
+  color: #333;
 }
 .nav-item:hover {
-  color: #006ce4;
+  color: #333;
   text-decoration: none
 }
 .display-name {

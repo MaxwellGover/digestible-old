@@ -14,12 +14,15 @@
        
         <div class="nav-right nav-menu">
           <!-- Create quiz link -->
-          <router-link :to="'/info'" class="nav-item" style="font-size: 14px">
-            Create a Quiz
+          <router-link :to="'/info'" class="nav-item" v-if="userInfo.uid">
+            <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
           </router-link>
           <!-- Study link -->
-          <router-link :to="'/study'" class="nav-item" style="font-size: 14px">
-            Study
+          <router-link :to="'/profile/' + userInfo.uid + '/study'" class="nav-item" v-if="userInfo.uid">
+            <i class="fa fa-lightbulb-o fa-2x" aria-hidden="true"></i>
+          </router-link>
+          <router-link :to="'/study'" class="nav-item" else>
+            <p class="nav-item" style="color: #00d1b2" @click="openModal">Create a Quiz</p>
           </router-link>
           <!-- Dropdown -->
           <div class="nav-item dropdown" v-if="userInfo.uid">
@@ -33,14 +36,14 @@
               <li><a href="#" @click.prevent="toggleSignIn()">Logout</a></li>
             </ul>
           </div>
-          <a class="nav-item" v-else @click="openModal">Sign In / Sign Up</a>
+          <a class="nav-item" @click="openModal" v-else>Sign In / Sign Up</a>
         <!-- End nav right -->
         </div> 
       <!-- End nav container -->
       </div>
     <!-- End nav -->
     </nav>
-
+   
     <nav class="sub-nav nav has-shadow">
       <div class="container">
         <p class="nav-item" style="color: #9fa6ad; font-size: 14px"><b>Search resources by type:</b></p>
@@ -228,8 +231,20 @@ export default {
     user-select: none;
 }
 
-.sub-link {
+.sub-nav-title {
+  color: #000; 
   font-size: 14px
+}
+
+.sub-nav-item {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #8f8f8f
+}
+
+.nav-item {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
 }
 
 .dropdown-menu {

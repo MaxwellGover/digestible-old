@@ -2,31 +2,38 @@
   <div>
     <div class="notification" v-if="show">
       <button class="delete" v-on:click="removeNotification"></button>
+      
       <div class="container">
-        <p class="notification-text">Hey there! Are you an absolute beginner to web design or development? Click
-          <router-link to="/getting-started" style="color: #75fab4"><em>here</em></router-link>
+        <p class="notification-text">Are you an absolute beginner to web design or development? Click
+          <router-link to="/getting-started" style="color: #75fab4">here</router-link>
         </p>
       </div>
     </div>
+    
     <div v-if="!userInfo.uid">
       <div class="jumbotron">
         <div class="container">
           <h1 class="hero-header" v-html="jumbotronHeader">Retain the Web</h1>
-          <p style="font-size: 18px">Make sure you are retaining the important information <br> from technical online articles, videos, and podcasts
+          <p class="hero-text">Make sure you are retaining the important information <br> from technical online articles, videos, and podcasts
             with Digestible.</p>
-          <a class="button is-outlined" @click.prevent="toggleSignIn()"><span class="button-text" style="font-size: 16px; color: #fff">SIGN UP</span></a>
+          <a class="button is-outlined" @click.prevent="toggleSignIn()"><span class="button-text">SIGN UP</span></a>
         </div>
       </div>
     </div>
+    
     <div class="home container">
       <div class="feed">
         <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources" :showLearn="showLearn" v-on:remove="remove"></resource-card>
       </div>
       <div class="side-bar">
-        <p class="side-bar-header"><b>Here are some users to check out</b></p>
-        <small style="font-size: 12px; margin-top: 5px; color: #8f8f8f">See what other users are learning.</small>
+        <share-box></share-box>
+        <p class="side-bar-header">
+          <b style="font-size: 14px; margin-right: 10px">Here are some users to check out</b>
+          <i class="fa fa-hand-o-down" aria-hidden="true"></i>  
+        </p>
+        <small class="side-bar-sub">See what other users are learning.</small>
         <hr>
-        <side-bar v-for="(user, index) in users" :user="user"></side-bar>
+        <side-bar-user v-for="(user, index) in users" :user="user"></side-bar-user>
       </div>
       <!--{{resources}}-->
     </div>
@@ -36,7 +43,8 @@
 <script>
 import ResourceCard from '../components/ResourceCard'
 import Categories from '../components/Categories'
-import SideBar from '../components/SideBar'
+import SideBarUser from '../components/SideBarUser'
+import ShareBox from '../components/ShareBox'
 import Vue from 'vue'
 import VueFire from 'vuefire'
 import { mapState } from 'vuex'
@@ -51,7 +59,8 @@ export default {
   components: { 
     ResourceCard, 
     Categories,
-    SideBar
+    SideBarUser,
+    ShareBox
   },
   computed: mapState({
     userInfo: state => state.userInfo,
@@ -98,6 +107,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css?family=Russo+One');
+  
   .home {
     display: flex;
     justify-content: space-between;
@@ -115,8 +126,9 @@ export default {
   }
   
   .side-bar-header {
+    display: flex;
     font-size: 16px;
-    
+    margin-top: 20px;
   }
   
   .jumbotron {
@@ -150,14 +162,21 @@ export default {
 
   .hero-header {
     font-size: 40px;
+    font-family: 'Russo One', sans-serif;
+    margin-bottom: 10px;
+  }
+  
+  .hero-text {
+    font-size: 18px; 
+    color: #8f8f8f
   }
   
   .button {
     margin-top: 20px;
     padding: 20px;
     border-radius: 50px;
-    border-color: #006ce4;
-    background-color: #006ce4;
+    border-color: #75fab4;
+    background-color: #75fab4;
   }
   
   .button:hover {
@@ -165,7 +184,8 @@ export default {
   }
   
   .button-text {
-    color: #fff;
+    color: #333;
+    font-size: 16px;
   }
   
   .notification-text {
@@ -174,11 +194,17 @@ export default {
   }
 
   .notification {
-    background-color: #006ce4
+    background-color: #333
   }
   
   a {
     color: #000;
     text-decoration: none
+  }
+  
+  .side-bar-sub {
+    font-size: 14px; 
+    margin-top: 5px; 
+    color: #8f8f8f
   }
 </style>
