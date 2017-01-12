@@ -53,7 +53,7 @@ import FlashCard from '../components/FlashCard' // display info after submitting
 import Question from '../components/Question'
 import {SPACED_REPETITION_DEFAULT} from '../components/spacedrepetition-constants'
 import social from 'vue-social-sharing'
-// var social = require('vue-social-sharing');
+
 import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
