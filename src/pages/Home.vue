@@ -23,7 +23,7 @@
     
     <div class="home container">
       <div class="feed">
-        <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources" :showLearn="showLearn"></resource-card>
+        <resource-card v-for="resource in resources" :resource="resource" :passed="passedResources" :showLearn="showLearn" v-on:remove="remove"></resource-card>
       </div>
       <div class="side-bar">
         <share-box></share-box>
@@ -86,6 +86,13 @@ export default {
     removeNotification () {
       this.show = false 
     },
+    remove (resource) { // just for quickly removing during testing.
+      console.log('remove...', resource['.key']);
+      const key = resource['.key'];
+      this.$firebaseRefs.resources.child(key).remove().then(()=>{
+        console.log('deleted', key);
+      });
+    }
   }
   // vuex: {
   //   getters: {

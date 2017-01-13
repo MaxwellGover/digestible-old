@@ -1,4 +1,16 @@
 // import VuexFire from 'vuexfire'
+const handleSelectedCount = (state, value) => {
+  if (value) {
+    state.result.selectedCount++;
+  } 
+  else
+  {
+    if ( state.result.selectedCount > 0 ) {
+      state.result.selectedCount--;
+    }
+  }
+  state.submittedStatus = false;
+}
 
 const quiz = {
     state: {
@@ -15,15 +27,22 @@ const quiz = {
             // }]
             selectedCount: 0 // store alle selected checkboxes
         },
+        resource: {},
         questions: []
     },
     getters: {
     // submittedStatus: state => state.submittedStatus
     },
     actions: {
-        initQuestions({commit}, initData) {
-            console.log('initQuestions', initData);
+        updateQuestions({commit}, initData) {
+            // console.log('initQuestions', initData);
             commit('mutateQuestions', initData);
+        },
+        updateResource({commit}, resource) {
+          commit('mutateResource', resource);
+        },
+        prepareAnswerList({commit}, resource) {
+          commit('mutateAnswerList', resource);
         }
     },
     mutations: Object.assign({}, 
@@ -33,27 +52,38 @@ const quiz = {
              * Prepare answer array
              * @input resource
              */
-            prepareAnswerList(state, resource) {
+            mutateAnswerList(state, resource) {
                 // console.log('prepareAnswerList', resource);
-                let answers = resource.quiz.map((question, index) => {
-                    console.log('question prepare', question);
-                    return {
-                            // question
-                            id: index,
-                            answers: question.options.map((option, idx) => {
-                                    return {
-                                        id: idx, // create id based on index in array --> would be better if we would hava a uuid
-                                        selected: undefined, // undefined so we can checck if answer is selected
-                                        isAnswer: option.isAnswer
-                                    };
-                            })
-                    };
-                });
-
-                state.answeredQuestions = answers;
+                if (Array.isArray(resource.quiz)) {
+                  let answers = resource.quiz.map((question, index) => {
+                      // console.log('question prepare', question);
+                      return {
+                              // question
+                              id: index,
+                              answers: question.options.map((option, idx) => {
+                                      return {
+                                          id: idx, // create id based on index in array --> would be better if we would hava a uuid
+                                          selected: undefined, // undefined so we can check if answer is selected
+                                          isAnswer: option.isAnswer
+                                      };
+                              })
+                      };
+                  });
+                  state.answeredQuestions = answers;
+                }
+            },
+            mutateResource(state, resource) {
+              state.resource = resource;
+            },
+            updateResourceTimesPassed (state, timesPassed) {
+              state.resource.timesPassed = timesPassed;
             },
             mutateQuestions(state, questions) {
                 state.questions = questions;
+              console.log('new state mutateQuestions', state);
+            },
+            toggleQuestionOption(state, {qindex, index}) {
+              state.questions[qindex].options[index].isAnswer = !state.questions[qindex].options[index].isAnswer;
             },
             displayAnswers(state) {
                 state.submittedStatus = true
@@ -65,21 +95,17 @@ const quiz = {
                     selectedCount: 0
                 };
             },
+            toggleAnswer(state, {questionIndex, index}) {
+              let selected = state.answeredQuestions[questionIndex].answers[index].selected || false;
+              selected = !selected;
+              state.answeredQuestions[questionIndex].answers[index].selected = selected;
+              handleSelectedCount(state, selected);
+            },
             markAnswer(state, {questionIndex, index, value}) {
-                // console.log('mark question', questionIndex, index, value);
+                console.log('mark question', questionIndex, index, value);
                 state.answeredQuestions[questionIndex].answers[index].selected = value;
-
-                if (value) {
-                    state.result.selectedCount++;
-                } 
-                else
-                {
-                    if ( state.result.selectedCount > 0 ) {
-                        state.result.selectedCount--;
-                    }
-                }
-
-                state.submittedStatus = false;
+                console.log(state.answeredQuestions[questionIndex].answers[index].selected);
+                handleSelectedCount(state, value);
             },
             addCorrectCount(state, answer) {
                 // let index =  state.result.correctIds.filter((answer) => answer).length;

@@ -43,8 +43,17 @@ function signIn(commit) {
 }
 
 export const actions = {
-  addPassedResources({commit}, data) {
+  updatePassedResources({commit}, data) {
     commit('mutatePassedResources', data);
+  },
+  updateAnsweredQuestions({commit}, answeredQuestions) {
+    commit('mutateAnsweredQuestions', answeredQuestions);
+  },
+  updateResource({commit}, data) {
+    commit('mutateResource', data);
+  },
+  updateStudyStatus({commit}, status) {
+    commit('mutateStudyStatus', status);
   },
   checkAuth({commit}) {
     // console.log('checkAuth', auth.currentUser, this)

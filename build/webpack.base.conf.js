@@ -1,3 +1,4 @@
+var webpack = require('webpack')
 var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
@@ -32,6 +33,12 @@ module.exports = {
   resolveLoader: {
     fallback: [path.join(__dirname, '../node_modules')]
   },
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //       'Promise': 'es6-promise',
+  //       // 'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+  //   }),
+  // ],
   module: {
     loaders: [
       {
@@ -41,7 +48,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel',
-        include: projectRoot,
+        include: [projectRoot],
         exclude: /node_modules/
       },
       {

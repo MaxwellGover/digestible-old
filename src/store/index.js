@@ -14,9 +14,14 @@ const debug = process.env.NODE_ENV !== 'production'
 export const state = {
     userInfo: {},
     users: {},
+    resource: {}, // resource for resourceInfo
     resources: [],
-    passedResources: [],
+    passedResources: [], // per user data
     answeredQuestions: [],
+    // studyStatus: {
+    //   allDone: false,
+    //   quizAvailable: false
+    // },
     postKey: '',
     modal: {
         el: '',     // el = modal container
@@ -26,9 +31,9 @@ export const state = {
 };
 
 const plugins = [
-    debug ? createLogger(): null,
+    debug ? createLogger(): () => {},
     createPersistedState({
-        paths: ['userInfo', 'postKey']
+        paths: ['userInfo', 'postKey'] //, 'quiz', 'resource']
     })
 ];
 

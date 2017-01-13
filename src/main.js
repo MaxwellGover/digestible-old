@@ -2,6 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueFire from 'vuefire'
+import VeeValidate from 'vee-validate';
+
+// import AsyncComputed from 'vue-async-computed'
+// import VueResource from 'vue-resource'
+
 // import VuexFire from 'vuexfire'
 
 import '../node_modules/spinkit/css/spinkit.css'
@@ -14,8 +19,11 @@ import router from './router';
 // import loadingMixin from './mixins/loading'
 
 Vue.use(VueFire);
+Vue.use(VeeValidate);
 // Vue.use(VuexFire)
 Vue.use(VueRouter);
+// Vue.use(AsyncComputed)
+// Vue.use(VueResource)
 
 new Vue({
   el: '#app',

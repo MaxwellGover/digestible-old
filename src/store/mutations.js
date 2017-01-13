@@ -4,13 +4,25 @@
 
 const mutations = {
     // VuexFireMutations,
+    mutateAnsweredQuestions(state, questions) {
+      state.answeredQuestions = questions;
+    },
+    updateAnsweredQuestion(state, {key, index, props}) {
+      state.answeredQuestions[key][index] = props;
+    },
     addPostKey(state, key) {
       state.postKey = key;
+    },
+    mutateStudyStatus (state, status) {
+      state.studyStatus = status
     },
     mutateResources (state, resources) {
       // state.resources.push(resources);
       console.log('mutate resources', resources);
       state.resources = resources;
+    },
+    mutateResource (state, resource) {
+      state.resource = resource;
     },
     incPassedResource(state, res) {
       const key = res['.key'];

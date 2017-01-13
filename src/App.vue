@@ -18,7 +18,7 @@
             <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
           </router-link>
           <!-- Study link -->
-          <router-link :to="'/study'" class="nav-item" v-if="userInfo.uid">
+          <router-link :to="'/profile/' + userInfo.uid + '/study'" class="nav-item" v-if="userInfo.uid">
             <i class="fa fa-lightbulb-o fa-2x" aria-hidden="true"></i>
           </router-link>
           <router-link :to="'/study'" class="nav-item" else>
@@ -46,11 +46,11 @@
    
     <nav class="sub-nav nav has-shadow">
       <div class="container">
-        <p class="sub-nav-title nav-item"><b>Search resources by type</b></p>
-        <router-link :to="'/type/articles'" class="sub-nav-item nav-item is-tab">Online articles</router-link>
-        <router-link :to="'/type/videos'" class="sub-nav-item nav-item is-tab">Videos</router-link>
-        <router-link :to="'/type/books'" class="sub-nav-item nav-item is-tab">Books</router-link>
-        <router-link :to="'/type/podcasts'" class="sub-nav-item nav-item is-tab">Podcasts</router-link>
+        <p class="nav-item" style="color: #9fa6ad; font-size: 14px"><b>Search resources by type:</b></p>
+        <router-link :to="'/type/articles'" class="nav-item is-tab sub-link" active-class="is-active">Online articles</router-link>
+        <router-link :to="'/type/videos'" class="nav-item is-tab sub-link" active-class="is-active">Videos</router-link>
+        <router-link :to="'/type/books'" class="nav-item is-tab sub-link" active-class="is-active">Books</router-link>
+        <router-link :to="'/type/podcasts'" class="nav-item is-tab sub-link" active-class="is-active">Podcasts</router-link>
       </div>
     </nav>
 

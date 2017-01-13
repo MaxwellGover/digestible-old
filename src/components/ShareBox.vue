@@ -26,13 +26,14 @@
 
 <script>
 var social = require('vue-social-sharing');
+// var social = require('../assets/js/vue-social-sharing.min.js');
 
-    export default {
-       name: 'ShareBox',
-       components: {
-           social
-       }
-   } 
+export default {
+    name: 'ShareBox',
+    components: {
+        social
+    }
+} 
 </script>
 
 <style scoped>

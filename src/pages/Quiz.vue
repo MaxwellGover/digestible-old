@@ -1,11 +1,12 @@
 <template>
-	<div class="quiz container">
-		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" :showShare="showShare" :resourceLink="resourceLink" style="margin-right: 0"></resource-card>
+	<div class="quiz container" v-if="loaded">
+    <!--<pre>{{resource|json}}</pre>-->
+		<resource-card :resource="resource" :passed="passedResources" :showLearn="showLearn" :options="options" :showShare="showShare" :resourceLink="resourceLink"style="margin-right: 0"></resource-card>
 		<div class="questions box container">
 			
 			<div class="quiz-form">
 				<form @submit.prevent="submitQuiz"> 
-					<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource"></question>
+					<question v-for="(quiz, quizIndex) in resource.quiz" :quiz="quiz" :quiz-index="quizIndex" :submitted="submitted" :resource="resource" :styles="styles"></question>
 					<flash-card :score="score" :visible="submitted" style="margin-top: 40px"></flash-card>
 					<button type="submit" class="button is-black" :disabled="submitted" @click="submitQuiz()">Submit</button>
 				</form>
@@ -50,7 +51,8 @@ import db from '../db';
 import ResourceCard from '../components/ResourceCard'
 import FlashCard from '../components/FlashCard' // display info after submitting the answers
 import Question from '../components/Question'
-var social = require('vue-social-sharing');
+import {SPACED_REPETITION_DEFAULT} from '../components/spacedrepetition-constants'
+import social from 'vue-social-sharing'
 
 import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 
@@ -64,7 +66,7 @@ export default {
 	},
 	firebase() {
 		return {
-			resource: {
+			fbResource: {
 				source: db.ref('resources/' + this.$route.params.resourceId),
 				asObject: true
 			},
@@ -74,9 +76,11 @@ export default {
 		this.$store.commit('resetForm');
 		
 		return {
+      loaded: false,
 			options: {
 				lightResource: true 
 			},
+      styles: {}, // storage for highlighting correct/wrong question styles
 			showLearn: true,
 			showShare: false,
 			resourceId: this.$route.params.resourceId,
@@ -92,6 +96,24 @@ export default {
 		this.$bindAsArray('passedResources', passedRes);
 		this.$bindAsArray('answeredQuestions', answeredQuestionsRes);
 
+    this.$firebaseRefs.fbResource.once('value', (snap) => {
+      // update store
+      // console.log('resource', snap.val(), snap.key);
+      let resource = snap.val();
+      resource['.key'] = snap.key;
+
+      this.$store.dispatch('updateResource', resource);
+      this.$store.dispatch('prepareAnswerList', resource);
+      this.loaded = true;
+    });
+
+    passedRes.once('value', (snap) => {
+      this.$store.dispatch('updatePassedResources', snap.val());
+    });
+    // answeredQuestionsRes.once('value', (snap) => {
+    //   console.log('loaded answeredQuestions', snap.val());
+    // })
+
 		// Swap out buttons
 		this.showLearn = false;
 		this.showShare = true
@@ -102,31 +124,34 @@ export default {
 			submitted: state => state.quiz.submittedStatus,
 			selectedCount: state => state.quiz.result.selectedCount,
 			result: state => state.quiz.result,
-			userInfo: state => state.userInfo
+			userInfo: state => state.userInfo,
+      resource: state => state.quiz.resource
 		}),
-		score() {
-			if ( this.resource.quiz === undefined ) return; 
+    score () {
+      if ( this.resource.quiz === undefined ) return; 
 
-			let isAnswer = (option) => option.isAnswer===true;
-			let totalCorrectAnswers = 0;
-			this.resource.quiz.forEach((question) => {
-				totalCorrectAnswers += question.options.filter(isAnswer).length;
-			});
-			let selected = this.selectedCount;
-			let incorrectCount = (selected > totalCorrectAnswers) ? selected - totalCorrectAnswers: 0; 
-			let correctCount = this.result.correctIds.length;
+      let isAnswer = (option) => option.isAnswer===true;
+      let totalCorrectAnswers = 0;
 
-			let amount = correctCount - incorrectCount;
-			
-			if (amount < 0) { 
-				amount = 0;
-			}
+      this.resource.quiz.forEach((question) => {
+          totalCorrectAnswers += question.options.filter(isAnswer).length;
+      });
 
-			return {
-				amount,
-				total: totalCorrectAnswers // total correct answer count - used to calculated messages
-			};
-		}
+      let selected = this.selectedCount;
+      let incorrectCount = (selected > totalCorrectAnswers) ? selected - totalCorrectAnswers: 0; 
+      let correctCount = this.result.correctIds.length;
+
+      let amount = correctCount - incorrectCount;
+      
+      if (amount < 0) { 
+        amount = 0;
+      }
+      // console.log('score', amount, totalCorrectAnswers);
+      return {
+        amount,
+        total: totalCorrectAnswers // total correct answer count - used to calculated messages
+      };
+    }
 	},
 	methods: {
 		submitQuiz() {
@@ -134,33 +159,45 @@ export default {
 			this.$store.commit('displayAnswers');
 
 			let getCorrectAnswerText = () => {
-				let result = {}
-				this.result.correctIds.forEach(({quizIndex, index}) => {
-					let quiz = this.resource.quiz[quizIndex];
-					result[quizIndex] = result[quizIndex] || {}; // default to empty obj.
+			// 	let result = {}
+			// 	this.result.correctIds.forEach(({quizIndex, index}) => {
+			// 		let quiz = this.resource.quiz[quizIndex];
+			// 		result[quizIndex] = result[quizIndex] || {}; // default to empty obj.
 
-					Object.assign(result[quizIndex], {
-						questionText: quiz.text,
-						summaryText: quiz.summaryText,
-						[index]: {
-							text: quiz.options[index].text
-						}
-					});
-				});
+			// 		Object.assign(result[quizIndex], {
+			// 			questionText: quiz.text,
+			// 			summaryText: quiz.summaryText || '', // default to empty string --> model changed / new property (check how it is used)
+			// 			[index]: {
+			// 				text: quiz.options[index].text
+			// 			}
+			// 		});
+			// 	});
+      //   console.log('correct answers', result);
 
-				return {
-					[this.resource['.key']]: {
-						quizText: quizText(15).fill(result)
-					},
-
-					// TODO: router.push('/profile/' + authorId );
+				// return { // no need to copy text because we only need the resource key for study component
+				// 	[this.resource['.key']]: {
+				// 		'quizText': result // quizText(15).fill(result) <--- quizText is not defined.
+				// 	}
+				// };
+        // console.log('resource', this.resource);
+        let newAnswer = {
+          [this.resource['.key']]: Array(this.resource.quiz.length).fill(SPACED_REPETITION_DEFAULT)
+          // {
+          //     difficulty: SPACED_REPETITION_DEFAULT.difficulty,
+          //     daysBetweenReviews: SPACED_REPETITION_DEFAULT.daysBetweenReviews,
+          //     percentOverdue: SPACED_REPETITION_DEFAULT.percentOverdue,
+          //     dateLastReviewed: SPACED_REPETITION_DEFAULT.dateLastReviewed()
+          // })
 				};
+        // console.log(newAnswer);
+        
+        return newAnswer;
 			};
 
 			if (!this.options.testMode) {
 				this.$nextTick(function () {
 					// delay to next tick, so we have latest computed values
-					console.log(this.score);
+					// console.log(this.score);
 					if (this.score.amount == this.score.total) {
 						// 100% answer
 						// Push specific resource object to Firebase under `/users/ ` + userInfo.uid + ` /passedResources` node ONCE score reaches 100% on submit. 
@@ -172,20 +209,22 @@ export default {
 						this.$store.commit('incPassedResource', this.resource); // update store
 						// console.log('after mutation', this.$store.state.passedResources);
 						passedRes = this.$store.state.passedResources;
-						this.$firebaseRefs.passedResources.set(passedRes);
+						this.$firebaseRefs.passedResources.update(passedRes);
 
 
-						// save answeredQuestion as text in user/uid/answeredQuestion/resourceID
+						// save answeredQuestion as text in user/uid/answeredQuestions/resourceID
 						let answerData = getCorrectAnswerText();
 						// console.log('answeredQuestions', answerData);
-						this.$firebaseRefs.answeredQuestions.set(answerData);
+						this.$firebaseRefs.answeredQuestions.update(answerData);
 						// no need to update store --> will be loaded into state in study component
 
 						// --> all questions answered - increment timesPassed on resource
 						let totalTimesPassed = parseInt(this.resource.timesPassed);
+            // console.log('total before inc', totalTimesPassed);
 						totalTimesPassed++;
 						// not working yet --> need to load timesPassed of resource, inc. & save back. or maybe use increment of firebase
-						this.$firebaseRefs.resource.child('timesPassed').set(totalTimesPassed); // todo firebase inc. would be handy here!
+						this.$firebaseRefs.fbResource.child('timesPassed').set(totalTimesPassed); // todo firebase inc. would be handy here!
+            this.$store.commit('updateResourceTimesPassed', totalTimesPassed);
 					}
 				});
 			}
