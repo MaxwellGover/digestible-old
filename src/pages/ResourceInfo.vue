@@ -18,6 +18,18 @@
         </p>
         <p v-show="errors.has('resource type')">{{ errors.first('resource type') }}</p>
         
+         <!-- Framwork selection --> 
+          <label class="label">For which Framework?</label>
+            <p class="frameworks-input control">
+              <span class="select is-medium">
+                <select v-model="resource.framework">
+                  <option value="react">React</option>
+                  <option value="vue">Vue</option>
+                  <option value="angular">Angular</option>
+                </select>
+              </span>
+            </p>
+        
         <!-- Resource title input -->
         <label class="label" style="margin-top: 20px">Resource title</label>
         <p class="control">
@@ -58,6 +70,7 @@
           </span><br>-->
           <br/>
           <small>Add some topics to help users find your resource.</small>
+        
           <button type="button" v-on:click.prevent="deleteResource" v-if="isOwner || DEBUG_EN_DELETE ">Delete resource</button>
         <button type="submit" class="button is-info">Next</button>
       
@@ -94,6 +107,7 @@ function defaultData(store) {
       description: '',
       timesPassed: 0,
       tags: [],
+      framework: '',
       text: '',
       authorName: store.state.userInfo.displayName,
       authorImage: store.state.userInfo.photoURL,
@@ -311,7 +325,8 @@ export default {
         // delete this.resource['.key']; 
 
         updates['/resources/' + newPostKey] = Object.assign({}, this.resource);
-        updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true; 
+        updates['/users/' + this.$store.state.userInfo.uid + '/createdResources/' + newPostKey] = true;
+        updates['/frameworks/' + this.framework + newPostKey] = Object.assign({}, this.resource);
 
         console.log("Saving resource data...", updates)
         
