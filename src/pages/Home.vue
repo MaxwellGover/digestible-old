@@ -63,11 +63,11 @@ export default {
     ShareBox
   },
   computed: mapState({
-    userInfo: state => state.userInfo,
+    userInfo: state => state.userInfo
   }),
   firebase() {
     return {
-      resources: db.ref().child('resources'),
+      resources: db.ref().child('resources').orderByChild('timesPassed'),
       passedResources: db.ref('/users/' + this.$parent.$store.state.userInfo.uid + '/passedResources'),
       users: db.ref().child('users')
     }

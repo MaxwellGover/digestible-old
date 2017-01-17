@@ -23,9 +23,11 @@
             <p class="frameworks-input control">
               <span class="select is-medium">
                 <select v-model="resource.framework">
+                  <option value="angular">Angular</option>
+                  <option value="angular">Ember</option>
+                  <option value="angular">Polymer</option>
                   <option value="react">React</option>
                   <option value="vue">Vue</option>
-                  <option value="angular">Angular</option>
                 </select>
               </span>
             </p>
@@ -106,7 +108,6 @@ function defaultData(store) {
       url: '',
       description: '',
       timesPassed: 0,
-      tags: [],
       framework: '',
       text: '',
       authorName: store.state.userInfo.displayName,
@@ -263,6 +264,7 @@ export default {
     deleteResource() {
       this.$store.commit('modalToggle', this.$refs.confirmModal.$el); 
     },
+    /*
     tagChange(data) {
       let tagsRef = db.ref('tags');
       let key = data[0];
@@ -310,6 +312,7 @@ export default {
       // typeahead --> check tags in firebase show autocomplete
       // if new key required --> only key saved in resource and in global tags collection
     },
+    */
     saveToFB () {
       this.$validator.validateAll();
 

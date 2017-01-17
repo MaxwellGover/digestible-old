@@ -35,7 +35,6 @@
           </div>
           <div class="column is-half">
             <span class="is-pulled-right">{{creationDate}}</span>
-            <i v-if="showShare" @click="showModal()" class="share fa fa-share-alt fa-3x" aria-hidden="true"></i>
           </div>
       </div>
     </footer>

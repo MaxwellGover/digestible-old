@@ -59,7 +59,7 @@ import { mapMutations, mapGetters, mapState, mapActions } from 'vuex'
 export default {
 	name: 'quiz',
 	components: { 
-    	ResourceCard, 
+    ResourceCard, 
 		FlashCard,
 		Question,
 		social
